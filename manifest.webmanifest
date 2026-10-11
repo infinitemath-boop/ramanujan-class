@@ -1,0 +1,19 @@
+{
+  "name": "Ramanujan Class",
+  "short_name": "Ramanujan Class",
+  "description": "Ramanujan Class, Namakkal: lectures, study material, tests and announcements for CSIR NET, GATE, IIT JAM, TN SET and PG TRB mathematics.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b1534",
+  "theme_color": "#111c42",
+  "lang": "en-IN",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -2,30 +2,50 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function signedIn() { return request.auth != null; }
-
-    // The teacher's sign-in email (same as TEACHER_EMAIL in firebase-config.js).
-    function isTeacher() {
-      return signedIn()
-        && request.auth.token.email == "infinitemath@ramanujanclass.org"
-        && request.auth.token.email_verified == true;
+    // Teachers sign in with Google. Keep this list in step with ADMINS in public/firebase-config.js.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in ['infinitemath@ramanujanclass.org'];
     }
 
-    // One document per student. Students self-register under their own uid;
-    // the teacher can also add students under any id.
-    match /students/{studentId} {
-      allow read: if isTeacher() || (signedIn() && request.auth.uid == studentId);
+    // A student may read class material only while their account is active and not expired.
+    function isStudent() {
+      let path = /databases/$(database)/documents/accounts/$(request.auth.uid);
+      let a = get(path).data;
+      return request.auth != null
+        && exists(path)
+        && a.active == true
+        && (a.get('validUntilMs', 0) == 0 || request.time.toMillis() < a.validUntilMs);
+    }
 
-      allow create: if isTeacher()
-        || (signedIn() && request.auth.uid == studentId
-            && request.resource.data.status == "pending");
+    function canRead() { return isAdmin() || isStudent(); }
 
-      // A student may edit their own details but never their approval status.
-      allow update: if isTeacher()
-        || (signedIn() && request.auth.uid == studentId
-            && request.resource.data.status == resource.data.status);
+    // Account status (name, batch, active, access date). A student can see only their own.
+    match /accounts/{uid} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == uid);
+      allow write: if isAdmin();
+    }
 
-      allow delete: if isTeacher();
+    // Email IDs and phone numbers: teachers only.
+    match /roster/{uid} {
+      allow read, write: if isAdmin();
+    }
+
+    match /announcements/{id} { allow read: if canRead(); allow write: if isAdmin(); }
+    match /content/{id}       { allow read: if canRead(); allow write: if isAdmin(); }
+    match /days/{id}          { allow read: if canRead(); allow write: if isAdmin(); }
+    match /tests/{id}         { allow read: if canRead(); allow write: if isAdmin(); }
+    match /settings/{id}      { allow read: if canRead(); allow write: if isAdmin(); }
+
+    // Uploaded PDFs, videos and thumbnails, stored as chunks.
+    match /files/{id} {
+      allow read: if canRead();
+      allow write: if isAdmin();
+      match /chunks/{n} {
+        allow read: if canRead();
+        allow write: if isAdmin();
+      }
     }
   }
 }
