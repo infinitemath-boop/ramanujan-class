@@ -2003,6 +2003,15 @@ async function autoThumbFor(c,n){
   const blob=await makeThumbBlob(thumbOpts(c,n));
   return (await app.assets.upload(blob,{ type:"image/jpeg" })).id;
 }
+// When the teacher is signed in, videos added without a thumbnail (for example by the Drive script) get one automatically.
+const thumbTried=new Set(); let thumbBusy=false;
+async function autoThumbs(){
+  if(!app.isAdmin||!app.assets||thumbBusy) return;
+  const todo=videos().filter(v=>!v.thumb&&!thumbTried.has(v.id)); if(!todo.length) return;
+  thumbBusy=true;
+  try{ for(const v of todo){ thumbTried.add(v.id); try{ await makeThumbForDoc(v.id); }catch(e){} } }
+  finally{ thumbBusy=false; }
+}
 async function makeThumbForDoc(id){
   const c=app.content.find(x=>x.id===id); if(!c) return;
   const n=subjVideos(c.sid).findIndex(x=>x.id===id)+1;
@@ -2410,7 +2419,7 @@ function startListening(){
     app.live=s.exists?s.data():null; refresh();
   },()=>{});
   on(app.db.collection("content").orderBy("createdAt","desc").limit(500),s=>{
-    app.content=s.docs.map(d=>({ id:d.id, ...d.data() })); refresh();
+    app.content=s.docs.map(d=>({ id:d.id, ...d.data() })); refresh(); autoThumbs();
   },()=>{ app.content=app.content||[]; refresh(); });
   if(app.isAdmin){
     on(app.db.collection("roster").limit(1000),s=>{

@@ -8,6 +8,9 @@
  *     2. adds it to the app's Daily Lessons for that subject as the next day
  *        (videos from the same class date share one day).
  *   Each video is added once; moving it again does nothing.
+ *   Rename a recording to its topic first and the topic shows on the video and its thumbnail.
+ *   The app draws the thumbnail (Ramanujan Class, Namakkal · subject · date · topic) the next
+ *   time the teacher opens the app.
  *
  * Setup: see SETUP-VIDEOS.md next to this file.
  */
@@ -83,13 +86,13 @@ function addVideo_(file, sid) {
   const doc = {
     kind: "video",
     title: title_(file.getName(), classDate, existing.filter(v => v.classDate === classDate).length),
+    topic: topic_(file.getName()),
     sid: sid,
     type: "",
     duration: duration_(file.getId()),
     parts: [],
     link: "https://drive.google.com/file/d/" + file.getId() + "/view",
     thumb: "",
-    topic: "",
     classDate: classDate,
     day: day,
     sizeBytes: 0,
@@ -113,6 +116,13 @@ function classDate_(file) {
   const m = file.getName().match(/(\d{4})[\/-](\d{2})[\/-](\d{2})/);
   if (m) return m[1] + "-" + m[2] + "-" + m[3];
   return Utilities.formatDate(file.getDateCreated(), "Asia/Kolkata", "yyyy-MM-dd");
+}
+
+// Rename a recording to its topic (for example "Sylow theorems") before moving it, and the topic goes on the thumbnail.
+// Meet's own names (they contain a date) give no topic.
+function topic_(name) {
+  const n = name.replace(/\.[a-z0-9]{2,4}$/i, "").trim();
+  return /\d{4}[\/-]\d{2}[\/-]\d{2}/.test(n) ? "" : n;
 }
 
 function title_(name, classDate, partsSoFar) {
