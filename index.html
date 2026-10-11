@@ -71,10 +71,13 @@ footer .mono { color: var(--marigold) }
       <p class="sub">Department of Mathematics · Govt Arts College</p>
     </div>
   </header>
-  <main id="app"><section class="card"><p class="sub">Loading…</p></section></main>
+  <main id="app"><section class="card"><p class="sub" id="boot">Loading…</p></section></main>
   <footer>1729 = <span class="mono">1³ + 12³ = 9³ + 10³</span></footer>
 </div>
 
+<script>
+  setTimeout(() => { const b = document.getElementById("boot"); if (b) b.textContent = "The page didn't finish loading. Refresh it, and if this stays, check your internet connection or try another browser."; }, 12000);
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
@@ -116,8 +119,10 @@ const AUTH_ERRORS = {
   "auth/too-many-requests": "Too many attempts. Wait a minute and try again.",
   "auth/popup-closed-by-user": "The Google window was closed before signing in.",
   "auth/popup-blocked": "Your browser blocked the Google window. Allow pop-ups for this site.",
+  "auth/operation-not-allowed": "This sign-in method is switched off in Firebase. The teacher needs to turn it on under Authentication, Sign-in method.",
+  "auth/unauthorized-domain": "This website's address isn't on Firebase's allowed list yet (Authentication, Settings, Authorized domains).",
 };
-const authMsg = e => AUTH_ERRORS[e.code] || "Something went wrong. Try again.";
+const authMsg = e => AUTH_ERRORS[e.code] || ("Something went wrong (" + (e.code || e.message || "unknown error") + "). Try again.");
 
 let S = { user: null, isTeacher: false, record: undefined, roster: [], tab: "signin" };
 let unsub = null;
@@ -125,6 +130,7 @@ let unsub = null;
 onAuthStateChanged(auth, u => {
   unsub?.(); unsub = null;
   S.user = u; S.record = undefined; S.roster = [];
+  S.teacherUnverified = !!u && u.email?.toLowerCase() === TEACHER_EMAIL.toLowerCase() && !u.emailVerified;
   S.isTeacher = !!u && u.email?.toLowerCase() === TEACHER_EMAIL.toLowerCase() && u.emailVerified;
   if (u && S.isTeacher) {
     unsub = onSnapshot(collection(db, "students"), snap => { S.roster = snap.docs.map(d => ({ id: d.id, ...d.data() })); render(); });
@@ -284,9 +290,22 @@ function addStudentForm() {
   return el("details", {}, el("summary", { class: "label", style: "cursor:pointer" }, "Add a student yourself"), f);
 }
 
+function teacherVerifyScreen() {
+  const n = el("p", { class: "hint", "aria-live": "polite" });
+  return el("section", { class: "card" },
+    el("div", {}, el("h2", {}, "Verify your teacher email"),
+      el("p", { class: "sub" }, "The class roster opens once this email address is verified.")),
+    el("p", {}, "Open the inbox for ", txt("b", S.user.email), ", click the link from Firebase, then come back and tap the button below."),
+    el("div", { class: "row" },
+      el("button", { onclick: async () => { await S.user.reload(); if (auth.currentUser.emailVerified) { await auth.currentUser.getIdToken(true); location.reload(); } else n.textContent = "Not verified yet. Check your spam folder too."; } }, "I've verified it"),
+      el("button", { class: "ghost", onclick: async () => { try { await sendEmailVerification(S.user); n.textContent = "Link sent again."; } catch (x) { n.textContent = authMsg(x); } } }, "Send the link again")),
+    n, accountRow());
+}
+
 function render() {
   let screen;
   if (!S.user) screen = authScreen();
+  else if (S.teacherUnverified) screen = teacherVerifyScreen();
   else if (S.isTeacher) screen = teacherHome();
   else if (S.record === undefined) screen = el("section", { class: "card" }, el("p", { class: "sub" }, "Loading your record…"));
   else screen = S.record ? studentHome() : profileScreen();
