@@ -437,7 +437,7 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
 .wm span{transform:rotate(-28deg); font-weight:700; font-size:14px; letter-spacing:.05em; white-space:nowrap; color:rgba(27,42,92,.13)}
 .vwrap .wm span{color:rgba(255,255,255,.16)}
 .vwrap{position:relative; background:#000; border-radius:12px; overflow:hidden; aspect-ratio:16/9; max-width:100%}
-.vwrap video{position:absolute; inset:0; width:100%; height:100%; background:#000}
+.vwrap video,.vwrap iframe{position:absolute; inset:0; width:100%; height:100%; background:#000; border:0}
 .vwrap .wm{inset:0 0 56px 0}
 .parts{display:flex; gap:8px; flex-wrap:wrap}
 .loading{color:var(--muted); padding:40px 0; text-align:center}
@@ -2186,6 +2186,7 @@ function openModal(eyebrow,title,body,wide){
 }
 function closeModal(){
   const vid=$("#mBody video"); if(vid){ vid.pause(); vid.removeAttribute("src"); vid.load(); }
+  $("#mBody").querySelectorAll("iframe").forEach(f=>f.remove());
   if(pv.doc){ try{ pv.doc.destroy(); }catch(e){} pv.doc=null; }
   $("#mBody").innerHTML="";
   if(!$("#modal").hidden){ $("#modal").hidden=true; dt=null; if(app.session&&ui.view==="videos") render(); if(lastFocus&&lastFocus.focus&&lastFocus.isConnected) lastFocus.focus(); }
@@ -2263,14 +2264,16 @@ function openVideo(id){
   const s=S[v.sid]||SUBJ[0], list=subjVideos(v.sid), idx=list.findIndex(x=>x.id===id), nxt=list[idx+1];
   const parts=v.parts||[];
   if(!parts.length&&v.link){
+    const fid=(/\/d\/([\w-]{10,})/.exec(v.link)||/[?&]id=([\w-]{10,})/.exec(v.link)||[])[1];
     openModal(s.name+" · Lecture "+(idx+1), v.title, `
-      <div class="player" style="position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden">${thumb(v,idx+1)}</div>
+      ${fid?`<div class="vwrap protected"><iframe src="https://drive.google.com/file/d/${esc(fid)}/preview" allow="autoplay; fullscreen" allowfullscreen title="${esc(v.title)}"></iframe>${watermark()}</div>`
+        :`<div class="player" style="position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden">${thumb(v,idx+1)}</div>`}
       <div class="dl"><span>Subject <b>${s.name}</b></span><span>Source <b>Google Drive class recording</b></span>${v.duration?`<span>Duration <b>${esc(v.duration)}</b></span>`:""}</div>
-      <p class="hint">This recording plays in Google Drive. Sign in with the Google account Ramanujan Class gave access to.</p>
+      <p class="hint">${fid?"If the video doesn't start, open it in Google Drive.":"This recording plays in Google Drive. Sign in with the Google account Ramanujan Class gave access to."}</p>
       <div class="row-end">
         ${nxt?`<button class="btn ghost" id="nextLec">Next lecture</button>`:""}
         <button class="btn ghost" id="markW">${watched.has(id)?"Mark as not watched":"Mark as watched"}</button>
-        <a class="btn primary" href="${esc(v.link)}" target="_blank" rel="noopener">${svg("M7 4.5v15l13-7.5z")} Watch in Google Drive</a>
+        <a class="btn ${fid?"ghost":"primary"}" href="${esc(v.link)}" target="_blank" rel="noopener">${fid?"Open in Google Drive":svg("M7 4.5v15l13-7.5z")+" Watch in Google Drive"}</a>
       </div>`, true);
     $("#markW").addEventListener("click",()=>toggleWatched(id,true));
     if(nxt) $("#nextLec").addEventListener("click",()=>openVideo(nxt.id));
