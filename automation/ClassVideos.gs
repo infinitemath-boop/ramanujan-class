@@ -63,9 +63,32 @@ function addNewVideos() {
         catch (e) { Logger.log("Skipped " + f.getName() + ": " + e.message); }
       });
     });
+    shareAppVideos_();
   } finally {
     lock.releaseLock();
   }
+}
+
+/** Also shares videos added by hand in the app (Admin → Drive link), so they play inside the app. */
+function shareAppVideos_() {
+  if (!CONFIG.SHARE_PUBLIC_LINK) return;
+  const props = PropertiesService.getScriptProperties();
+  const done = JSON.parse(props.getProperty("shared") || "{}");
+  const body = { structuredQuery: {
+    from: [{ collectionId: "content" }],
+    where: { fieldFilter: { field: { fieldPath: "kind" }, op: "EQUAL", value: { stringValue: "video" } } }
+  } };
+  (fs_("post", ":runQuery", body) || []).filter(r => r.document).forEach(r => {
+    const link = fromFields_(r.document.fields || {}).link || "";
+    const m = /\/d\/([\w-]{10,})/.exec(link) || /[?&]id=([\w-]{10,})/.exec(link);
+    if (!m || done[m[1]]) return;
+    try {
+      const f = DriveApp.getFileById(m[1]);
+      if (f.getSharingAccess() !== DriveApp.Access.ANYONE_WITH_LINK) f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      done[m[1]] = 1;
+    } catch (e) { Logger.log("Could not share " + link + ": " + e.message); }
+  });
+  props.setProperty("shared", JSON.stringify(done));
 }
 
 function addVideo_(file, sid) {

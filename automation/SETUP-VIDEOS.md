@@ -29,6 +29,7 @@ Do this only if infinitemath@ramanujanclass.org did not create the Firebase proj
 
 - After class, open **Drive → Meet Recordings**. Rename the recording to its topic, for example *Sylow theorems*. Then drag it into the right subject folder inside **Ramanujan Class Videos**.
 - The thumbnail is made automatically: Ramanujan Class, Namakkal, the subject, the date and the topic. It appears the next time you open the app as teacher.
+- Every video in the app is shared as "Anyone with the link can view" automatically, including videos you add by hand in Admin with a Drive link (if the video is in this account's Drive). That is what lets it play inside the app.
 - Recordings with the same class date join the same day, as Part 1, Part 2 and so on. A new date becomes the next day.
 - To remove a video, first move it out of the subject folder, then delete it in **Admin → PDFs, videos & notes**. If it stays in the folder, the script adds it again.
 
