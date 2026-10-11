@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    // The teacher's sign-in email (same as TEACHER_EMAIL in firebase-config.js).
+    function isTeacher() {
+      return signedIn()
+        && request.auth.token.email == "infinitemath@ramanujanclass.org"
+        && request.auth.token.email_verified == true;
+    }
+
+    // One document per student. Students self-register under their own uid;
+    // the teacher can also add students under any id.
+    match /students/{studentId} {
+      allow read: if isTeacher() || (signedIn() && request.auth.uid == studentId);
+
+      allow create: if isTeacher()
+        || (signedIn() && request.auth.uid == studentId
+            && request.resource.data.status == "pending");
+
+      // A student may edit their own details but never their approval status.
+      allow update: if isTeacher()
+        || (signedIn() && request.auth.uid == studentId
+            && request.resource.data.status == resource.data.status);
+
+      allow delete: if isTeacher();
+    }
+  }
+}

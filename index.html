@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ramanujan Class</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root {
+  --bg: #f3f5f9; --surface: #ffffff; --ink: #18213a; --muted: #5b6480;
+  --line: #d9deea; --accent: #2f4ab8; --accent-ink: #ffffff; --marigold: #e39a1b;
+  --ok: #1f7a4d; --ok-bg: #e2f3ea; --warn: #8a5a00; --warn-bg: #fdf0d5; --bad: #b3261e;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #0f1424; --surface: #171e33; --ink: #e7eaf4; --muted: #9aa3bf;
+  --line: #2a3352; --accent: #8ea4ff; --accent-ink: #0f1424; --marigold: #f2b544;
+  --ok: #6fd3a0; --ok-bg: #173327; --warn: #f2c46b; --warn-bg: #3a2c10; --bad: #ff8a80; color-scheme: dark } }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--body) }
+.wrap { max-width: 720px; margin: 0 auto; padding-inline: 16px; padding-block: 32px 48px; display: grid; gap: 20px }
+header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap }
+.mark { width: 44px; height: 44px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 800 18px var(--display) }
+h1 { font: 800 1.6rem/1.15 var(--display); margin: 0 }
+h2 { font: 700 1.25rem/1.2 var(--display); margin: 0 0 4px }
+.sub { color: var(--muted); margin: 0; font-size: .95rem }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: grid; gap: 16px; min-width: 0 }
+.label { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600 }
+button { font: 600 1rem var(--body); border-radius: 10px; padding: 11px 18px; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink) }
+button.ghost { background: transparent; color: var(--accent) }
+button.google { background: var(--surface); color: var(--ink); border-color: var(--line); display: flex; align-items: center; justify-content: center; gap: 10px }
+button.small { padding: 6px 12px; font-size: .88rem }
+button.link { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 600; font-size: .9rem }
+button:disabled { opacity: .5; cursor: default }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--marigold); outline-offset: 2px }
+form { display: grid; gap: 14px }
+.field { display: grid; gap: 4px }
+.field label { font-weight: 600; font-size: .92rem }
+input, select { font: 1rem var(--body); padding: 10px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); width: 100% }
+.mono { font-family: var(--mono); font-size: .9em }
+.hint { color: var(--muted); font-size: .85rem }
+.err { color: var(--bad); font-size: .9rem; min-height: 1.2em; margin: 0 }
+.note { color: var(--ok); font-size: .9rem; margin: 0 }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: .8rem; font-weight: 600 }
+.pill.ok { background: var(--ok-bg); color: var(--ok) } .pill.wait { background: var(--warn-bg); color: var(--warn) }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 10px; overflow: hidden }
+.tabs button { border: 0; border-radius: 0; background: transparent; color: var(--muted) }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink) }
+.or { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .85rem }
+.or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--line) }
+.tablewrap { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; min-width: 660px; font-size: .95rem }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle }
+th { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.stats { display: flex; gap: 24px; flex-wrap: wrap; font-variant-numeric: tabular-nums }
+.stats b { font: 800 1.5rem var(--display); display: block }
+footer { color: var(--muted); font-size: .85rem; text-align: center }
+footer .mono { color: var(--marigold) }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="mark">Σ</div>
+    <div>
+      <h1>Ramanujan Class</h1>
+      <p class="sub">Department of Mathematics · Govt Arts College</p>
+    </div>
+  </header>
+  <main id="app"><section class="card"><p class="sub">Loading…</p></section></main>
+  <footer>1729 = <span class="mono">1³ + 12³ = 9³ + 10³</span></footer>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, updateDoc, deleteDoc, collection, onSnapshot, addDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { firebaseConfig, TEACHER_EMAIL } from "./firebase-config.js";
+
+const fb = initializeApp(firebaseConfig);
+const auth = getAuth(fb);
+const db = getFirestore(fb);
+
+const app = document.getElementById("app");
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/, PHONE_RE = /^[6-9]\d{9}$/, ROLL_RE = /^\d{2}[A-Z]{3}\d{3}$/;
+const COURSES = ["B.Sc Mathematics · I Year", "B.Sc Mathematics · II Year", "B.Sc Mathematics · III Year", "M.Sc Mathematics · I Year", "M.Sc Mathematics · II Year"];
+
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") n.className = v; else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of kids.flat()) if (c != null) n.append(c);
+  return n;
+};
+const txt = (tag, s, attrs = {}) => { const n = el(tag, attrs); n.textContent = s ?? ""; return n; };
+const field = (id, label, attrs = {}, hint) => el("div", { class: "field" }, el("label", { for: id }, label), el("input", { id, name: id, ...attrs }), hint ? txt("span", hint, { class: "hint" }) : null);
+const courseSelect = (id, allowBlank) => el("div", { class: "field" }, el("label", { for: id }, "Class"),
+  el("select", { id, name: id }, allowBlank ? el("option", { value: "" }, "Not set") : null, COURSES.map(c => el("option", {}, c))));
+
+const AUTH_ERRORS = {
+  "auth/invalid-credential": "Email or password is wrong.",
+  "auth/wrong-password": "Email or password is wrong.",
+  "auth/user-not-found": "No account with that email. Create one instead.",
+  "auth/email-already-in-use": "An account with that email already exists. Sign in instead.",
+  "auth/weak-password": "Use a password of at least 6 characters.",
+  "auth/invalid-email": "That email address doesn't look right.",
+  "auth/too-many-requests": "Too many attempts. Wait a minute and try again.",
+  "auth/popup-closed-by-user": "The Google window was closed before signing in.",
+  "auth/popup-blocked": "Your browser blocked the Google window. Allow pop-ups for this site.",
+};
+const authMsg = e => AUTH_ERRORS[e.code] || "Something went wrong. Try again.";
+
+let S = { user: null, isTeacher: false, record: undefined, roster: [], tab: "signin" };
+let unsub = null;
+
+onAuthStateChanged(auth, u => {
+  unsub?.(); unsub = null;
+  S.user = u; S.record = undefined; S.roster = [];
+  S.isTeacher = !!u && u.email?.toLowerCase() === TEACHER_EMAIL.toLowerCase() && u.emailVerified;
+  if (u && S.isTeacher) {
+    unsub = onSnapshot(collection(db, "students"), snap => { S.roster = snap.docs.map(d => ({ id: d.id, ...d.data() })); render(); });
+  } else if (u) {
+    unsub = onSnapshot(doc(db, "students", u.uid), snap => { S.record = snap.exists() ? snap.data() : null; render(); },
+      () => { S.record = null; render(); });
+  }
+  render();
+});
+
+// ---------- screens ----------
+function authScreen() {
+  const err = el("p", { class: "err", "aria-live": "polite" });
+  const note = el("p", { class: "note", "aria-live": "polite" });
+  const signin = S.tab === "signin";
+  const f = el("form", { onsubmit: async e => {
+      e.preventDefault(); err.textContent = ""; note.textContent = "";
+      const email = f.email.value.trim(), pw = f.password.value;
+      if (!signin && pw !== f.password2.value) return err.textContent = "The two passwords don't match.";
+      try {
+        if (signin) await signInWithEmailAndPassword(auth, email, pw);
+        else { const c = await createUserWithEmailAndPassword(auth, email, pw); await sendEmailVerification(c.user); }
+      } catch (x) { err.textContent = authMsg(x); }
+    } },
+    field("email", "Email", { type: "email", autocomplete: "email", required: true }),
+    field("password", "Password", { type: "password", autocomplete: signin ? "current-password" : "new-password", required: true, minlength: "6" }),
+    signin ? null : field("password2", "Confirm password", { type: "password", autocomplete: "new-password", required: true }),
+    err, note,
+    el("button", { type: "submit" }, signin ? "Sign in" : "Create account"),
+    signin ? el("button", { type: "button", class: "link", onclick: async () => {
+      err.textContent = ""; note.textContent = "";
+      const email = f.email.value.trim();
+      if (!EMAIL_RE.test(email)) return err.textContent = "Type your email above first, then tap Forgot password.";
+      try { await sendPasswordResetEmail(auth, email); note.textContent = "Password reset link sent to " + email + "."; }
+      catch (x) { err.textContent = authMsg(x); }
+    } }, "Forgot password?") : null);
+  const tab = (key, label) => el("button", { type: "button", role: "tab", "aria-selected": String(S.tab === key), onclick: () => { S.tab = key; render(); } }, label);
+  return el("section", { class: "card" },
+    el("div", {}, el("h2", {}, signin ? "Sign in" : "Create your account"), el("p", { class: "sub" }, "Students and teacher use the same page.")),
+    el("div", { class: "tabs", role: "tablist" }, tab("signin", "Sign in"), tab("signup", "Create account")),
+    el("button", { type: "button", class: "google", onclick: async () => {
+      err.textContent = "";
+      try { await signInWithPopup(auth, new GoogleAuthProvider()); } catch (x) { err.textContent = authMsg(x); }
+    } }, googleIcon(), "Continue with Google"),
+    el("div", { class: "or" }, "or with email"), f);
+}
+
+function googleIcon() {
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("viewBox", "0 0 48 48"); s.setAttribute("width", "18"); s.setAttribute("height", "18"); s.setAttribute("aria-hidden", "true");
+  s.innerHTML = '<path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/>';
+  return s;
+}
+
+function accountRow() {
+  return el("div", { class: "row" },
+    txt("span", "Signed in as " + (S.user.email || S.user.displayName || "you"), { class: "hint" }),
+    el("button", { class: "ghost small", onclick: () => signOut(auth) }, "Sign out"));
+}
+
+function verifyNotice() {
+  if (S.user.emailVerified) return null;
+  const n = el("p", { class: "hint" });
+  n.append("We sent a verification link to your email. ",
+    el("button", { class: "link", onclick: async () => { try { await sendEmailVerification(S.user); n.textContent = "Sent again. Check your inbox and spam folder."; } catch { n.textContent = "Couldn't resend right now. Try again in a minute."; } } }, "Send again"));
+  return n;
+}
+
+function profileScreen() {
+  const err = el("p", { class: "err", "aria-live": "polite" });
+  const f = el("form", { onsubmit: async e => {
+      e.preventDefault();
+      const fullName = f.fullName.value.trim(), roll = f.roll.value.trim().toUpperCase(), course = f.course.value;
+      const phone = f.phone.value.replace(/\D/g, "");
+      if (fullName.length < 2) return err.textContent = "Enter your name as it appears in the college register.";
+      if (!ROLL_RE.test(roll)) return err.textContent = "Roll number should look like 24UMA007 (year, dept code, number).";
+      if (!PHONE_RE.test(phone)) return err.textContent = "Enter a 10-digit mobile number.";
+      err.textContent = ""; f.querySelector("button[type=submit]").disabled = true;
+      try {
+        await setDoc(doc(db, "students", S.user.uid), { fullName, roll, course, phone, email: S.user.email || "", status: "pending", source: "self", joinedAt: new Date().toISOString() });
+      } catch { err.textContent = "Could not save. Check your connection and try again."; f.querySelector("button[type=submit]").disabled = false; }
+    } },
+    field("fullName", "Full name", { autocomplete: "name", value: S.user.displayName || "" }),
+    field("roll", "Roll number", { class: "mono", placeholder: "24UMA007", maxlength: "8" }, "Format: admission year, department code, serial number."),
+    courseSelect("course"),
+    field("phone", "Mobile number", { type: "tel", inputmode: "numeric", autocomplete: "tel" }),
+    err, el("button", { type: "submit" }, "Request to join"));
+  return el("section", { class: "card" },
+    el("div", {}, el("h2", {}, "Join the class"), el("p", { class: "sub" }, "Register once. Your teacher approves each request.")),
+    verifyNotice(), f, accountRow());
+}
+
+function studentHome() {
+  const r = S.record, ok = r.status === "approved";
+  return el("section", { class: "card" },
+    el("div", { class: "row" }, el("h2", {}, "Welcome, ", txt("span", r.fullName)), el("span", { class: "pill " + (ok ? "ok" : "wait") }, ok ? "Approved" : "Waiting for approval")),
+    el("p", { class: "sub" }, txt("span", r.roll || "—", { class: "mono" }), " · ", txt("span", r.course || "")),
+    ok ? el("p", {}, "You have full access. Notes, assignments and the question bank will appear here.")
+       : el("p", {}, "Your request has reached the teacher. This page updates by itself once it is approved."),
+    verifyNotice(), accountRow());
+}
+
+function teacherHome() {
+  const pending = S.roster.filter(r => r.status === "pending"), approved = S.roster.filter(r => r.status === "approved");
+  const rows = [...pending, ...approved].map(r => {
+    const n = txt("td", r.fullName);
+    if (r.source === "teacher") n.append(el("br"), el("span", { class: "hint" }, "Added by you"));
+    const contact = el("td");
+    if (r.email) contact.append(txt("div", r.email));
+    if (r.phone) contact.append(txt("div", r.phone, { class: "mono" }));
+    if (!r.email && !r.phone) contact.textContent = "—";
+    const ref = doc(db, "students", r.id);
+    return el("tr", {}, n, txt("td", r.roll || "—", { class: "mono" }), txt("td", (r.course || "—").replace("Mathematics · ", "")), contact,
+      el("td", {}, el("span", { class: "pill " + (r.status === "approved" ? "ok" : "wait") }, r.status === "approved" ? "Approved" : "Pending")),
+      el("td", {}, el("div", { class: "row" },
+        r.status === "pending" ? el("button", { class: "small", onclick: () => updateDoc(ref, { status: "approved", reviewedAt: new Date().toISOString() }) }, "Approve") : null,
+        removeButton(ref, r.status === "pending" ? "Reject" : "Remove"))));
+  });
+  return el("section", { class: "card" },
+    el("div", {}, el("h2", {}, "Class roster"), el("p", { class: "sub" }, "Approve students to give them access.")),
+    el("div", { class: "stats" }, el("div", {}, el("b", {}, String(pending.length)), el("span", { class: "label" }, "Pending")),
+      el("div", {}, el("b", {}, String(approved.length)), el("span", { class: "label" }, "Approved"))),
+    rows.length ? el("div", { class: "tablewrap" }, el("table", {},
+      el("thead", {}, el("tr", {}, ["Name", "Roll no.", "Class", "Contact", "Status", ""].map(h => el("th", {}, h)))), el("tbody", {}, rows)))
+      : el("p", {}, "No students yet. Share this site's link with your class, or add students below."),
+    addStudentForm(), accountRow());
+}
+
+// Two-step confirm built into the page (browsers' confirm() is avoided on purpose).
+function removeButton(ref, label) {
+  const b = el("button", { class: "ghost small", onclick: async () => {
+    if (b.dataset.armed) { b.disabled = true; await deleteDoc(ref); return; }
+    b.dataset.armed = "1"; b.textContent = "Tap again to " + label.toLowerCase();
+    setTimeout(() => { delete b.dataset.armed; b.textContent = label; }, 4000);
+  } }, label);
+  return b;
+}
+
+function addStudentForm() {
+  const err = el("p", { class: "err", "aria-live": "polite" });
+  const f = el("form", { onsubmit: async e => {
+      e.preventDefault();
+      const fullName = f.addName.value.trim(), email = f.addEmail.value.trim(), phone = f.addPhone.value.replace(/\D/g, "");
+      const roll = f.addRoll.value.trim().toUpperCase(), course = f.addCourse.value;
+      if (fullName.length < 2) return err.textContent = "Enter the student's name.";
+      if (email && !EMAIL_RE.test(email)) return err.textContent = "That email address doesn't look right.";
+      if (phone && !PHONE_RE.test(phone)) return err.textContent = "Enter a 10-digit mobile number.";
+      if (roll && !ROLL_RE.test(roll)) return err.textContent = "Roll number should look like 24UMA007.";
+      err.textContent = "";
+      try { await addDoc(collection(db, "students"), { fullName, email, phone, roll, course, status: "approved", source: "teacher", joinedAt: new Date().toISOString() }); f.reset(); }
+      catch { err.textContent = "Could not save the student. Try again."; }
+    } },
+    field("addName", "Full name"), field("addEmail", "Email (optional)", { type: "email" }),
+    field("addPhone", "Mobile number (optional)", { type: "tel", inputmode: "numeric" }),
+    field("addRoll", "Roll number (optional)", { class: "mono", maxlength: "8" }), courseSelect("addCourse", true),
+    err, el("button", { type: "submit" }, "Add student"));
+  return el("details", {}, el("summary", { class: "label", style: "cursor:pointer" }, "Add a student yourself"), f);
+}
+
+function render() {
+  let screen;
+  if (!S.user) screen = authScreen();
+  else if (S.isTeacher) screen = teacherHome();
+  else if (S.record === undefined) screen = el("section", { class: "card" }, el("p", { class: "sub" }, "Loading your record…"));
+  else screen = S.record ? studentHome() : profileScreen();
+  app.replaceChildren(screen);
+}
+</script>
+</body>
+</html>
