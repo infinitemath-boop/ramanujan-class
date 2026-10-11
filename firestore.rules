@@ -38,6 +38,12 @@ service cloud.firestore {
     match /tests/{id}         { allow read: if canRead(); allow write: if isAdmin(); }
     match /settings/{id}      { allow read: if canRead(); allow write: if isAdmin(); }
 
+    // Weekly test results: everyone in the class sees the rank list; a student writes only their own entry.
+    match /results/{test}/entries/{uid} {
+      allow read: if canRead();
+      allow write: if isStudent() && request.auth.uid == uid;
+    }
+
     // Uploaded PDFs, videos and thumbnails, stored as chunks.
     match /files/{id} {
       allow read: if canRead();

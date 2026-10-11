@@ -252,7 +252,7 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
   .top-brand{display:block}
   .is-admin #adminTop{display:inline-flex}
   #view{padding-inline:16px; padding-block:16px 110px; gap:18px}
-  .tabbar{display:grid; grid-template-columns:repeat(7,1fr); position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--surface); border-top:1px solid var(--line); padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tabbar{display:grid; grid-template-columns:repeat(8,1fr); position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--surface); border-top:1px solid var(--line); padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px))}
   .tab-btn{display:flex; flex-direction:column; align-items:center; gap:2px; border:0; background:transparent; color:var(--muted); font-size:9.5px; font-weight:600; padding:6px 0; border-radius:8px; min-width:0}
   .tab-btn svg{width:22px; height:22px}
   .tab-btn[aria-current="page"]{color:var(--ink)}
@@ -537,6 +537,54 @@ mjx-container{max-width:100%}
 .opt .val,.qtext,.sol,.note-body,.bank-item span{overflow-y:hidden; padding-block:2px}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+/* weekly test */
+.wk-head{display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; border-bottom:2px solid var(--primary); padding-bottom:12px}
+.wk-tabs{display:inline-flex; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:3px}
+.wk-tabs button{border:0; background:transparent; color:var(--muted); padding:7px 16px; border-radius:999px; font:600 14px var(--f-ui); cursor:pointer}
+.wk-tabs button[aria-selected="true"]{background:var(--primary); color:var(--on-primary)}
+.wk-grid2{display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:18px}
+.wk-facts{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; list-style:none; margin:14px 0; padding:0}
+.wk-facts li{border-top:2px solid var(--primary); padding-top:6px}
+.wk-facts b{display:block; font-size:20px; font-variant-numeric:tabular-nums}
+.wk-facts span,.wk-pal-sec{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+.wk-sec{border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin-top:10px; display:flex; flex-direction:column; gap:2px; font-size:14px}
+.wk-sec span{color:var(--muted)}
+.wk-test{display:grid; grid-template-columns:minmax(0,1fr) 250px; gap:18px; align-items:start}
+.wk-qmeta{display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px}
+.wk-q{font-size:18px; line-height:1.55; margin:0 0 4px; overflow-x:auto}
+.wk-opts{display:flex; flex-direction:column; gap:10px; margin-top:12px}
+.wk-opt{display:flex; align-items:center; gap:12px; text-align:left; width:100%; border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:12px 14px; border-radius:10px; font-size:16px; cursor:pointer}
+.wk-opt:hover{border-color:var(--primary)}
+.wk-opt .key{flex:0 0 28px; height:28px; border-radius:50%; border:1.5px solid var(--line); display:grid; place-items:center; font-weight:700; font-size:13px; color:var(--muted)}
+.wk-opts.msq .key{border-radius:6px}
+.wk-opt[aria-pressed="true"]{border-color:var(--primary); background:var(--blue-soft)}
+.wk-opt[aria-pressed="true"] .key{background:var(--primary); border-color:var(--primary); color:var(--on-primary)}
+.wk-opt .val{min-width:0; overflow-x:auto}
+.wk-nav{display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; margin-top:18px}
+.wk-side{display:flex; flex-direction:column; gap:14px; position:sticky; top:12px}
+.wk-timer{font-size:30px; font-weight:700; font-variant-numeric:tabular-nums; margin-top:4px}
+.wk-timer.low{color:var(--bad)}
+.wk-pal-sec{margin:10px 0 6px}
+.wk-pal{display:grid; grid-template-columns:repeat(5,1fr); gap:6px}
+.wk-pal button{aspect-ratio:1; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:6px; font:600 13px var(--f-ui); cursor:pointer}
+.wk-pal button.ans{background:var(--primary); border-color:var(--primary); color:var(--on-primary)}
+.wk-pal button.mk{box-shadow:inset 0 -3px 0 var(--gold)}
+.wk-pal button.cur{outline:2px solid var(--ink); outline-offset:1px}
+.wk-confirm{border:1px solid var(--gold); background:var(--gold-soft); border-radius:10px; padding:12px; font-size:14px; display:flex; flex-direction:column; gap:10px}
+.wk-score{display:flex; flex-wrap:wrap; gap:24px; align-items:flex-end}
+.wk-big{font-family:var(--f-display); font-size:52px; line-height:1}
+.wk-big small{font-size:22px; color:var(--muted)}
+.wk-tally{display:flex; gap:18px; flex-wrap:wrap; font-size:14px}
+.wk-tally b{display:block; font-size:18px; font-variant-numeric:tabular-nums}
+.wk-split{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px}
+.wk-split div{border:1px solid var(--line); border-radius:8px; padding:8px 12px; font-size:13px; color:var(--muted)}
+.wk-split b{color:var(--ink); font-size:16px; margin-left:6px}
+.wk-rv{border:1px solid var(--line); border-left:4px solid var(--line); border-radius:10px; padding:14px 16px; background:var(--surface); overflow-x:auto}
+.wk-rv.ok{border-left-color:var(--ok)} .wk-rv.bad{border-left-color:var(--bad)}
+.wk-row{display:flex; flex-wrap:wrap; gap:8px 16px; font-size:14px; margin-top:8px; align-items:center}
+.wk-mtimer{display:none; font-variant-numeric:tabular-nums}
+.wk-mtimer.low{color:var(--bad)}
+@media (max-width:780px){ .wk-grid2,.wk-test{grid-template-columns:minmax(0,1fr)} .wk-side{position:static} .wk-mtimer{display:inline} }
 </style>
 
 <!-- ============ LOGIN ============ -->
@@ -614,7 +662,6 @@ mjx-container{max-width:100%}
 
 <script>
 /* ================= STATIC DATA ================= */
-const TEST_URL = "https://claude.ai/artifact/3WFsTQ9JVEYUvBWjYrEF3b";
 const BLOG_URL = "https://infinitemathematicsblog.wordpress.com";
 const POST_URL = "https://infinitemathematicsblog.wordpress.com/2026/10/10/csir-net-foundation-class-weekly-test/";
 const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
@@ -676,7 +723,7 @@ const NOTES = {
 
 // Built-in items. Uploaded PDFs come from the database.
 const BUILTIN = [
-  { t:"Weekly Test 1 · Abstract Algebra", sid:"alg", type:"Test", info:"15 questions · 45 min · 30 marks", date:"10 Oct 2026", url:TEST_URL },
+  { t:"Weekly Test 1 · Abstract Algebra", sid:"alg", type:"Test", info:"15 questions · 45 min · 30 marks", date:"10 Oct 2026", goto:"weekly" },
   { t:"Group Theory: key results", sid:"alg", type:"Formula sheet", info:"10 results", date:"10 Oct 2026", notes:"grp" },
   { t:"Sequences & Series: tests at a glance", sid:"ana", type:"Formula sheet", info:"8 results", date:"10 Oct 2026", notes:"seq" },
   { t:"Eigenvalue facts for NET", sid:"lin", type:"Formula sheet", info:"8 results", date:"10 Oct 2026", notes:"eig" }
@@ -874,6 +921,7 @@ const VIEWS = [
   { id:"about",         label:"About Us",       short:"About",    icon:"M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01" },
   { id:"materials",     label:"Study Hub",      short:"Study",    icon:"M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6" },
   { id:"practice",      label:"Test Yourself",  short:"Practice", icon:"M9 11l2 2 4-4M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" },
+  { id:"weekly",        label:"Weekly Test",    short:"Tests",    icon:"M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 9v4l2.5 2.5M9.5 2.5h5M12 2.5V5" },
   { id:"books",         label:"Book Library",   short:"Library",  icon:"M4 19.5V5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19.5A2 2 0 0 0 6 22h13v-4" },
   { id:"videos",        label:"Daily Lessons",  short:"Lessons", icon:"M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM10 9l5 3-5 3z" }
 ];
@@ -1146,9 +1194,10 @@ function go(id){
 }
 function render(){
   if(!app.session) return;
-  const fn={ overview:vOverview, announcements:vAnnouncements, about:vAbout, materials:vMaterials, practice:vPractice, books:vBooks, videos:vVideos, admin:vAdmin }[ui.view];
+  const fn={ overview:vOverview, announcements:vAnnouncements, about:vAbout, materials:vMaterials, practice:vPractice, books:vBooks, videos:vVideos, admin:vAdmin, weekly:()=>window.vWeekly() }[ui.view];
   $("#view").innerHTML=fn();
   bindView();
+  if(ui.view==="weekly") window.bindWeekly();
   if(ui.view==="admin") bindAdmin();
   if(ui.view==="practice") typeset($("#view"));
   requestAnimationFrame(paintAll);
@@ -1158,7 +1207,7 @@ function refresh(){
   updateCount();
   if(!app.session) return;
   if(ui.view==="admin"){ fillAdminList(); return; }
-  if(ui.view==="about"||ui.view==="books"||ui.view==="practice") return;
+  if(ui.view==="about"||ui.view==="books"||ui.view==="practice"||ui.view==="weekly") return;
   const searching=document.activeElement&&document.activeElement.id==="matQ";
   render();
   if(searching){ const q=$("#matQ"); if(q){ q.focus(); q.setSelectionRange(q.value.length,q.value.length); } }
@@ -1216,10 +1265,10 @@ function vOverview(){
       </div>
       <div class="test-card">
         <span><span class="pill gold">Live now</span></span>
-        <b>Weekly Test 1 · Abstract Algebra</b>
-        <small>15 questions · 45 minutes · 30 marks · MCQ + MSQ · batch rank list</small>
+        <b>${esc(window.weeklyTitle?weeklyTitle():"Weekly Test")}</b>
+        <small>${window.weeklyFacts?weeklyFacts():""}</small>
         <div class="row">
-          <a class="btn gold" href="${TEST_URL}" target="_blank" rel="noopener">Take the test</a>
+          <button class="btn gold" data-goto="weekly">Take the test</button>
           <a class="btn glass" href="${POST_URL}" target="_blank" rel="noopener">Read on blog</a>
         </div>
       </div>
@@ -1390,7 +1439,8 @@ function vMaterials(){
           ${m.cid&&m.created&&(Date.now()-new Date(m.created))<7*864e5?`<span class="pill gold">New</span>`:""}</div>
       </div>
       <div class="act">
-        ${m.url?`<a class="btn primary sm" href="${m.url}" target="_blank" rel="noopener">Open test</a>`
+        ${m.goto?`<button class="btn primary sm" data-goto="${m.goto}">Open test</button>`
+          :m.url?`<a class="btn primary sm" href="${m.url}" target="_blank" rel="noopener">Open test</a>`
           :m.cid?`<button class="btn primary sm" data-pdf="${esc(m.cid)}">Read</button>`
           :m.nid?`<button class="btn primary sm" data-note="${esc(m.nid)}">Read</button>`
           :`<button class="btn primary sm" data-notes="${m.bi}">Read</button>`}
@@ -2448,3 +2498,4 @@ function stopListening(){
   app.auth.onChange(u=>{ onAuthUser(u); });
 })();
 </script>
+<script src="weekly.js"></script>
