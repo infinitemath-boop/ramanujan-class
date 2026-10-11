@@ -1641,7 +1641,7 @@ function vAdmin(){
         <div class="field"><label for="sPhone">Phone number (password)</label><input id="sPhone" type="tel" inputmode="tel" maxlength="16" placeholder="98765 43210"></div>
       </div>
       <div class="form-row">
-        <div class="field"><label for="sBatch">Batch</label><input id="sBatch" maxlength="60" value="CSIR NET Foundation · 2026"></div>
+        <div class="field"><label for="sBatch">Course</label><select id="sBatch"><option>CSIR NET Foundation Course</option><option>TN SET</option><option>PG TRB</option><option>OTHERS</option></select></div>
         <div class="field"><label for="sUntil">Access until (optional)</label><input id="sUntil" type="date"></div>
       </div>
       <label class="check"><input type="checkbox" id="sActive" checked> Activate now</label>
@@ -1649,7 +1649,7 @@ function vAdmin(){
       <button class="btn primary" type="submit">Create account</button>
       <hr style="border:0;border-top:1px solid var(--line);width:100%;margin:4px 0">
       <h3>Add many students at once</h3>
-      <p class="hint">Paste one student per line as <b>Name, Email ID, Phone number</b>. You can copy the three columns straight from Excel or Google Sheets. The batch, access date and “Activate now” settings above apply to everyone in the list.</p>
+      <p class="hint">Paste one student per line as <b>Name, Email ID, Phone number</b>. You can copy the three columns straight from Excel or Google Sheets. The course, access date and “Activate now” settings above apply to everyone in the list.</p>
       <div class="field"><label for="sBulk">Student list</label><textarea id="sBulk" style="min-height:140px" placeholder="Priya K, priya@gmail.com, 9876543210&#10;Arun S, arun.s@gmail.com, 9123456780"></textarea></div>
       <button class="btn primary" type="button" id="sBulkBtn">Create all accounts</button>
       <p class="status-line" id="sBulkMsg" role="status" style="white-space:pre-line"></p>
