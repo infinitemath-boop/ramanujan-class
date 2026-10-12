@@ -61,7 +61,8 @@ const WEEKLY = [{
   qs:Q
 }];
 const KEYS=["A","B","C","D"];
-const T=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
+const base=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
+const T=()=>{ const b=base(); return W.qs&&W.qsFor===b.id?{ ...b, qs:W.qs }:b; };
 const maxOf=t=>t.qs.reduce((s,q)=>s+(q.t==="msq"?t.msq.plus:t.mcq.plus),0);
 const nA=t=>t.qs.filter(q=>q.t!=="msq").length;
 const fmt=sec=>{ sec=Math.max(0,Math.round(sec)); const h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60; return (h?h+":":"")+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0"); };
@@ -91,7 +92,7 @@ function vWeekly(){
   if(!W.test){
     W.test=WEEKLY[WEEKLY.length-1].id;
     const saved=store.get(saveKey(),null);
-    if(saved&&saved.start&&Date.now()-saved.start<T().minutes*60000){ Object.assign(W,{ phase:"test", ans:saved.ans, mk:saved.mk, start:saved.start, cur:saved.cur||0 }); startTick(); }
+    if(saved&&saved.start&&Date.now()-saved.start<T().minutes*60000){ Object.assign(W,{ phase:"test", ans:saved.ans, mk:saved.mk, start:saved.start, cur:saved.cur||0, qs:saved.ord?shuffleQs(base().qs,saved.ord):null, qsFor:base().id }); startTick(); }
   }
   listen();
   return `<div id="wk" style="display:flex;flex-direction:column;gap:18px">${body()}</div>`;
@@ -179,13 +180,14 @@ function rankHTML(){
 }
 
 function draw(){ const el=$("#wk"); if(!el) return; el.innerHTML=body(); bind(el); typeset(el); }
-function persist(){ if(W.phase==="test") store.set(saveKey(),{ start:W.start, ans:W.ans, mk:W.mk, cur:W.cur }); }
+function persist(){ if(W.phase==="test") store.set(saveKey(),{ start:W.start, ans:W.ans, mk:W.mk, cur:W.cur, ord:W.qs?qsOrder(W.qs):null }); }
 function startTick(){ clearInterval(tick); tick=setInterval(()=>{
   if(W.phase!=="test"){ clearInterval(tick); return; }
   const r=remaining(); ["#wkTimer","#wkTimer2"].forEach(sel=>{ const el=$(sel); if(el){ el.textContent=fmt(r); el.classList.toggle("low",r<300); } });
   if(r<=0) submit();
 },500); }
 function begin(){
+  const b=base(); W.qs=shuffleQs(b.qs); W.qsFor=b.id;
   const t=T(); Object.assign(W,{ phase:"test", ans:t.qs.map(q=>q.t==="msq"?[]:null), mk:t.qs.map(()=>false), cur:0, confirming:false, start:Date.now() });
   persist(); startTick(); draw(); window.scrollTo(0,0);
 }

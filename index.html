@@ -1528,6 +1528,17 @@ function typeset(el,tries){
   if(tries<40) setTimeout(()=>typeset(el,tries+1),300);
 }
 const sameSet=(x,y)=>x.length===y.length&&x.every(v=>y.includes(v));
+/* Every attempt (and every retake) gets a fresh question order and option order, so remembered letters don't help.
+   MCQs stay before MSQs. Letters like (A) in a solution are relabelled to match. ord = [[origIndex, optPerm], ...] rebuilds the same order. */
+function shuffleQs(qs,ord){
+  const mix=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  if(!ord){ const idx=qs.map((_,i)=>i), A=mix(idx.filter(i=>qs[i].t!=="msq")), B=mix(idx.filter(i=>qs[i].t==="msq"));
+    ord=[...A,...B].map(i=>[i,mix(qs[i].o.map((_,k)=>k))]); }
+  return ord.map(([i,p])=>{ const q=qs[i], L="ABCDEF", inv=k=>p.indexOf(k);
+    const rel=x=>typeof x==="string"?x.replace(/\(([A-F])\)/g,(m,c)=>{ const n=inv(L.indexOf(c)); return n<0?m:"("+L[n]+")"; }):x;
+    return { ...q, o:p.map(k=>q.o[k]), a:q.t==="msq"?(q.a||[]).map(inv).sort():inv(q.a), s:rel(q.s), _i:i, _p:p }; });
+}
+const qsOrder=qs=>qs.map(q=>[q._i,q._p]);
 const fmtM=m=>(m>0?"+":m<0?"−":"")+String(Math.round(Math.abs(m)*100)/100);
 function pState(tid,i){ return ((practice[tid]||{})[i])||{ sel:[], checked:false }; }
 function setPState(tid,i,st){ (practice[tid]=practice[tid]||{})[i]=st; store.set("rc-practice-"+app.session.u,practice); }
@@ -2568,7 +2579,8 @@ const fmtClock=sec=>{ sec=Math.max(0,Math.round(sec)); return String(Math.floor(
 function openDTest(tid){
   const t=(app.tests||[]).find(x=>x.id===tid); if(!t||!(t.questions||[]).length) return;
   const prev=dres()[tid];
-  dt={ t, sel:t.questions.map((_,i)=>prev&&prev.sel&&prev.sel[i]?prev.sel[i].slice():[]), submitted:!!prev };
+  dt=prev?{ t, orig:t, sel:t.questions.map((_,i)=>prev.sel&&prev.sel[i]?prev.sel[i].slice():[]), submitted:true }
+    :{ t:{ ...t, questions:shuffleQs(t.questions) }, orig:t, sel:t.questions.map(()=>[]), submitted:false };
   openModal((S[t.sid]?.name||"")+" · Day "+t.day, "Daily test", `<div id="dtBody" style="display:flex;flex-direction:column;gap:14px"></div>`, true);
   renderDT();
 }
@@ -2632,7 +2644,9 @@ function renderDT(){
     const un=dt.sel.filter(s=>!s.length).length, c=$("#dtCount"); if(c) c.textContent=un?un+" unanswered":"All answered";
   }));
   const sb=$("#dtSubmit");
-  const go=()=>{ if(!dt||dt.t.id!==t.id||dt.submitted) return; dt.submitted=true; clearInterval(dtTick); const t0=store.get(dtStartKey(t),0); store.del(dtStartKey(t)); const g=gradeDT(); saveDTResult(t,g,t0?Math.round((Date.now()-t0)/1000):0); const all=dres(); all[t.id]={ ...g, sel:dt.sel, at:new Date().toISOString() };
+  const go=()=>{ if(!dt||dt.t.id!==t.id||dt.submitted) return; dt.submitted=true; clearInterval(dtTick); const t0=store.get(dtStartKey(t),0); store.del(dtStartKey(t)); const g=gradeDT(); saveDTResult(t,g,t0?Math.round((Date.now()-t0)/1000):0); const all=dres();
+      const osel=dt.orig.questions.map(()=>[]); dt.t.questions.forEach((q,i)=>{ osel[q._i??i]=dt.sel[i].map(k=>q._p?q._p[k]:k).sort(); });
+      all[t.id]={ ...g, sel:osel, at:new Date().toISOString() };
       store.set("rc-dtest-"+app.session.u,all); renderDT(); if(ui.view==="videos") render(); };
   clearInterval(dtTick);
   if(t.minutes&&!dt.submitted){
@@ -2648,7 +2662,7 @@ function renderDT(){
     if(un){ $("#dtCount").textContent=un+" unanswered. Tap Confirm to submit anyway."; armButton(sb,go); } else go();
   });
   const rt=$("#dtRetake");
-  if(rt) rt.addEventListener("click",()=>{ store.del(dtStartKey(t)); const all=dres(); delete all[t.id]; store.set("rc-dtest-"+app.session.u,all); dt.submitted=false; dt.sel=t.questions.map(()=>[]); renderDT(); if(ui.view==="videos") render(); });
+  if(rt) rt.addEventListener("click",()=>{ store.del(dtStartKey(t)); const all=dres(); delete all[t.id]; store.set("rc-dtest-"+app.session.u,all); dt.submitted=false; dt.t={ ...dt.orig, questions:shuffleQs(dt.orig.questions) }; dt.sel=dt.orig.questions.map(()=>[]); renderDT(); $("#dtBody")?.scrollIntoView({block:"start"}); if(ui.view==="videos") render(); });
   typeset(b);
 }
 
