@@ -387,6 +387,9 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
 /* books */
 .shelf{display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:22px}
 @media (max-width:480px){.shelf{grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px}}
+.book-wrap{display:flex; flex-direction:column; gap:10px; min-width:0}
+.book-dl{display:flex; flex-direction:column; gap:6px; align-items:flex-start}
+.book-dl .btn{width:100%; justify-content:center}
 .book{display:flex; flex-direction:column; gap:10px; text-align:left; border:0; background:transparent; padding:0}
 .cover{aspect-ratio:2/3; max-width:100%; width:100%; border-radius:4px 10px 10px 4px; padding:16px 14px 14px 22px; color:#fff; position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 2px 4px rgba(0,0,0,.15),0 12px 24px rgba(20,27,45,.18); transition:transform .2s}
 .book:hover .cover{transform:translateY(-4px)}
@@ -1650,7 +1653,8 @@ function vBooks(){
   </div>
   <p class="hint">Standard references for CSIR NET, GATE and JAM. The “Class pick” in each subject is the book we follow in class.</p>
   <div class="shelf">
-    ${list.map(b=>{ const s=S[b.sid], i=BOOKS.indexOf(b); return `
+    ${list.map(b=>{ const s=S[b.sid], i=BOOKS.indexOf(b), f=bookFile(b), adm=app.session&&app.session.admin; return `
+    <div class="book-wrap">
     <button class="book" data-book="${i}">
       <div class="cover" style="background:${grad(s)}">
         <span class="glyph">${esc(s.g)}</span>
@@ -1660,7 +1664,11 @@ function vBooks(){
       <div class="bt">${esc(b.t)}</div>
       <div class="bm"><span>${esc(b.a)}</span></div>
       <div class="bm"><span class="pill ${b.lvl==="Foundation"?"ok":""}">${b.lvl}</span>${b.pick?`<span class="pill soft">Class pick</span>`:""}</div>
-    </button>`; }).join("")}
+    </button>
+    <div class="book-dl">${f?`<a class="btn primary sm" href="${esc(driveDl(f.link))}" target="_blank" rel="noopener" data-bdl="${i}">${DL_ICON}Download</a>`
+      :adm?"":`<span class="hint">Soft copy coming soon</span>`}
+      ${adm?`<button class="btn ghost sm" type="button" data-bset="${i}">${f?"Change file":"Add from Google Drive"}</button>`:""}</div>
+    </div>`; }).join("")}
   </div>`;
 }
 
@@ -2394,6 +2402,7 @@ function bindView(){
   v.querySelectorAll("[data-dtest]").forEach(b=>b.addEventListener("click",()=>openDTest(b.dataset.dtest)));
   v.querySelectorAll("[data-jump]").forEach(b=>b.addEventListener("click",e=>{ e.preventDefault(); const t=$("#day-"+b.dataset.jump); if(t) t.scrollIntoView({ behavior:"smooth", block:"start" }); }));
   v.querySelectorAll("[data-book]").forEach(b=>b.addEventListener("click",()=>openBook(+b.dataset.book)));
+  v.querySelectorAll("[data-bset]").forEach(b=>b.addEventListener("click",()=>openBookUpload(+b.dataset.bset)));
   const cp=$("#copyPhone");
   if(cp) cp.addEventListener("click",()=>{
     const done=()=>{ cp.textContent="Copied"; setTimeout(()=>{ if(cp.isConnected) cp.textContent="Copy number"; },2000); };
@@ -2671,15 +2680,49 @@ function openNotes(i){
   openModal(s.name+" · "+m.type, m.t, `<div class="protected"><ol class="notes">${NOTES[m.notes].map(x=>`<li><span class="m">${esc(x)}</span></li>`).join("")}</ol></div>
     <p class="hint">Ramanujan Class, Namakkal · ${m.date}</p>`);
 }
+/* Book soft copies: the teacher pastes a Google Drive link per book; stored in settings/books as { key:{ link, name, at } }. */
+const bookKey=b=>b.t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+const bookFile=b=>(app.bookFiles||{})[bookKey(b)]||null;
+const driveFid=l=>(/\/d\/([\w-]{10,})/.exec(l||"")||/[?&]id=([\w-]{10,})/.exec(l||"")||[])[1]||"";
+const driveDl=l=>{ const id=driveFid(l); return id?"https://drive.google.com/uc?export=download&id="+id:l; };
+const DL_ICON=`<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>`;
+function openBookUpload(i){
+  const b=BOOKS[i], f=bookFile(b);
+  openModal("Book Library · soft copy", b.t, `
+    <div class="form" style="display:flex;flex-direction:column;gap:12px">
+      <ol class="hint" style="margin:0;padding-left:18px">
+        <li>Upload the PDF to Google Drive (the infinitemath@ramanujanclass.org account).</li>
+        <li>In Drive, right-click the file → <b>Share</b> → <b>Copy link</b>.</li>
+        <li>Paste the link here and save. Students see a <b>Download</b> button under this book straight away.</li>
+      </ol>
+      <div class="field"><label for="bkLink">Google Drive link</label><input id="bkLink" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="https://drive.google.com/file/d/…/view" value="${esc(f?f.link:"")}"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" type="button" id="bkSave">Save link</button>${f?`<button class="btn danger" type="button" id="bkDel">Remove soft copy</button>`:""}</div>
+      <p class="status-line" id="bkMsg" role="status"></p>
+      <p class="hint" style="margin:0">The file is shared as "Anyone with the link can view" automatically within 15 minutes by the class Drive script, so it downloads for every student. Share only books you have the right to give students.</p>
+    </div>`);
+  const msg=t=>{ const m=$("#bkMsg"); if(m) m.textContent=t; };
+  const write=async map=>{ await app.db.doc("settings/books").set(map); app.bookFiles=map; render(); };
+  $("#bkSave").addEventListener("click",async()=>{
+    const link=$("#bkLink").value.trim();
+    if(!driveFid(link)){ msg("That doesn't look like a Google Drive file link. Copy it from Drive → Share → Copy link."); return; }
+    msg("Saving…");
+    try{ await write({ ...(app.bookFiles||{}), [bookKey(b)]:{ link, name:b.t, at:new Date().toISOString() } }); msg("Saved. Students can download it now."); setTimeout(closeModal,900); }
+    catch(e){ msg("Couldn't save just now. Check you're signed in as the teacher and try again."); }
+  });
+  const del=$("#bkDel"); if(del) del.addEventListener("click",()=>armButton(del,async()=>{
+    const map={ ...(app.bookFiles||{}) }; delete map[bookKey(b)];
+    try{ await write(map); closeModal(); }catch(e){ msg("Couldn't remove just now."); }
+  }));
+}
 function openBook(i){
-  const b=BOOKS[i], s=S[b.sid];
+  const b=BOOKS[i], s=S[b.sid], f=bookFile(b);
   openModal(s.name+" · "+b.lvl, b.t, `
     <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:18px;align-items:start">
       <div class="cover" style="background:${grad(s)};padding:12px 10px 10px 18px"><span class="glyph" style="font-size:44px">${esc(s.g)}</span><div class="ct" style="font-size:13px">${esc(b.t)}</div><div class="ca" style="font-size:9px">${esc(b.a)}</div></div>
       <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
         <div class="dl"><span>Author <b>${esc(b.a)}</b></span><span>Level <b>${b.lvl}</b></span>${b.pick?`<span><b>Class pick</b></span>`:""}</div>
         <p>${esc(b.why)}</p>
-        <p class="hint">Ask in class about borrowing a copy from the class library.</p>
+        ${f?`<div><a class="btn primary sm" href="${esc(driveDl(f.link))}" target="_blank" rel="noopener">${DL_ICON}Download soft copy</a></div>`:`<p class="hint">The soft copy will appear here once it is added. Ask in class about borrowing a printed copy.</p>`}
       </div>
     </div>`);
 }
@@ -2705,6 +2748,9 @@ function startListening(){
     const fromDb=s.docs.map(d=>({ id:d.id, ...d.data() }));
     app.tests=[...fromDb, ...BUILTIN_DTESTS.filter(b=>!fromDb.some(t=>t.id===b.id&&(t.questions||[]).length))]; refresh();
   },()=>{ app.tests=app.tests||BUILTIN_DTESTS.slice(); refresh(); });
+  on(app.db.doc("settings/books"),s=>{
+    app.bookFiles=s.exists?s.data():{}; if(ui.view==="books") render();
+  },()=>{ app.bookFiles=app.bookFiles||{}; });
   on(app.db.doc("settings/live"),s=>{
     app.live=s.exists?s.data():null; refresh();
   },()=>{});
@@ -2722,7 +2768,7 @@ function startListening(){
 }
 function stopListening(){
   unsubs.forEach(u=>{ try{ u(); }catch(e){} }); unsubs=[];
-  app.announcements=null; app.content=null; app.days=null; app.tests=null; app.live=null; app.roster=null; app.accounts=null; repStop();
+  app.announcements=null; app.content=null; app.days=null; app.tests=null; app.live=null; app.roster=null; app.accounts=null; app.bookFiles=null; repStop();
 }
 
 (async()=>{

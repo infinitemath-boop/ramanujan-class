@@ -69,7 +69,7 @@ function addNewVideos() {
   }
 }
 
-/** Also shares videos added by hand in the app (Admin → Drive link), so they play inside the app. */
+/** Also shares videos added by hand in the app (Admin → Drive link) and Book Library soft copies, so they play and download inside the app. */
 function shareAppVideos_() {
   if (!CONFIG.SHARE_PUBLIC_LINK) return;
   const props = PropertiesService.getScriptProperties();
@@ -78,8 +78,14 @@ function shareAppVideos_() {
     from: [{ collectionId: "content" }],
     where: { fieldFilter: { field: { fieldPath: "kind" }, op: "EQUAL", value: { stringValue: "video" } } }
   } };
-  (fs_("post", ":runQuery", body) || []).filter(r => r.document).forEach(r => {
-    const link = fromFields_(r.document.fields || {}).link || "";
+  const links = (fs_("post", ":runQuery", body) || []).filter(r => r.document).map(r => fromFields_(r.document.fields || {}).link || "");
+  // Book Library soft copies (settings/books: { bookKey: { link, name, at } }).
+  const books = fs_("get", "settings/books", null, true);
+  Object.values((books && books.fields) || {}).forEach(v => {
+    const f = (v.mapValue && v.mapValue.fields) || {};
+    if (f.link && f.link.stringValue) links.push(f.link.stringValue);
+  });
+  links.forEach(link => {
     const m = /\/d\/([\w-]{10,})/.exec(link) || /[?&]id=([\w-]{10,})/.exec(link);
     if (!m || done[m[1]]) return;
     try {
