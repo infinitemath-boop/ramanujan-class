@@ -435,7 +435,11 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
 .page-wrap canvas{display:block}
 .wm{position:absolute; inset:0; pointer-events:none; overflow:hidden; display:flex; flex-wrap:wrap; align-content:space-around; justify-content:space-around; gap:40px}
 .wm span{transform:rotate(-28deg); font-weight:700; font-size:14px; letter-spacing:.05em; white-space:nowrap; color:rgba(27,42,92,.13)}
-.vwrap .wm span{color:rgba(255,255,255,.16)}
+.vwrap .wm span{color:rgba(255,255,255,.07); font-size:12px}
+.vwrap:fullscreen,.vwrap:-webkit-full-screen{width:100vw; height:100vh; max-width:none; aspect-ratio:auto; border-radius:0}
+.vwrap.fake-fs{position:fixed; inset:0; z-index:9999; width:100vw; height:100dvh; max-width:none; aspect-ratio:auto; border-radius:0}
+.fs-exit{position:absolute; top:calc(10px + env(safe-area-inset-top,0px)); right:10px; z-index:3; width:40px; height:40px; border-radius:50%; border:0; background:rgba(0,0,0,.6); color:#fff; font-size:18px; cursor:pointer}
+body.no-scroll{overflow:hidden}
 .vwrap{position:relative; background:#000; border-radius:12px; overflow:hidden; aspect-ratio:16/9; max-width:100%}
 .vwrap video,.vwrap iframe{position:absolute; inset:0; width:100%; height:100%; background:#000; border:0}
 .vwrap .wm{inset:0 0 56px 0}
@@ -2303,6 +2307,8 @@ function openModal(eyebrow,title,body,wide){
 function closeModal(){
   const vid=$("#mBody video"); if(vid){ vid.pause(); vid.removeAttribute("src"); vid.load(); }
   $("#mBody").querySelectorAll("iframe").forEach(f=>f.remove());
+  document.body.classList.remove("no-scroll");
+  if(document.fullscreenElement&&document.exitFullscreen) document.exitFullscreen().catch(()=>{});
   if(pv.doc){ try{ pv.doc.destroy(); }catch(e){} pv.doc=null; }
   $("#mBody").innerHTML="";
   if(!$("#modal").hidden){ $("#modal").hidden=true; dt=null; if(app.session&&ui.view==="videos") render(); if(lastFocus&&lastFocus.focus&&lastFocus.isConnected) lastFocus.focus(); }
@@ -2321,7 +2327,7 @@ document.addEventListener("keydown",e=>{
 });
 function watermark(){
   const s=app.session; const t=(s.admin?"Preview · Ramanujan Class":s.name+" · "+(s.email||"")+" · Ramanujan Class");
-  return `<div class="wm" aria-hidden="true">${Array.from({length:12},()=>`<span>${esc(t)}</span>`).join("")}</div>`;
+  return `<div class="wm" aria-hidden="true">${Array.from({length:6},()=>`<span>${esc(t)}</span>`).join("")}</div>`;
 }
 
 /* PDF reader (pdf.js renders pages to canvas, so there is no download or print button) */
@@ -2389,10 +2395,12 @@ function openVideo(id){
       <div class="row-end">
         ${nxt?`<button class="btn ghost" id="nextLec">Next lecture</button>`:""}
         <button class="btn ghost" id="markW">${watched.has(id)?"Mark as not watched":"Mark as watched"}</button>
+        ${fid?`<button class="btn primary" data-fs>${svg("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")} Full screen</button>`:""}
         <a class="btn ${fid?"ghost":"primary"}" href="${esc(v.link)}" target="_blank" rel="noopener">${fid?"Open in Google Drive":svg("M7 4.5v15l13-7.5z")+" Watch in Google Drive"}</a>
       </div>`, true);
     $("#markW").addEventListener("click",()=>toggleWatched(id,true));
     if(nxt) $("#nextLec").addEventListener("click",()=>openVideo(nxt.id));
+    bindFullscreen();
     return;
   }
   openModal(s.name+" · Lecture "+(idx+1), v.title, `
@@ -2404,7 +2412,8 @@ function openVideo(id){
     <div class="dl"><span>Subject <b>${s.name}</b></span>${v.duration?`<span>Duration <b>${esc(v.duration)}</b></span>`:""}${parts.length>1?`<span>Parts <b>${parts.length}</b></span>`:""}</div>
     <div class="row-end">
       ${nxt?`<button class="btn ghost" id="nextLec">Next lecture</button>`:""}
-      <button class="btn primary" id="markW">${watched.has(id)?"Mark as not watched":"Mark as watched"}</button>
+      <button class="btn ghost" id="markW">${watched.has(id)?"Mark as not watched":"Mark as watched"}</button>
+      <button class="btn primary" data-fs>${svg("M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5")} Full screen</button>
     </div>
     <p class="lock-note">${LOCK}Streaming only. Downloading is turned off for this lecture.</p>`, true);
   const vid=$("#vid"); let cur=0;
@@ -2415,6 +2424,26 @@ function openVideo(id){
   vid.addEventListener("ended",()=>{ if(cur<parts.length-1) setPart(cur+1); else if(!watched.has(id)) toggleWatched(id,false); });
   $("#markW").addEventListener("click",()=>{ toggleWatched(id,true); });
   if(nxt) $("#nextLec").addEventListener("click",()=>openVideo(nxt.id));
+  bindFullscreen();
+}
+// Full screen for both Drive and uploaded lectures. Uses the real Fullscreen API (turning the phone sideways where allowed),
+// and falls back to filling the window on browsers that only allow full screen for <video> (iPhone).
+function bindFullscreen(){
+  const btn=$("#mBody [data-fs]"), wrap=$("#mBody .vwrap"); if(!btn||!wrap) return;
+  const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+  const exitFake=()=>{ wrap.classList.remove("fake-fs"); document.body.classList.remove("no-scroll"); const x=wrap.querySelector(".fs-exit"); if(x) x.remove(); };
+  btn.addEventListener("click",async()=>{
+    const req=wrap.requestFullscreen||wrap.webkitRequestFullscreen;
+    if(req){
+      try{ await req.call(wrap,{ navigationUI:"hide" }); try{ await screen.orientation.lock("landscape"); }catch(e){} return; }catch(e){}
+    }
+    const vid=wrap.querySelector("video"); if(vid&&vid.webkitEnterFullscreen){ try{ vid.webkitEnterFullscreen(); return; }catch(e){} }
+    wrap.classList.add("fake-fs"); document.body.classList.add("no-scroll");
+    const x=document.createElement("button"); x.className="fs-exit"; x.type="button"; x.setAttribute("aria-label","Exit full screen"); x.textContent="✕";
+    x.addEventListener("click",exitFake); wrap.appendChild(x);
+  });
+  const onChange=()=>{ if(!fsEl()){ try{ screen.orientation.unlock(); }catch(e){} } };
+  document.addEventListener("fullscreenchange",onChange); document.addEventListener("webkitfullscreenchange",onChange);
 }
 function toggleWatched(id,close){
   watched.has(id)?watched.delete(id):watched.add(id);
