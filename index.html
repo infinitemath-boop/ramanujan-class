@@ -1650,6 +1650,22 @@ function dayDate(D){
   if(D.info&&D.info.date){ const d=dParts(D.info.date); if(d) return d.full; }
   return D.videos[0]?classDateText(D.videos[0]):"";
 }
+// Daily test thumbnails are drawn in the app the first time a test is shown, so every test gets one automatically.
+const testThumbs=new Map(); let testThumbBusy=false;
+function testThumbKey(t){ return [t.id,t.questions.length,t.minutes||0,t.topic||""].join("|"); }
+function testThumb(t){
+  const k=testThumbKey(t); if(testThumbs.has(k)) return testThumbs.get(k);
+  if(!testThumbBusy){ testThumbBusy=true;
+    const M=dtMark(t), max=t.questions.reduce((a,q)=>a+(M[q.t]?.plus||3),0), neg=Math.abs(M.mcq.minus-2/3)<1e-9?"2/3":String(Math.round(M.mcq.minus*100)/100);
+    makeThumbBlob({ sid:t.sid, n:t.day, badge:"D"+t.day, big:"Daily Test", topic:t.topic||S[t.sid]?.name||"",
+      date:"Day "+t.day+" · "+t.questions.length+" questions"+(t.minutes?" · "+t.minutes+" min":""),
+      extra:Math.round(max*100)/100+" marks · −"+neg+" for a wrong answer",
+      course:(app.live&&app.live.title?String(app.live.title).replace(/\s*·.*$/,"").replace(/\s*20\d\d\s*$/,""):"")||"CSIR NET Foundation Course" })
+    .then(b=>{ testThumbs.set(k,URL.createObjectURL(b)); }).catch(()=>{ testThumbs.set(k,""); })
+    .finally(()=>{ testThumbBusy=false; if(app.session&&ui.view==="videos") render(); });
+  }
+  return "";
+}
 function stepHTML(kind,ico,title,meta,done,btn){
   return `<li class="step ${done?"done":""}">
     <div class="ico" style="background:${ico.bg}">${ico.img?`<img src="${ico.img}" alt="" loading="lazy" onerror="this.remove()">`:""}<span>${esc(ico.label||"")}</span></div>
@@ -1663,7 +1679,7 @@ function dayCard(D,s){
   D.videos.forEach(v=>{ const w=tick(watched.has(v.id)); steps.push(stepHTML("Video",{ bg:grad(s), img:v.thumb&&/^[a-f0-9]{32}$/.test(v.thumb)?blobUrl(v.thumb):"", label:"▶" },v.title,[(v.parts||[]).length>1?v.parts.length+" parts":"",v.link&&!(v.parts||[]).length?"Google Drive":"",v.duration||""].filter(Boolean).join(" · "),w,`<button class="btn ${w?"ghost":"primary"} sm" data-play="${esc(v.id)}">${w?"Watch again":"Watch"}</button>`)); });
   D.pdfs.forEach(p=>{ const d=tick(o.has(p.id)); steps.push(stepHTML("PDF · "+esc(p.type||"Material"),{ bg:TYPE_COLOR[p.type]||"#1d3a8f", label:TYPE_ABBR[p.type]||"PDF" },p.title,p.pages?p.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" data-pdf="${esc(p.id)}">Read</button>`)); });
   D.notes.forEach(n=>{ const d=tick(o.has(n.id)); steps.push(stepHTML("Notes",{ bg:"#0f6b62", label:"NOTES" },n.title,n.kind==="pdf"&&n.pages?n.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" ${n.kind==="note"?`data-note="${esc(n.id)}"`:`data-pdf="${esc(n.id)}"`}>Read</button>`)); });
-  if(D.test){ const res=r[tid], d=tick(!!res); steps.push(stepHTML("Daily test",{ bg:"#b8740a", label:"TEST" },"Day "+D.day+" daily test",D.test.questions.length+" questions"+(D.test.minutes?" · "+D.test.minutes+" min":"")+(res?` · Your score ${fmtM(res.score)} / ${res.max}`:""),d,`<button class="btn ${d?"ghost":"primary"} sm" data-dtest="${esc(tid)}">${d?"Review":"Start test"}</button>`)); }
+  if(D.test){ const res=r[tid], d=tick(!!res), timg=testThumb(D.test); steps.push(stepHTML("Daily test",{ bg:"#b8740a", img:timg, label:timg?"":"TEST" },"Day "+D.day+" daily test",D.test.questions.length+" questions"+(D.test.minutes?" · "+D.test.minutes+" min":"")+(res?` · Your score ${fmtM(res.score)} / ${res.max}`:""),d,`<button class="btn ${d?"ghost":"primary"} sm" data-dtest="${esc(tid)}">${d?"Review":"Start test"}</button>`)); }
   else steps.push(stepHTML("Daily test",{ bg:"#8a8f9c", label:"TEST" },"Day "+D.day+" daily test","Not posted yet",false,""));
   if(!D.pdfs.length&&!D.notes.length) steps.splice(D.videos.length,0,stepHTML("PDF & notes",{ bg:"#8a8f9c", label:"PDF" },"Study material for Day "+D.day,"None for this day yet",false,""));
   return `<section class="day" id="day-${D.day}">
@@ -2075,12 +2091,12 @@ async function makeThumbBlob(o){ // o: { sid, n, date, extra, topic }
   fitFont(g,"Ramanujan Class, Namakkal","700",UI,46,MAXW); g.fillStyle="#f2b237"; g.fillText("Ramanujan Class, Namakkal",X,112);
   g.fillStyle="rgba(242,178,55,.7)"; g.fillRect(X,132,420,2);
   fitFont(g,o.course,"600",UI,40,MAXW); g.fillStyle="#ffffff"; g.fillText(o.course,X,192);
-  const big=UNIT[o.sid]||"Mathematics"; fitFont(g,big,"700",UI,150,MAXW); g.fillStyle="#eef1f8"; g.fillText(big,X,345);
+  const big=o.big||UNIT[o.sid]||"Mathematics"; fitFont(g,big,"700",UI,150,MAXW); g.fillStyle="#eef1f8"; g.fillText(big,X,345);
   const sub=o.topic||(S[o.sid]?.name||""); if(sub&&sub!==big){ fitFont(g,sub,"600",UI,48,MAXW); g.fillStyle="#ffffff"; g.fillText(sub,X,420); }
   // lecture badge
   g.beginPath(); g.arc(X+64,540,64,0,Math.PI*2); g.fillStyle="#f2b237"; g.fill();
   g.beginPath(); g.arc(X+64,540,56,0,Math.PI*2); g.strokeStyle="#1c1400"; g.lineWidth=3; g.stroke();
-  const lt="L"+o.n; fitFont(g,lt,"700",UI,62,100); g.fillStyle="#1c1400"; g.textAlign="center"; g.fillText(lt,X+64,562); g.textAlign="left";
+  const lt=o.badge||"L"+o.n; fitFont(g,lt,"700",UI,62,100); g.fillStyle="#1c1400"; g.textAlign="center"; g.fillText(lt,X+64,562); g.textAlign="left";
   fitFont(g,o.date,"700",UI,42,MAXW-170); g.fillStyle="#ffffff"; g.fillText(o.date,X+156,532);
   if(o.extra){ fitFont(g,o.extra,"600",UI,32,MAXW-170); g.fillStyle="#f6c766"; g.fillText(o.extra,X+156,580); }
   g.font=`600 26px ${UI}`; g.fillStyle="#f6c766"; g.fillText("The IITian Hub: Mastering Competitive Math",X,664);
