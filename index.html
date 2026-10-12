@@ -759,7 +759,7 @@ const R = String.raw;
 const MARK = { mcq:{ plus:3, minus:0.75 }, msq:{ plus:4.75 } };
 // Daily tests written into the app. A test the teacher saves in Admin with the same id (subject-dDay) replaces it.
 const BUILTIN_DTESTS = [
-  { id:"alg-d5", sid:"alg", day:5, minutes:20, mcqPlus:3, mcqMinus:2/3,
+  { id:"alg-d5", sid:"alg", day:5, minutes:40, mcqPlus:3, mcqMinus:2/3,
     topic:"Homomorphisms, Isomorphisms and Permutation Groups", level:"GATE · CSIR NET",
     questions:[
       { t:"mcq", q:R`The number of group homomorphisms from \(S_3\) to \(\Z_6\) is`,
@@ -791,7 +791,16 @@ const BUILTIN_DTESTS = [
         s:R`\(S_4/N\) is abelian iff \(N\supseteq[S_4,S_4]=A_4\). The normal subgroups of \(S_4\) are \(\{e\},V_4,A_4,S_4\); only \(A_4\) and \(S_4\) contain \(A_4\). Hence \(2\).` },
       { t:"mcq", q:R`The number of group homomorphisms from \(S_4\) <b>onto</b> \(S_3\) is`,
         o:[R`\(1\)`,R`\(3\)`,R`\(6\)`,R`\(24\)`], a:2,
-        s:R`The kernel is a normal subgroup of order \(24/6=4\), so it is \(V_4\), and \(S_4/V_4\cong S_3\). Each onto map is \(S_4\to S_4/V_4\cong S_3\) followed by an automorphism of \(S_3\), and \(|\operatorname{Aut}S_3|=6\). Hence \(6\).` }
+        s:R`The kernel is a normal subgroup of order \(24/6=4\), so it is \(V_4\), and \(S_4/V_4\cong S_3\). Each onto map is \(S_4\to S_4/V_4\cong S_3\) followed by an automorphism of \(S_3\), and \(|\operatorname{Aut}S_3|=6\). Hence \(6\).` },
+      { t:"msq", q:R`<i>CSIR NET pattern.</i> Which of the following statements about the symmetric group \(S_5\) are true?`,
+        o:[R`\(S_5\) has a subgroup of order \(20\)`,R`\(S_5\) has a subgroup of order \(30\)`,R`\(S_5\) has an element of order \(6\)`,R`\(S_5\) has a normal subgroup of order \(60\)`], a:[0,2,3],
+        s:R`(A) True: \(P=\langle(1\,2\,3\,4\,5)\rangle\) has \(n_5=6\), so \(|N_{S_5}(P)|=120/6=20\). (B) False: a group of order \(30\) has a normal Sylow \(5\)-subgroup \(P\), so it would lie in \(N_{S_5}(P)\) of order \(20\). (C) True: \((1\,2)(3\,4\,5)\). (D) True: \(A_5\trianglelefteq S_5\).` },
+      { t:"msq", q:R`<i>CSIR NET pattern.</i> Which of the following statements are true?`,
+        o:[R`There is a non-trivial homomorphism from \(\Z_{15}\) to \(S_4\)`,R`There is an injective homomorphism from \(\Z_8\) to \(S_7\)`,R`There is a homomorphism from \(\Z_{12}\) onto \(\Z_4\)`,R`There is a non-trivial homomorphism from \(S_3\) to \(\Z_3\)`], a:[0,2],
+        s:R`(A) True: send \(1\mapsto(1\,2\,3)\), whose order \(3\) divides \(15\). (B) False: an element of order \(8\) in \(S_n\) needs an \(8\)-cycle, so \(n\ge8\). (C) True: reduction mod \(4\). (D) False: \(\Z_3\) is abelian, so the map factors through \(S_3/A_3\cong\Z_2\), and \(\operatorname{Hom}(\Z_2,\Z_3)\) is trivial.` },
+      { t:"msq", q:R`<i>CSIR NET pattern.</i> Which of the following pairs of groups are isomorphic?`,
+        o:[R`\((\mathbb{R},+)\) and \((\mathbb{R}_{>0},\times)\)`,R`\((\Q,+)\) and \((\Q_{>0},\times)\)`,R`\(\Z_2\times\Z_8\) and \(\Z_4\times\Z_4\)`,R`\(S_3\times\Z_2\) and the dihedral group \(D_6\) of order \(12\)`], a:[0,3],
+        s:R`(A) True: \(x\mapsto e^x\). (B) False: \((\Q,+)\) is divisible, but \(2\in\Q_{>0}\) is not a square in \(\Q_{>0}\). (C) False: \(\Z_2\times\Z_8\) has an element of order \(8\); \(\Z_4\times\Z_4\) does not. (D) True: \(D_6\cong D_3\times\Z_2\cong S_3\times\Z_2\), since the rotation by \(\pi\) is central and generates a complement to a copy of \(D_3\).` }
     ] }
 ];
 
