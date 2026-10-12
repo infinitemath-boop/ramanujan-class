@@ -463,6 +463,21 @@ body.no-scroll{overflow:hidden}
 @media (max-width:480px){.form-row{grid-template-columns:minmax(0,1fr)}}
 .check{display:flex; gap:8px; align-items:center; font-size:14px}
 .tblwrap{overflow-x:auto}
+#repSum{display:flex; flex-direction:column; gap:12px}
+#repSum .panel-head{margin:0}
+.rep-filter{display:flex; gap:6px; flex-wrap:wrap}
+.rep-card{border:1px solid var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px}
+.rep-top{display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:14px}
+.rep-card .tally{gap:16px}
+.rep-card .tally b{font-size:20px}
+.rep-card .tally small{font-size:12px; color:var(--muted)}
+.rep-bar{height:6px; border-radius:99px; background:var(--line); overflow:hidden}
+.rep-bar span{display:block; height:100%; background:var(--primary)}
+.rep-tbl th small{display:block; font-weight:400; text-transform:none; letter-spacing:0}
+.rep-tbl td{white-space:nowrap; font-variant-numeric:tabular-nums}
+.rep-c{font-weight:600; text-align:center; cursor:help}
+.rep-c.good{color:var(--ok)} .rep-c.mid{color:var(--ink)} .rep-c.low{color:var(--bad)}
+.rep-na{color:var(--muted); text-align:center}
 table{width:100%; border-collapse:collapse; font-size:14px}
 th{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:left; font-weight:600; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap}
 td{padding:10px; border-bottom:1px solid var(--line); vertical-align:middle}
@@ -1749,7 +1764,7 @@ function chip(key,val,label){ return `<button class="chip" data-chip="${key}" da
 
 /* ================= ADMIN ================= */
 function vAdmin(){
-  const tabs=[["students","Students & activation"],["announcements","Announcements"],["uploads","PDFs, videos & notes"],["days","Days & daily tests"]];
+  const tabs=[["students","Students & activation"],["announcements","Announcements"],["uploads","PDFs, videos & notes"],["days","Days & daily tests"],["reports","Test reports"]];
   let form="";
   if(ui.admTab==="students") form=`
     <form class="panel form" id="fStudent" novalidate>
@@ -1866,6 +1881,7 @@ function vAdmin(){
       <p class="status-line" id="tMsg" role="status"></p>
     </div>`;
   }
+  if(ui.admTab==="reports") form=`<section class="panel" id="repSum"></section>`;
   return `
   <div class="adm-tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-adm="${k}" aria-selected="${ui.admTab===k}">${l}</button>`).join("")}</div>
   <div class="adm-grid">${form}<section class="panel" id="admList"></section></div>`;
@@ -1949,8 +1965,89 @@ function armButton(btn,fn){
   const label=btn.textContent; btn.classList.add("armed"); btn.textContent="Confirm";
   setTimeout(()=>{ if(btn.isConnected){ btn.classList.remove("armed"); btn.textContent=label; } },4000);
 }
+/* Test reports: live summary of daily and weekly test results (results/{testId}/entries/{uid}). */
+let repSubs={};
+function repTests(){
+  const daily=(app.tests||[]).filter(t=>(t.questions||[]).length).map(t=>{
+    const M=dtMark(t), max=Math.round(t.questions.reduce((a,q)=>a+(M[q.t]?.plus||3),0)*100)/100;
+    return { id:t.id, kind:"daily", sid:t.sid, day:+t.day||0, max, short:"D"+(t.day||"?")+" "+(({alg:"Alg",ana:"Ana",lin:"Lin",cpx:"Cpx",de:"DE",prob:"Prob",num:"NT"})[t.sid]||t.sid||""),
+      title:(S[t.sid]?.name||"")+" · Day "+(t.day||"?")+(t.topic?" · "+t.topic:"") };
+  }).sort((a,b)=>String(a.sid).localeCompare(String(b.sid))||a.day-b.day);
+  const weekly=(window.weeklyTests?window.weeklyTests():[]).map((t,i)=>({ ...t, kind:"weekly", short:"WT"+(i+1) }));
+  return [...daily,...weekly];
+}
+function repWatch(){
+  if(!app.isAdmin||!app.db) return;
+  repTests().forEach(t=>{
+    if(repSubs[t.id]) return;
+    app.reports=app.reports||{}; repSubs[t.id]=()=>{};
+    repSubs[t.id]=app.db.collection("results/"+t.id+"/entries").limit(1000).onSnapshot(s=>{
+      app.reports[t.id]=s.docs.map(d=>({ uid:d.id, ...d.data() })); app.reportsAt=new Date();
+      if(ui.view==="admin"&&ui.admTab==="reports") fillAdminList();
+    },()=>{ app.reports[t.id]=app.reports[t.id]||[]; if(ui.view==="admin"&&ui.admTab==="reports") fillAdminList(); });
+  });
+}
+function repStop(){ Object.values(repSubs).forEach(u=>{ try{ u(); }catch(e){} }); repSubs={}; app.reports=null; }
+function repData(){
+  const tests=repTests(), R0=app.reports||{}, f2=n=>String(Math.round(n*100)/100);
+  const kinds=ui.repKind||"all", shown=tests.filter(t=>kinds==="all"||t.kind===kinds);
+  const people={};
+  (app.accounts||[]).forEach(a=>{ people[a.id]={ uid:a.id, name:a.name||a.id, active:accountState(a).ok, res:{} }; });
+  tests.forEach(t=>(R0[t.id]||[]).forEach(e=>{
+    const p=people[e.uid]||(people[e.uid]={ uid:e.uid, name:e.name||"Student", active:true, res:{} });
+    p.res[t.id]=e;
+  }));
+  const list=Object.values(people).filter(p=>p.active||Object.keys(p.res).length);
+  const pct=(e,t)=>t.max?100*e.score/t.max:0;
+  list.forEach(p=>{ const done=shown.filter(t=>p.res[t.id]); p.taken=done.length; p.avg=done.length?done.reduce((a,t)=>a+pct(p.res[t.id],t),0)/done.length:null; p.total=done.reduce((a,t)=>a+(+p.res[t.id].score||0),0); });
+  list.sort((a,b)=>(b.taken?b.total:-1e9)-(a.taken?a.total:-1e9)||String(a.name).localeCompare(String(b.name)));
+  const sum=shown.map(t=>{
+    const es=(R0[t.id]||[]), sc=es.map(e=>e.score);
+    return { t, loaded:!!R0[t.id], n:es.length, avg:sc.length?sc.reduce((a,b)=>a+b,0)/sc.length:null, hi:sc.length?Math.max(...sc):null, lo:sc.length?Math.min(...sc):null,
+      top:es.slice().sort((a,b)=>b.score-a.score||(a.timeSec||0)-(b.timeSec||0))[0] };
+  });
+  return { tests, shown, list, sum, pct, f2, total:list.length };
+}
+function repCSV(){
+  const { shown, list, f2 }=repData(), q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const rows=[["Student",...shown.map(t=>t.short+" (/"+t.max+")"),"Tests taken","Total","Average %"]];
+  list.forEach(p=>rows.push([p.name,...shown.map(t=>p.res[t.id]?f2(p.res[t.id].score):""),p.taken,p.taken?f2(p.total):"",p.avg==null?"":f2(p.avg)]));
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\ufeff"+rows.map(r=>r.map(q).join(",")).join("\r\n")],{type:"text/csv"}));
+  a.download="ramanujan-class-test-report-"+todayStr()+".csv"; document.body.appendChild(a); a.click(); a.remove();
+}
+function fillReports(){
+  repWatch();
+  const side=$("#repSum"), el=$("#admList"); if(!side||!el) return;
+  const { shown, list, sum, pct, f2, total }=repData(), kind=ui.repKind||"all";
+  const when=app.reportsAt?app.reportsAt.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }):"";
+  side.innerHTML=`<div class="panel-head"><h3>Test summary</h3><span class="hint">${when?"Live · updated "+when:"Loading…"}</span></div>
+    <div class="rep-filter" role="group" aria-label="Show tests">${[["all","All tests"],["daily","Daily"],["weekly","Weekly"]].map(([k,l])=>`<button type="button" class="chip" data-repk="${k}" aria-pressed="${kind===k}">${l}</button>`).join("")}</div>
+    ${!sum.length?`<div class="empty"><b>No tests yet</b>Daily tests you build in Days & daily tests appear here.</div>`:sum.map(r=>`
+    <article class="rep-card">
+      <div class="rep-top"><span class="pill ${r.t.kind==="weekly"?"blue":"soft"}">${r.t.kind==="weekly"?"Weekly":"Daily"}</span><b>${esc(r.t.title)}</b></div>
+      ${!r.loaded?`<p class="hint">Loading…</p>`:!r.n?`<p class="hint">No one has taken this test yet.</p>`:`
+      <div class="tally"><div><b>${r.n}<small>/${total}</small></b>Attempted</div><div><b>${f2(r.avg)}</b>Average</div><div><b>${f2(r.hi)}</b>Highest</div><div><b>${f2(r.lo)}</b>Lowest</div></div>
+      <div class="rep-bar" title="Class average ${f2(100*r.avg/r.t.max)}%"><span style="width:${Math.max(0,Math.min(100,100*r.avg/r.t.max))}%"></span></div>
+      <p class="hint" style="margin:0">Out of ${r.t.max} · average ${f2(100*r.avg/r.t.max)}% · top: ${esc(r.top?.name||"")}</p>`}
+    </article>`).join("")}
+    <button class="btn ghost sm" type="button" id="repCsv" style="align-self:flex-start" ${list.length&&shown.length?"":"disabled"}>Download report (CSV)</button>
+    <p class="hint" style="margin:0">Each student's best attempt counts. Scores appear here the moment a student submits.</p>`;
+  const cell=(p,t)=>{ const e=p.res[t.id]; if(!e) return `<td class="rep-na">—</td>`;
+    const v=pct(e,t), c=v>=60?"good":v>=35?"mid":"low";
+    return `<td class="rep-c ${c}" title="${esc(p.name)} · ${esc(t.short)}: ${f2(e.score)} / ${t.max}, ${e.correct||0} right, ${e.wrong||0} wrong${e.attempts>1?", "+e.attempts+" attempts":""}">${f2(e.score)}</td>`; };
+  el.innerHTML=`<div class="panel-head"><h3>Student progress</h3><span class="hint">${list.length} students · ${shown.length} tests</span></div>
+    ${app.accounts===null?`<p class="hint">Loading…</p>`:!list.length?`<div class="empty"><b>No students yet</b>Results show here once students take a test.</div>`:`
+    <div class="tblwrap"><table class="rep-tbl"><thead><tr><th>#</th><th>Student</th>${shown.map(t=>`<th title="${esc(t.title)} (out of ${t.max})">${esc(t.short)}<small>/${t.max}</small></th>`).join("")}<th>Taken</th><th>Total</th><th>Avg %</th></tr></thead><tbody>
+    ${list.map((p,i)=>`<tr><td>${p.taken?i+1:""}</td><td><b>${esc(p.name)}</b></td>${shown.map(t=>cell(p,t)).join("")}<td>${p.taken}/${shown.length}</td><td><b>${p.taken?f2(p.total):"—"}</b></td><td><b>${p.avg==null?"—":f2(p.avg)}</b></td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="hint">Green is 60% or more, red is below 35%. A dash means not attempted. Students are ranked by total marks. Tap a score to see right and wrong counts.</p>`}`;
+  side.querySelectorAll("[data-repk]").forEach(b=>b.addEventListener("click",()=>{ ui.repKind=b.dataset.repk; fillReports(); }));
+  const cs=$("#repCsv"); if(cs) cs.addEventListener("click",repCSV);
+}
 function fillAdminList(){
   const el=$("#admList"); if(!el) return;
+  if(ui.admTab==="reports"){ fillReports(); return; }
   if(ui.admTab==="students"){
     const rows=app.accounts;
     el.innerHTML=`<div class="panel-head"><h3>Students</h3><span class="hint">${rows?rows.filter(r=>accountState(r).ok).length+" active of "+rows.length:""}</span></div>
@@ -2486,6 +2583,17 @@ function gradeDT(){
   });
   return { score:Math.round(score*100)/100, max:Math.round(max*100)/100, correct, wrong, n:dt.t.questions.length };
 }
+/* Each student's best daily-test attempt also goes to Firestore, for the teacher's Test reports. */
+async function saveDTResult(t,g,timeSec){
+  if(!app.session||app.session.admin||!app.db) return;
+  const rec={ name:String(app.session.name||"Student").slice(0,60), score:g.score, max:g.max, correct:g.correct, wrong:g.wrong, n:g.n, timeSec, at:new Date().toISOString() };
+  try{
+    const ref=app.db.doc("results/"+t.id+"/entries/"+app.session.u), prev=await ref.get(), p=prev.exists?prev.data():null;
+    const attempts=(p&&p.attempts||0)+1;
+    const better=!p||rec.score>p.score||(rec.score===p.score&&timeSec&&timeSec<(p.timeSec||1e9));
+    await ref.set(better?{ ...rec, attempts }:{ ...p, name:rec.name, attempts });
+  }catch(e){}
+}
 function dtCard(q,i){
   const msq=q.t==="msq", s=dt.sel[i], sub=dt.submitted;
   const isA=k=>msq?(q.a||[]).includes(k):q.a===k;
@@ -2524,7 +2632,7 @@ function renderDT(){
     const un=dt.sel.filter(s=>!s.length).length, c=$("#dtCount"); if(c) c.textContent=un?un+" unanswered":"All answered";
   }));
   const sb=$("#dtSubmit");
-  const go=()=>{ if(!dt||dt.t.id!==t.id||dt.submitted) return; dt.submitted=true; clearInterval(dtTick); store.del(dtStartKey(t)); const g=gradeDT(); const all=dres(); all[t.id]={ ...g, sel:dt.sel, at:new Date().toISOString() };
+  const go=()=>{ if(!dt||dt.t.id!==t.id||dt.submitted) return; dt.submitted=true; clearInterval(dtTick); const t0=store.get(dtStartKey(t),0); store.del(dtStartKey(t)); const g=gradeDT(); saveDTResult(t,g,t0?Math.round((Date.now()-t0)/1000):0); const all=dres(); all[t.id]={ ...g, sel:dt.sel, at:new Date().toISOString() };
       store.set("rc-dtest-"+app.session.u,all); renderDT(); if(ui.view==="videos") render(); };
   clearInterval(dtTick);
   if(t.minutes&&!dt.submitted){
@@ -2600,7 +2708,7 @@ function startListening(){
 }
 function stopListening(){
   unsubs.forEach(u=>{ try{ u(); }catch(e){} }); unsubs=[];
-  app.announcements=null; app.content=null; app.days=null; app.tests=null; app.live=null; app.roster=null; app.accounts=null;
+  app.announcements=null; app.content=null; app.days=null; app.tests=null; app.live=null; app.roster=null; app.accounts=null; repStop();
 }
 
 (async()=>{

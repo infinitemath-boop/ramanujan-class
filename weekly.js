@@ -232,6 +232,7 @@ function bind(el){
 }
 window.vWeekly=vWeekly;
 window.bindWeekly=()=>{ const el=$("#wk"); if(el){ bind(el); typeset(el); } };
+window.weeklyTests=()=>WEEKLY.map(t=>({ id:t.id, sid:t.sid, max:maxOf(t), title:t.title }));
 window.weeklyTitle=()=>WEEKLY[WEEKLY.length-1].title;
 window.weeklyFacts=()=>{ const t=WEEKLY[WEEKLY.length-1]; return `${t.qs.length} questions · ${t.minutes} minutes · ${maxOf(t)} marks · MCQ + MSQ · batch rank list`; };
 })();
