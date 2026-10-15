@@ -2377,9 +2377,10 @@ function openVideo(id){
 }
 // Board view for Drive class recordings: crops the 1920x1080 Meet frame to the Xournal++ page (no toolbars, no black bands,
 // no presenter tile) so the writing fills the player. The crop is [x0,y0,x1,y1] in recording pixels; a lecture doc can carry
-// its own "crop" field. On by default from Algebra Day 7; each student's choice per lecture is remembered.
+// its own "crop" field ("crop": false turns it off for that lecture). On by default for every Drive recording, past and
+// future; each student's choice per lecture is remembered.
 const BOARD_CROP=[0,264,1416,878];
-const boardDefault=v=>Array.isArray(v.crop)||(v.sid==="alg"&&+v.day>=7);
+const boardDefault=v=>v.crop!==false;
 function bindBoard(v){
   const wrap=$("#mBody .vwrap"), btn=$("#mBody [data-board]"), seek=$("#mBody [data-seek]"); if(!wrap||!btn) return;
   const crop=Array.isArray(v.crop)&&v.crop.length===4?v.crop.map(Number):BOARD_CROP, key="rc-board-"+v.id;
