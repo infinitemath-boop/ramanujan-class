@@ -456,6 +456,11 @@ body.no-scroll{overflow:hidden}
 .vwrap.board:fullscreen .vcrop,.vwrap.board:-webkit-full-screen .vcrop,.vwrap.board.fake-fs .vcrop{width:min(100cqw,100cqh * var(--ar)); height:min(100cqh,100cqw / var(--ar))}
 .vwrap .vctl{position:absolute; left:8px; top:8px; z-index:3; border:0; border-radius:999px; padding:6px 10px; font-size:12px; font-weight:600; background:rgba(0,0,0,.6); color:#fff; cursor:pointer}
 .vwrap:not(.board) .vctl{display:none}
+.vwrap .vposter{position:absolute; inset:0; z-index:4; padding:0; border:0; background:none; cursor:pointer; display:block}
+.vwrap .vposter .thumb{height:100%; aspect-ratio:auto; box-sizing:border-box; border-radius:0}
+.vwrap .vposter .play{opacity:1; transform:none; width:64px; height:64px; margin:-32px 0 0 -32px}
+.vwrap.poster.board{aspect-ratio:16/9}
+.vwrap.poster .vcrop,.vwrap.poster .vctl{visibility:hidden}
 .parts{display:flex; gap:8px; flex-wrap:wrap}
 .loading{color:var(--muted); padding:40px 0; text-align:center}
 .notes{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:8px}
@@ -2335,7 +2340,7 @@ function openVideo(id){
   if(!parts.length&&v.link){
     const fid=(/\/d\/([\w-]{10,})/.exec(v.link)||/[?&]id=([\w-]{10,})/.exec(v.link)||[])[1];
     openModal(s.name+" · Lecture "+(idx+1), v.title, `
-      ${fid?`<div class="vwrap protected"><div class="vcrop"><iframe src="https://drive.google.com/file/d/${esc(fid)}/preview" allow="autoplay; fullscreen" allowfullscreen title="${esc(v.title)}"></iframe></div><button class="vctl" type="button" data-seek>Show seek bar</button>${watermark()}</div>`
+      ${fid?`<div class="vwrap protected poster"><div class="vcrop"><iframe data-src="https://drive.google.com/file/d/${esc(fid)}/preview" allow="autoplay; fullscreen" allowfullscreen title="${esc(v.title)}"></iframe></div><button class="vctl" type="button" data-seek>Show seek bar</button><button class="vposter" type="button" aria-label="Play ${esc(v.title)}">${thumb(v,idx+1)}</button>${watermark()}</div>`
         :`<div class="player" style="position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden">${thumb(v,idx+1)}</div>`}
       <div class="dl"><span>Subject <b>${s.name}</b></span><span>Source <b>Google Drive class recording</b></span>${v.duration?`<span>Duration <b>${esc(v.duration)}</b></span>`:""}</div>
       <p class="hint">${fid?"If the video doesn't start, open it in Google Drive.":"This recording plays in Google Drive. Sign in with the Google account Ramanujan Class gave access to."}</p>
@@ -2349,12 +2354,13 @@ function openVideo(id){
     $("#markW").addEventListener("click",()=>toggleWatched(id,true));
     if(nxt) $("#nextLec").addEventListener("click",()=>openVideo(nxt.id));
     if(fid) bindBoard(v);
+    if(fid) bindPoster();
     bindFullscreen();
     return;
   }
   openModal(s.name+" · Lecture "+(idx+1), v.title, `
     <div class="vwrap protected">
-      <video id="vid" controls controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture disableremoteplayback playsinline preload="metadata"></video>
+      <video id="vid" controls controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture disableremoteplayback playsinline preload="metadata"${v.thumb&&/^[a-f0-9]{32}$/.test(v.thumb)?` poster="${blobUrl(v.thumb)}"`:""}></video>
       ${watermark()}
     </div>
     ${parts.length>1?`<div class="parts">${parts.map((p,i)=>`<button class="btn ${i===0?"primary":"ghost"} sm" data-part="${i}">Part ${i+1}</button>`).join("")}</div>`:""}
@@ -2396,6 +2402,14 @@ function bindBoard(v){
   btn.addEventListener("click",()=>{ on=!on; store.set(key,on); apply(); });
   if(seek) seek.addEventListener("click",()=>{ full=!full; apply(); });
   apply();
+}
+// The lecture's thumbnail is shown on the player when a class is opened; tapping it (or Full screen) loads the Drive player.
+function bindPoster(){
+  const wrap=$("#mBody .vwrap.poster"); if(!wrap) return;
+  const start=()=>{ if(!wrap.classList.contains("poster")) return; const f=wrap.querySelector("iframe[data-src]");
+    if(f) f.src=f.dataset.src; wrap.classList.remove("poster"); const p=wrap.querySelector(".vposter"); if(p) p.remove(); };
+  wrap.querySelector(".vposter").addEventListener("click",start);
+  const fs=$("#mBody [data-fs]"); if(fs) fs.addEventListener("click",start);
 }
 // Full screen for both Drive and uploaded lectures. Uses the real Fullscreen API (turning the phone sideways where allowed),
 // and falls back to filling the window on browsers that only allow full screen for <video> (iPhone).
