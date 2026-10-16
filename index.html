@@ -2001,7 +2001,10 @@ async function adminAction(act,id,btn){
     if(act==="delContent") armButton(btn,async()=>{
       const c=app.content.find(x=>x.id===id);
       for(const aid of (c.parts||[])){ try{ await app.assets.delete(aid); }catch(e){} }
-      await db.doc("content/"+id).delete(); listMsg("Deleted “"+c.title+"”.");
+      // A recording added by the Drive script is kept as a hidden "removed" record, so the script doesn't add it back.
+      if(id.startsWith("drive_")) await db.doc("content/"+id).update({ removed:true, thumb:"" });
+      else await db.doc("content/"+id).delete();
+      listMsg("Deleted “"+c.title+"”.");
     });
   }catch(e){ listMsg("That change didn't save. Check your connection and try again."); }
 }
@@ -2704,7 +2707,7 @@ function startListening(){
     app.live=s.exists?s.data():null; refresh();
   },()=>{});
   on(app.db.collection("content").orderBy("createdAt","desc").limit(500),s=>{
-    app.content=s.docs.map(d=>({ id:d.id, ...d.data() })); refresh(); autoThumbs();
+    app.content=s.docs.map(d=>({ id:d.id, ...d.data() })).filter(c=>!c.removed); refresh(); autoThumbs();
   },()=>{ app.content=app.content||[]; refresh(); });
   if(app.isAdmin){
     on(app.db.collection("roster").limit(1000),s=>{
