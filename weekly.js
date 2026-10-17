@@ -169,7 +169,7 @@ const WEEKLY = [{
 },{
   id:"wt2-algebra", title:"Weekly Test 2 · Abstract Algebra", sid:"alg", date:"17 Oct 2026",
   syllabus:"Classes of 12–16 Oct: Quotient Groups · Homomorphisms & Permutation Groups · Dihedral, Q8 & Sylow · Rings · Ideals & Quotient Rings",
-  minutes:90, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
+  minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
   note:R`\(\Z_n\): integers mod \(n\); \(D_n\): dihedral group of order \(2n\); \(Q_8\): quaternion group; \(\F_q\): field with \(q\) elements. Ring homomorphisms need not send \(1\) to \(1\) unless stated.`,
   qs:Q2
 }];
