@@ -1,6 +1,6 @@
 // Keeps the app shell available offline. Class data always comes live from Firebase.
-const CACHE = "rc-shell-v29";
-const SHELL = ["./", "index.html", "firebase-config.js","weekly.js","dtests.js","practice.js", "logo.png", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+const CACHE = "rc-shell-v30";
+const SHELL = ["./", "index.html", "firebase-config.js","weekly.js","dtests.js","notes.js","practice.js", "logo.png", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

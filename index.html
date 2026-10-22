@@ -122,6 +122,7 @@ window.MathJax = {
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
 <script src="dtests.js"></script>
+<script src="notes.js"></script>
 <script src="practice.js"></script>
 <style>
 /* Layout: app shell. Chalkboard-and-spiral HD canvas art on login + banners, indigo side rail (bottom tab bar on phones), card content area */
@@ -801,6 +802,8 @@ const R = String.raw;
 const MARK = { mcq:{ plus:3, minus:0.75 }, msq:{ plus:4.75 } };
 // Daily tests written into the app. A test the teacher saves in Admin with the same id (subject-dDay) replaces it.
 const BUILTIN_DTESTS = window.BUILTIN_DTESTS || [];
+// Short material PDFs for each day, built from the class book and served from notes/. They join the uploaded content.
+const BUILTIN_NOTES = (window.BUILTIN_NOTES || []).map(n=>({ kind:"pdf", type:"Notes", builtin:true, ...n }));
 
 const PRACTICE = window.PRACTICE || [];
 
@@ -1932,7 +1935,7 @@ function fillAdminList(){
       <p class="status-line" id="listMsg" role="status" style="margin-top:10px"></p>`;
   }
   if(ui.admTab==="uploads"){
-    const rows=[...(app.content||[])].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+    const rows=[...(app.content||[])].filter(c=>!c.builtin).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
     const missing=videos().filter(v=>!v.thumb).length;
     el.innerHTML=`<div class="panel-head"><h3>Uploaded content</h3><span class="hint">${pdfs().length} PDFs · ${videos().length} videos</span></div>
       ${app.assets&&videos().length?`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px"><button class="btn ${missing?"primary":"ghost"} sm" data-act="thumbAll" ${missing?"":"disabled"}>${missing?`Create ${missing} missing thumbnail${missing===1?"":"s"}`:"Every video has a thumbnail"}</button><span class="hint">New videos get one automatically.</span></div>`:""}
@@ -2312,7 +2315,7 @@ async function openPdf(id){
   $("#pFit").onclick=()=>{ pv.zoom=1; renderPdfPage(); };
   try{
     await loadPdfJs();
-    const doc=await pdfjsLib.getDocument({ url:await fileUrl(c.parts[0]), isEvalSupported:false, useSystemFonts:true }).promise;
+    const doc=await pdfjsLib.getDocument({ url:c.url||await fileUrl(c.parts[0]), isEvalSupported:false, useSystemFonts:true }).promise;
     if(!$("#pdfStage")){ doc.destroy(); return; }
     pv.doc=doc; pv.n=1; pv.zoom=1;
     $("#pLoad").hidden=true; $("#pWrap").hidden=false;
@@ -2708,8 +2711,8 @@ function startListening(){
     app.live=s.exists?s.data():null; refresh();
   },()=>{});
   on(app.db.collection("content").orderBy("createdAt","desc").limit(500),s=>{
-    app.content=s.docs.map(d=>({ id:d.id, ...d.data() })).filter(c=>!c.removed); refresh(); autoThumbs();
-  },()=>{ app.content=app.content||[]; refresh(); });
+    app.content=[...s.docs.map(d=>({ id:d.id, ...d.data() })).filter(c=>!c.removed), ...BUILTIN_NOTES]; refresh(); autoThumbs();
+  },()=>{ app.content=app.content||BUILTIN_NOTES.slice(); refresh(); });
   if(app.isAdmin){
     on(app.db.collection("roster").limit(1000),s=>{
       app.roster=Object.fromEntries(s.docs.map(d=>[d.id,d.data()])); refresh();
