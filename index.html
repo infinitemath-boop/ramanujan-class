@@ -382,6 +382,9 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
 @media (max-width:600px){.mat{grid-template-columns:44px minmax(0,1fr)} .mat .act{grid-column:1 / -1}}
 .mat .ic{width:52px; height:60px; border-radius:8px; display:grid; place-items:center; color:#fff; font-size:11px; font-weight:700; letter-spacing:.06em; position:relative}
 @media (max-width:600px){.mat .ic{width:44px; height:52px}}
+.mat .thumbic{width:52px; aspect-ratio:16/9; border-radius:6px; object-fit:cover; display:block}
+.mat:has(.thumbic){grid-template-columns:112px minmax(0,1fr) auto}.mat:has(.thumbic) .thumbic{width:112px}
+@media (max-width:600px){.mat:has(.thumbic){grid-template-columns:88px minmax(0,1fr) auto}.mat:has(.thumbic) .thumbic{width:88px}}
 .mat .ic::after{content:""; position:absolute; top:0; right:0; border-width:0 12px 12px 0; border-style:solid; border-color:var(--surface) var(--surface) rgba(0,0,0,.25) rgba(0,0,0,.25); border-radius:0 0 0 3px}
 .mat h4{font-size:15px; line-height:1.35}
 .mat .meta{display:flex; flex-wrap:wrap; gap:6px 12px; font-size:12px; color:var(--muted); margin-top:4px; align-items:center}
@@ -1321,8 +1324,8 @@ function vAbout(){
 
 function vMaterials(){
   const items=[
-    ...pdfs().map(c=>({ t:c.title, sid:c.sid, type:c.type||"Notes", info:(c.pages?c.pages+" pages · ":"")+(c.sizeBytes?fmtSize(c.sizeBytes):"PDF"), date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", cid:c.id, created:c.createdAt })),
-    ...(app.content||[]).filter(c=>c.kind==="note").map(c=>({ t:c.title, sid:c.sid, type:"Notes", info:c.day?"Day "+c.day+" notes":"Notes", date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", nid:c.id, created:c.createdAt })),
+    ...pdfs().map(c=>({ doc:c, t:c.title, sid:c.sid, type:c.type||"Notes", info:(+c.day>0?"Day "+c.day+" · ":"")+(c.pages?c.pages+" pages · ":"")+(c.sizeBytes?fmtSize(c.sizeBytes):"PDF"), date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", cid:c.id, created:c.createdAt })),
+    ...(app.content||[]).filter(c=>c.kind==="note").map(c=>({ doc:c, t:c.title, sid:c.sid, type:"Notes", info:c.day?"Day "+c.day+" notes":"Notes", date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", nid:c.id, created:c.createdAt })),
     ...BUILTIN.map((b,i)=>({ ...b, bi:i }))
   ];
   const types=["all",...new Set(items.map(m=>m.type))];
@@ -1337,7 +1340,7 @@ function vMaterials(){
   <div class="mat-list">
     ${list.length?list.map(m=>`
     <article class="mat">
-      <span class="ic" style="background:${TYPE_COLOR[m.type]||"#1d3a8f"}">${TYPE_ABBR[m.type]||"PDF"}</span>
+      ${(()=>{ const img=m.doc?docThumb(m.doc,+m.doc.day||0):""; return img?`<img class="thumbic" src="${img}" alt="">`:`<span class="ic" style="background:${TYPE_COLOR[m.type]||"#1d3a8f"}">${TYPE_ABBR[m.type]||"PDF"}</span>`; })()}
       <div style="min-width:0">
         <h4>${esc(m.t)}</h4>
         <div class="meta"><span>${esc(S[m.sid]?.name||"General")}</span><span>${esc(m.info)}</span>${m.date?`<span>${esc(m.date)}</span>`:""}
@@ -1546,6 +1549,19 @@ function testThumb(t){
   }
   return "";
 }
+// Generated thumbnails for notes and PDFs: drawn on the device one at a time and kept for the session.
+const docThumbs=new Map(); let docThumbQ=Promise.resolve(), docThumbRender=0;
+function docThumb(p,day){
+  const notes=p.kind==="note"||p.type==="Notes"||!p.type, big=p.builtin?"Short Notes":notes?"Notes":p.type;
+  const k=[p.id,p.title,p.topic||"",day,p.pages||0].join("|"); if(docThumbs.has(k)) return docThumbs.get(k);
+  docThumbs.set(k,"");
+  docThumbQ=docThumbQ.then(()=>makeThumbBlob({ sid:p.sid, n:day||1, badge:day?"D"+day:"PDF", big, topic:p.topic||p.title||"",
+      date:(day?"Day "+day:"Study material")+(p.pages?" · "+p.pages+" pages":""), extra:p.builtin?"From the class book":p.kind==="note"?"Class notes":"PDF",
+      course:(app.live&&app.live.title?String(app.live.title).replace(/\s*·.*$/,"").replace(/\s*20\d\d\s*$/,""):"")||"CSIR NET Foundation Course" }))
+    .then(b=>{ docThumbs.set(k,URL.createObjectURL(b)); },()=>{})
+    .then(()=>{ clearTimeout(docThumbRender); docThumbRender=setTimeout(()=>{ if(app.session&&(ui.view==="videos"||ui.view==="materials")) render(); },120); });
+  return "";
+}
 function stepHTML(kind,ico,title,meta,done,btn){
   return `<li class="step ${done?"done":""}">
     <div class="ico" style="background:${ico.bg}">${ico.img?`<img src="${ico.img}" alt="" loading="lazy" onerror="this.remove()">`:""}<span>${esc(ico.label||"")}</span></div>
@@ -1557,15 +1573,15 @@ function dayCard(D,s){
   const steps=[], tid=D.test?D.test.id:null;
   let total=0, done=0; const tick=x=>{ total++; if(x) done++; return x; };
   D.videos.forEach(v=>{ const w=tick(watched.has(v.id)); steps.push(stepHTML("Video",{ bg:grad(s), img:v.thumb&&/^[a-f0-9]{32}$/.test(v.thumb)?blobUrl(v.thumb):"", label:"▶" },v.title,[(v.parts||[]).length>1?v.parts.length+" parts":"",v.link&&!(v.parts||[]).length?"Google Drive":"",v.duration||""].filter(Boolean).join(" · "),w,`<button class="btn ${w?"ghost":"primary"} sm" data-play="${esc(v.id)}">${w?"Watch again":"Watch"}</button>`)); });
-  D.pdfs.forEach(p=>{ const d=tick(o.has(p.id)); steps.push(stepHTML("PDF · "+esc(p.type||"Material"),{ bg:TYPE_COLOR[p.type]||"#1d3a8f", label:TYPE_ABBR[p.type]||"PDF" },p.title,p.pages?p.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" data-pdf="${esc(p.id)}">Read</button>`)); });
-  D.notes.forEach(n=>{ const d=tick(o.has(n.id)); steps.push(stepHTML("Notes",{ bg:"#0f6b62", label:"NOTES" },n.title,n.kind==="pdf"&&n.pages?n.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" ${n.kind==="note"?`data-note="${esc(n.id)}"`:`data-pdf="${esc(n.id)}"`}>Read</button>`)); });
+  D.pdfs.forEach(p=>{ const d=tick(o.has(p.id)), img=docThumb(p,D.day); steps.push(stepHTML("PDF · "+esc(p.type||"Material"),{ bg:TYPE_COLOR[p.type]||"#1d3a8f", img, label:img?"":TYPE_ABBR[p.type]||"PDF" },p.title,p.pages?p.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" data-pdf="${esc(p.id)}">Read</button>`)); });
+  D.notes.forEach(n=>{ const d=tick(o.has(n.id)), img=docThumb(n,D.day); steps.push(stepHTML(n.builtin?"Notes · Short material":"Notes",{ bg:"#0f6b62", img, label:img?"":"NOTES" },n.title,n.kind==="pdf"&&n.pages?n.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" ${n.kind==="note"?`data-note="${esc(n.id)}"`:`data-pdf="${esc(n.id)}"`}>Read</button>`)); });
   if(D.test){ const res=r[tid], d=tick(!!res), timg=testThumb(D.test); steps.push(stepHTML("Daily test",{ bg:"#b8740a", img:timg, label:timg?"":"TEST" },"Day "+D.day+" daily test",D.test.questions.length+" questions"+(D.test.minutes?" · "+D.test.minutes+" min":"")+(res?` · Your score ${fmtM(res.score)} / ${res.max}`:""),d,`<button class="btn ${d?"ghost":"primary"} sm" data-dtest="${esc(tid)}">${d?"Review":"Start test"}</button>`)); }
   else steps.push(stepHTML("Daily test",{ bg:"#8a8f9c", label:"TEST" },"Day "+D.day+" daily test","Not posted yet",false,""));
   if(!D.pdfs.length&&!D.notes.length) steps.splice(D.videos.length,0,stepHTML("PDF & notes",{ bg:"#8a8f9c", label:"PDF" },"Study material for Day "+D.day,"None for this day yet",false,""));
   return `<section class="day" id="day-${D.day}">
     <div class="day-head">
       <span class="daynum">Day ${D.day}</span>
-      <div style="min-width:0;flex:1"><h4>${esc(info.topic||s.name)}</h4><small>${esc(dayDate(D))}</small></div>
+      <div style="min-width:0;flex:1"><h4>${esc(info.topic||([...D.notes,...D.pdfs].find(x=>x.topic)||{}).topic||(D.test&&D.test.topic)||s.name)}</h4><small>${esc(dayDate(D))}</small></div>
       ${total?`<span class="pill ${done===total?"ok":""}">${done===total?"Day complete":done+" of "+total+" done"}</span>`:""}
     </div>
     <ol class="steps">${steps.join("")}</ol>
