@@ -710,8 +710,6 @@ mjx-container{max-width:100%}
 
 <script>
 /* ================= STATIC DATA ================= */
-const BLOG_URL = "https://infinitemathematicsblog.wordpress.com";
-const POST_URL = "https://infinitemathematicsblog.wordpress.com/2026/10/10/csir-net-foundation-class-weekly-test/";
 const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/";
 const MAX_BYTES = 20 * 1024 * 1024;
 const ITER = 100000;
@@ -1176,7 +1174,6 @@ function vOverview(){
         <small>${window.weeklyFacts?weeklyFacts():""}</small>
         <div class="row">
           <button class="btn gold" data-goto="weekly">Take the test</button>
-          <a class="btn glass" href="${POST_URL}" target="_blank" rel="noopener">Read on blog</a>
         </div>
       </div>
     </div>
@@ -1273,14 +1270,14 @@ function vAbout(){
       <p class="eyebrow">About us · Namakkal, Tamil Nadu</p>
       <h2>The IITian Hub: Mastering Competitive Math</h2>
       <p class="ta" style="color:#dfe5ff">இராமானுஜன் கணித வகுப்பு</p>
-      <p class="lead">Competitive mathematics coaching for postgraduate entrance and eligibility exams, run with the Infinite Mathematics blog.</p>
+      <p class="lead">Competitive mathematics coaching for postgraduate entrance and eligibility exams.</p>
     </div>
   </section>
   <div class="about-grid">
     <section class="panel prose">
       <div class="panel-head"><h3>Our story</h3></div>
       <p>Ramanujan Class is a mathematics coaching class in Namakkal for students preparing for CSIR NET, GATE Mathematics, IIT JAM, TN SET and PG TRB, along with IIT Foundation and Olympiad coaching for school students. Classes follow each exam's syllabus subject by subject. They begin with first principles and build up to the level of the actual papers.</p>
-      <p>Each topic ends with a timed weekly test in the real exam pattern. Every question has a full worked solution, and a batch rank list shows students where they stand. Tests, notes and announcements are published on the <a href="${BLOG_URL}" target="_blank" rel="noopener" style="color:var(--gold-ink);font-weight:600">Infinite Mathematics</a> blog.</p>
+      <p>Each topic ends with a timed weekly test in the real exam pattern. Every question has a full worked solution, and a batch rank list shows students where they stand.</p>
       <div class="pillars" style="margin-top:18px">
         <div class="pillar"><b>Concept classes</b><p>Subject-wise lectures from definitions to NET-level problems. Every class is recorded so you can revise.</p></div>
         <div class="pillar"><b>Weekly tests</b><p>Timed MCQ and MSQ papers in CSIR NET and GATE style, with negative marking.</p></div>
@@ -1317,7 +1314,6 @@ function vAbout(){
       <div><span>Address</span><b>Ramanujan Class, Teachers Colony,<br>Mohanur Main Road, Namakkal</b></div>
       <div><span>Course mentor</span><b>Karthika Jothimani</b></div>
       <div><span>Phone</span><span style="color:var(--ink);display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b style="font-variant-numeric:tabular-nums;user-select:all">97896 86706</b><button class="btn ghost sm" id="copyPhone">Copy number</button></span></div>
-      <div><span>Blog</span><a href="${BLOG_URL}" target="_blank" rel="noopener">infinitemathematicsblog.wordpress.com</a></div>
     </div>
   </section>`;
 }
