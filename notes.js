@@ -13,5 +13,6 @@ window.BUILTIN_NOTES = [
   { id:"bn-alg-d9", sid:"alg", day:9, title:"Ideals, Quotient Rings, Ring Homomorphisms, Prime and Maximal Ideals", topic:"Ideals, Quotients, Prime & Maximal", pages:5, sizeBytes:939016, url:"notes/alg-d9.pdf", order:900, createdAt:"2026-10-22T00:00:00.000Z" },
   { id:"bn-alg-d10", sid:"alg", day:10, title:"Problems on Ideals and Fields", topic:"Problems on Ideals & Fields", pages:4, sizeBytes:869701, url:"notes/alg-d10.pdf", order:900, createdAt:"2026-10-22T00:00:00.000Z" },
   { id:"bn-alg-d11", sid:"alg", day:11, title:"Field Extensions, Degree, Minimal Polynomials and Irreducibility", topic:"Field Extensions & Irreducibility", pages:5, sizeBytes:863601, url:"notes/alg-d11.pdf", order:900, createdAt:"2026-10-22T00:00:00.000Z" },
-  { id:"bn-alg-d12", sid:"alg", day:12, title:"Splitting Fields, Separability, Algebraic Closure and Galois Theory Basics", topic:"Splitting Fields & Galois Basics", pages:4, sizeBytes:854393, url:"notes/alg-d12.pdf", order:900, createdAt:"2026-10-22T00:00:00.000Z" }
+  { id:"bn-alg-d12", sid:"alg", day:12, title:"Splitting Fields, Separability, Algebraic Closure and Galois Theory Basics", topic:"Splitting Fields & Galois Basics", pages:4, sizeBytes:854393, url:"notes/alg-d12.pdf", order:900, createdAt:"2026-10-22T00:00:00.000Z" },
+  { id:"bn-alg-d13", sid:"alg", day:13, title:"Problem Sheet I: Revision of Groups, Rings and Fields", topic:"Problem Sheet I: Revision", pages:5, sizeBytes:967633, url:"notes/alg-d13.pdf", order:900, createdAt:"2026-10-23T00:00:00.000Z" }
 ];
