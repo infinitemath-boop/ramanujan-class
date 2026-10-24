@@ -767,6 +767,11 @@ const NOTES = {
   ]
 };
 
+// The teacher's blog, Infinite Mathematics. Its old question paper pages are listed in the Study Hub.
+const BLOG_URL = "https://sowndarmath.wordpress.com";
+const PYQ = [["CSIR NET","old-question-papers-2"],["GATE","old-question-papers-3"],["IIT JAM","old-question-papers-4"],["NBHM","old-question-papers-5"],["TN SET","old-question-papers"]]
+  .map(([e,slug])=>({ t:e+" · Old question papers", sid:"", type:"Previous papers", info:"Infinite Mathematics blog", date:"", href:BLOG_URL+"/"+slug+"/" }));
+
 // Built-in items. Uploaded PDFs come from the database.
 const BUILTIN = [
   { t:"Weekly Test 4 · Rings and Field Theory", sid:"alg", type:"Test", info:"20 questions · 60 min · 40 marks", date:"24 Oct 2026", goto:"weekly" },
@@ -774,7 +779,8 @@ const BUILTIN = [
   { t:"Weekly Test 1 · Abstract Algebra", sid:"alg", type:"Test", info:"15 questions · 45 min · 30 marks", date:"10 Oct 2026", goto:"weekly" },
   { t:"Group Theory: key results", sid:"alg", type:"Formula sheet", info:"10 results", date:"10 Oct 2026", notes:"grp" },
   { t:"Sequences & Series: tests at a glance", sid:"ana", type:"Formula sheet", info:"8 results", date:"10 Oct 2026", notes:"seq" },
-  { t:"Eigenvalue facts for NET", sid:"lin", type:"Formula sheet", info:"8 results", date:"10 Oct 2026", notes:"eig" }
+  { t:"Eigenvalue facts for NET", sid:"lin", type:"Formula sheet", info:"8 results", date:"10 Oct 2026", notes:"eig" },
+  ...PYQ
 ];
 const MAT_TYPES = ["Notes","Problem set","Previous papers","Formula sheet","Test"];
 const TYPE_COLOR = { "Test":"#b8740a", "Formula sheet":"#1d3a8f", "Notes":"#0f6b62", "Problem set":"#5b2d8e", "Previous papers":"#8a2346" };
@@ -1315,6 +1321,7 @@ function vAbout(){
       <div><span>Address</span><b>Ramanujan Class, Teachers Colony,<br>Mohanur Main Road, Namakkal</b></div>
       <div><span>Course mentor</span><b>Karthika Jothimani</b></div>
       <div><span>Phone</span><span style="color:var(--ink);display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b style="font-variant-numeric:tabular-nums;user-select:all">97896 86706</b><button class="btn ghost sm" id="copyPhone">Copy number</button></span></div>
+      <div><span>Blog</span><a href="${BLOG_URL}" target="_blank" rel="noopener">Infinite Mathematics · sowndarmath.wordpress.com</a></div>
     </div>
   </section>`;
 }
@@ -1344,7 +1351,8 @@ function vMaterials(){
           ${m.cid&&m.created&&(Date.now()-new Date(m.created))<7*864e5?`<span class="pill gold">New</span>`:""}</div>
       </div>
       <div class="act">
-        ${m.goto?`<button class="btn primary sm" data-goto="${m.goto}">Open test</button>`
+        ${m.href?`<a class="btn primary sm" href="${esc(m.href)}" target="_blank" rel="noopener">Open</a>`
+          :m.goto?`<button class="btn primary sm" data-goto="${m.goto}">Open test</button>`
           :m.url?`<a class="btn primary sm" href="${m.url}" target="_blank" rel="noopener">Open test</a>`
           :m.cid?`<button class="btn primary sm" data-pdf="${esc(m.cid)}">Read</button>`
           :m.nid?`<button class="btn primary sm" data-note="${esc(m.nid)}">Read</button>`
