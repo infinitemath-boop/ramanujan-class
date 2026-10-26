@@ -123,6 +123,7 @@ window.MathJax = {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
 <script src="dtests.js"></script>
 <script src="notes.js"></script>
+<script src="sheets.js"></script>
 <script src="practice.js"></script>
 <style>
 /* Layout: app shell. Chalkboard-and-spiral HD canvas art on login + banners, indigo side rail (bottom tab bar on phones), card content area */
@@ -378,6 +379,9 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
 
 /* materials */
 .mat-list{display:flex; flex-direction:column; gap:12px}
+.sheets{background:var(--surface); border:1px solid var(--line); border-left:4px solid #5b2d8e; border-radius:16px; padding:16px; margin-bottom:6px}
+.sheets h3,.sheets-after{margin:0; font-size:17px}
+.sheets-after{margin:8px 0 2px}
 .mat{display:grid; grid-template-columns:52px minmax(0,1fr) auto; gap:16px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px 16px}
 @media (max-width:600px){.mat{grid-template-columns:44px minmax(0,1fr)} .mat .act{grid-column:1 / -1}}
 .mat .ic{width:52px; height:60px; border-radius:8px; display:grid; place-items:center; color:#fff; font-size:11px; font-weight:700; letter-spacing:.06em; position:relative}
@@ -782,9 +786,9 @@ const BUILTIN = [
   { t:"Eigenvalue facts for NET", sid:"lin", type:"Formula sheet", info:"8 results", date:"10 Oct 2026", notes:"eig" },
   ...PYQ
 ];
-const MAT_TYPES = ["Notes","Problem set","Previous papers","Formula sheet","Test"];
-const TYPE_COLOR = { "Test":"#b8740a", "Formula sheet":"#1d3a8f", "Notes":"#0f6b62", "Problem set":"#5b2d8e", "Previous papers":"#8a2346" };
-const TYPE_ABBR  = { "Test":"TEST", "Formula sheet":"SHEET", "Notes":"NOTES", "Problem set":"SET", "Previous papers":"PYQ" };
+const MAT_TYPES = ["Notes","Problem sheet","Previous papers","Formula sheet","Test"];
+const TYPE_COLOR = { "Test":"#b8740a", "Formula sheet":"#1d3a8f", "Notes":"#0f6b62", "Problem sheet":"#5b2d8e", "Problem set":"#5b2d8e", "Previous papers":"#8a2346" };
+const TYPE_ABBR  = { "Test":"TEST", "Formula sheet":"SHEET", "Notes":"NOTES", "Problem sheet":"SHEET", "Problem set":"SET", "Previous papers":"PYQ" };
 
 const BOOKS = [
   { t:"Contemporary Abstract Algebra", a:"Joseph A. Gallian", sid:"alg", lvl:"Foundation", pick:true, why:"The clearest first book on groups and rings. Its exercises are close to CSIR NET Part B." },
@@ -812,6 +816,9 @@ const MARK = { mcq:{ plus:3, minus:0.75 }, msq:{ plus:4.75 } };
 const BUILTIN_DTESTS = window.BUILTIN_DTESTS || [];
 // Short material PDFs for each day, built from the class book and served from notes/. They join the uploaded content.
 const BUILTIN_NOTES = (window.BUILTIN_NOTES || []).map(n=>({ kind:"pdf", type:"Notes", builtin:true, ...n }));
+// Problem sheets served from sheets/. They have no day, so they show in the Study Hub, not in Daily Lessons.
+const BUILTIN_SHEETS = (window.BUILTIN_SHEETS || []).map(n=>({ kind:"pdf", type:"Problem sheet", builtin:true, sheet:true, ...n }));
+const isSheet = c => c.kind==="pdf" && (c.type==="Problem sheet"||c.type==="Problem set");
 
 const PRACTICE = window.PRACTICE || [];
 
@@ -1328,21 +1335,11 @@ function vAbout(){
 
 function vMaterials(){
   const items=[
-    ...pdfs().map(c=>({ doc:c, t:c.title, sid:c.sid, type:c.type||"Notes", info:(+c.day>0?"Day "+c.day+" · ":"")+(c.pages?c.pages+" pages · ":"")+(c.sizeBytes?fmtSize(c.sizeBytes):"PDF"), date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", cid:c.id, created:c.createdAt })),
+    ...pdfs().map(c=>({ doc:c, t:c.title, sid:c.sid, type:c.type||"Notes", info:(c.info?c.info+" · ":"")+(+c.day>0?"Day "+c.day+" · ":"")+(c.pages?c.pages+" pages · ":"")+(c.sizeBytes?fmtSize(c.sizeBytes):"PDF"), date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", cid:c.id, created:c.createdAt })),
     ...(app.content||[]).filter(c=>c.kind==="note").map(c=>({ doc:c, t:c.title, sid:c.sid, type:"Notes", info:c.day?"Day "+c.day+" notes":"Notes", date:c.createdAt?new Date(c.createdAt).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"}):"", nid:c.id, created:c.createdAt })),
     ...BUILTIN.map((b,i)=>({ ...b, bi:i }))
   ];
-  const types=["all",...new Set(items.map(m=>m.type))];
-  const q=ui.matQ.toLowerCase();
-  const list=items.filter(m=>(ui.matSubj==="all"||m.sid===ui.matSubj)&&(ui.matType==="all"||m.type===ui.matType)&&(!q||m.t.toLowerCase().includes(q)));
-  return `
-  <div class="toolbar">
-    <input class="search" id="matQ" type="search" placeholder="Search materials" value="${esc(ui.matQ)}" aria-label="Search materials">
-    <div class="chips" role="group" aria-label="Subject">${chip("matSubj","all","All subjects")}${SUBJ.map(s=>chip("matSubj",s.id,s.name)).join("")}</div>
-    <div class="chips" role="group" aria-label="Type">${types.map(t=>chip("matType",t,t==="all"?"All types":t)).join("")}</div>
-  </div>
-  <div class="mat-list">
-    ${list.length?list.map(m=>`
+  const card=m=>`
     <article class="mat">
       ${(()=>{ const img=m.doc?docThumb(m.doc,+m.doc.day||0):""; return img?`<img class="thumbic" src="${img}" alt="">`:`<span class="ic" style="background:${TYPE_COLOR[m.type]||"#1d3a8f"}">${TYPE_ABBR[m.type]||"PDF"}</span>`; })()}
       <div style="min-width:0">
@@ -1358,8 +1355,28 @@ function vMaterials(){
           :m.nid?`<button class="btn primary sm" data-note="${esc(m.nid)}">Read</button>`
           :`<button class="btn primary sm" data-notes="${m.bi}">Read</button>`}
       </div>
-    </article>`).join(""):`<div class="empty"><b>Nothing matches</b>Try “All subjects” or clear the search.</div>`}
+    </article>`;
+  const sheets=items.filter(m=>m.doc&&isSheet(m.doc));
+  const rest=items.filter(m=>!(m.doc&&isSheet(m.doc)));
+  const types=["all",...(sheets.length?["Problem sheet"]:[]),...new Set(rest.map(m=>m.type))];
+  const q=ui.matQ.toLowerCase();
+  const pass=m=>(ui.matSubj==="all"||m.sid===ui.matSubj)&&(!q||m.t.toLowerCase().includes(q));
+  const shown=sheets.filter(pass).sort((x,y)=>String(y.doc.createdAt).localeCompare(String(x.doc.createdAt)));
+  const list=rest.filter(m=>(ui.matSubj==="all"||m.sid===ui.matSubj)&&(ui.matType==="all"||m.type===ui.matType)&&(!q||m.t.toLowerCase().includes(q)));
+  return `
+  <div class="toolbar">
+    <input class="search" id="matQ" type="search" placeholder="Search materials" value="${esc(ui.matQ)}" aria-label="Search materials">
+    <div class="chips" role="group" aria-label="Subject">${chip("matSubj","all","All subjects")}${SUBJ.map(s=>chip("matSubj",s.id,s.name)).join("")}</div>
+    <div class="chips" role="group" aria-label="Type">${types.map(t=>chip("matType",t,t==="all"?"All types":t==="Problem sheet"?"Problem Sheets":t)).join("")}</div>
   </div>
+  ${shown.length&&(ui.matType==="all"||ui.matType==="Problem sheet")?`<section class="sheets">
+    <div class="panel-head"><h3>Problem Sheets</h3><span class="hint">${shown.length} ${shown.length===1?"sheet":"sheets"} · practise by topic</span></div>
+    <div class="mat-list">${shown.map(card).join("")}</div>
+  </section>
+  ${ui.matType==="all"?`<h3 class="sheets-after">All study material</h3>`:""}`:""}
+  ${ui.matType==="Problem sheet"?(shown.length?"":`<div class="empty"><b>Nothing matches</b>Try “All subjects” or clear the search.</div>`):`<div class="mat-list">
+    ${list.length?list.map(card).join(""):`<div class="empty"><b>Nothing matches</b>Try “All subjects” or clear the search.</div>`}
+  </div>`}
   <p class="lock-note">${LOCK}PDFs open in the in-app reader for your account only. They cannot be downloaded or printed.</p>`;
 }
 
@@ -1557,11 +1574,11 @@ function testThumb(t){
 // Generated thumbnails for notes and PDFs: drawn on the device one at a time and kept for the session.
 const docThumbs=new Map(); let docThumbQ=Promise.resolve(), docThumbRender=0;
 function docThumb(p,day){
-  const notes=p.kind==="note"||p.type==="Notes"||!p.type, big=p.builtin?"Short Notes":notes?"Notes":p.type;
+  const notes=p.kind==="note"||p.type==="Notes"||!p.type, big=p.sheet?"Problem Sheet":p.builtin?"Short Notes":notes?"Notes":p.type;
   const k=[p.id,p.title,p.topic||"",day,p.pages||0].join("|"); if(docThumbs.has(k)) return docThumbs.get(k);
   docThumbs.set(k,"");
   docThumbQ=docThumbQ.then(()=>makeThumbBlob({ sid:p.sid, n:day||1, badge:day?"D"+day:"PDF", big, topic:p.topic||p.title||"",
-      date:(day?"Day "+day:"Study material")+(p.pages?" · "+p.pages+" pages":""), extra:p.builtin?"From the class book":p.kind==="note"?"Class notes":"PDF",
+      date:(day?"Day "+day:"Study material")+(p.pages?" · "+p.pages+" pages":""), extra:p.sheet?(p.info||"Problem sheet"):p.builtin?"From the class book":p.kind==="note"?"Class notes":"PDF",
       course:(app.live&&app.live.title?String(app.live.title).replace(/\s*·.*$/,"").replace(/\s*20\d\d\s*$/,""):"")||"CSIR NET Foundation Course" }))
     .then(b=>{ docThumbs.set(k,URL.createObjectURL(b)); },()=>{})
     .then(()=>{ clearTimeout(docThumbRender); docThumbRender=setTimeout(()=>{ if(app.session&&(ui.view==="videos"||ui.view==="materials")) render(); },120); });
@@ -2732,8 +2749,8 @@ function startListening(){
     app.live=s.exists?s.data():null; refresh();
   },()=>{});
   on(app.db.collection("content").orderBy("createdAt","desc").limit(500),s=>{
-    app.content=[...s.docs.map(d=>({ id:d.id, ...d.data() })).filter(c=>!c.removed), ...BUILTIN_NOTES]; refresh(); autoThumbs();
-  },()=>{ app.content=app.content||BUILTIN_NOTES.slice(); refresh(); });
+    app.content=[...s.docs.map(d=>({ id:d.id, ...d.data() })).filter(c=>!c.removed), ...BUILTIN_NOTES, ...BUILTIN_SHEETS]; refresh(); autoThumbs();
+  },()=>{ app.content=app.content||[...BUILTIN_NOTES, ...BUILTIN_SHEETS]; refresh(); });
   if(app.isAdmin){
     on(app.db.collection("roster").limit(1000),s=>{
       app.roster=Object.fromEntries(s.docs.map(d=>[d.id,d.data()])); refresh();
