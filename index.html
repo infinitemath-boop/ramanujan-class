@@ -279,8 +279,8 @@ canvas.board{position:absolute; inset:0; width:100%; height:100%; display:block}
   .top-brand{display:block}
   .is-admin #adminTop{display:inline-flex}
   #view{padding-inline:16px; padding-block:16px 110px; gap:18px}
-  .tabbar{display:grid; grid-template-columns:repeat(5,1fr); position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--surface); border-top:1px solid var(--line); padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px))}
-  .tab-btn{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:52px; border:0; background:transparent; color:var(--muted); font-size:11.5px; font-weight:600; padding:6px 0; border-radius:8px; min-width:0}
+  .tabbar{display:grid; grid-template-columns:repeat(6,1fr); position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--surface); border-top:1px solid var(--line); padding:6px 2px calc(6px + env(safe-area-inset-bottom,0px))}
+  .tab-btn{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:52px; border:0; background:transparent; color:var(--muted); font-size:11px; font-weight:600; padding:6px 0; border-radius:8px; min-width:0}
   .tab-btn .count{position:absolute; top:2px; left:calc(50% + 6px); background:#f2b237; color:#1c1400; font-size:10px; border-radius:999px; padding:0 6px; line-height:16px}
   .btn.sm{min-height:40px}
   .tab-btn svg{width:22px; height:22px}
@@ -877,13 +877,13 @@ const ui = { tbSid:"alg", tbDay:1, bkTopic:"grp", pTopic:null, view:"overview", 
 
 const VIEWS = [
   { id:"overview",      label:"Home",           short:"Home",     icon:"M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" },
+  { id:"videos",        label:"Daily Lessons",  short:"Lessons", icon:"M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM10 9l5 3-5 3z" },
   { id:"announcements", label:"Announcements",  short:"Notices",  icon:"M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" },
   { id:"about",         label:"About Us",       short:"About",    icon:"M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01" },
   { id:"materials",     label:"Study Hub",      short:"Study",    icon:"M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6" },
   { id:"practice",      label:"Test Yourself",  short:"Practice", icon:"M9 11l2 2 4-4M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" },
   { id:"weekly",        label:"Weekly Test",    short:"Tests",    icon:"M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 9v4l2.5 2.5M9.5 2.5h5M12 2.5V5" },
-  { id:"books",         label:"Book Library",   short:"Library",  icon:"M4 19.5V5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19.5A2 2 0 0 0 6 22h13v-4" },
-  { id:"videos",        label:"Daily Lessons",  short:"Lessons", icon:"M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM10 9l5 3-5 3z" }
+  { id:"books",         label:"Book Library",   short:"Library",  icon:"M4 19.5V5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19.5A2 2 0 0 0 6 22h13v-4" }
 ];
 const ADMIN_VIEW = { id:"admin", label:"Admin Console", icon:"M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM9 12l2 2 4-4" };
 
@@ -1140,7 +1140,7 @@ function buildNav(){
   $("#moreTab").addEventListener("click",openMore);
   updateCount();
 }
-const TABS=["overview","materials","practice","weekly"];
+const TABS=["overview","videos","materials","practice","weekly"];
 function openMore(){
   const isA=app.session&&app.session.admin, n=+($("#annCount")&&!$("#annCount").hidden?$("#annCount").textContent:0);
   const item=(v,extra)=>`<button data-more="${v.id}" ${ui.view===v.id?'aria-current="page"':""}>${svg(v.icon)}<span>${v.id==="announcements"?"Notices":v.label}</span>${extra||""}</button>`;
