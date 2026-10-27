@@ -963,6 +963,8 @@ function enterApp(session){
   app.session=session;
   watched=new Set(store.get("rc-watched-"+session.u,[]));
   practice=store.get("rc-practice-"+session.u,{}) || {};
+  // Question bank v2 (Oct 2026) reordered each topic; questions kept from v1 carry their old index in oi.
+  if(!practice._v2){ PRACTICE.forEach(t=>{ const old=practice[t.id]; if(!old) return; const nw={}; t.qs.forEach((q,i)=>{ if(q.oi!=null&&old[q.oi]) nw[i]=old[q.oi]; }); practice[t.id]=nw; }); practice._v2=true; store.set("rc-practice-"+session.u,practice); }
   document.body.classList.toggle("is-admin",!!session.admin);
   $("#login").hidden=true; $("#app").hidden=false;
   $("#avatar").textContent=initials(session.name);
