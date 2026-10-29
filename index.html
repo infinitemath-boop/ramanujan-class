@@ -938,7 +938,7 @@ function accountState(a){
 }
 const pdfs = () => (app.content||[]).filter(c=>c.kind==="pdf");
 const videos = () => (app.content||[]).filter(c=>c.kind==="video");
-function subjVideos(sid){ return videos().filter(v=>v.sid===sid).sort((a,b)=>(a.order||0)-(b.order||0) || String(a.createdAt).localeCompare(String(b.createdAt))); }
+function subjVideos(sid){ return videos().filter(v=>v.sid===sid).sort((a,b)=>((+a.day||0)&&(+b.day||0)&&+a.day!==+b.day?+a.day-+b.day:0) || (+a.day===+b.day?byPart(a,b):0) || (a.order||0)-(b.order||0) || String(a.createdAt).localeCompare(String(b.createdAt))); }
 function subjProgress(sid){ const vs=subjVideos(sid); const w=vs.filter(v=>watched.has(v.id)).length; return { vs, w, n:vs.length, pct:vs.length?Math.round(w/vs.length*100):0, next:vs.find(v=>!watched.has(v.id)) }; }
 
 /* ================= HD CANVAS ART ================= */
@@ -1297,7 +1297,7 @@ function vOverview(){
         ${subs.length?`<div class="prog-list">${subs.map(s=>{ const p=subjProgress(s.id); return `
           <div class="prog">
             <span class="sq" style="background:${grad(s)}">${esc(s.g.length>4?s.g.slice(0,3):s.g)}</span>
-            <div style="min-width:0"><b>${s.name}</b><small>${p.next?`Next: ${esc(p.next.title)}`:"All lectures watched"}</small>
+            <div style="min-width:0"><b>${s.name}</b><small>${p.next?`Next: ${esc(vidTitle(p.next))}`:"All lectures watched"}</small>
               <div class="bar" role="progressbar" aria-valuenow="${p.pct}" aria-valuemin="0" aria-valuemax="100" aria-label="${s.name} progress"><i style="width:${p.pct}%"></i></div></div>
             ${p.next?`<button class="btn ghost sm" data-play="${p.next.id}">${p.w?"Resume":"Start"}</button>`:`<span class="pill ok">Done</span>`}
           </div>`; }).join("")}</div>`
@@ -1632,6 +1632,21 @@ function vBooks(){
 
 /* ---------- Daily Lessons: per subject, Day N = video → PDFs → notes → daily test ---------- */
 const byOrder=(a,b)=>(a.order||0)-(b.order||0)||String(a.createdAt).localeCompare(String(b.createdAt));
+// Parts of one topic on the same day ("Matrix Theory II", "Matrix Theory III") play in part order, whatever order Drive saved them in.
+const ROMAN={I:1,V:5,X:10};
+const romanVal=r=>[...r].reduce((t,c,i,a)=>t+(ROMAN[c]<(ROMAN[a[i+1]]||0)?-ROMAN[c]:ROMAN[c]),0);
+function partKey(v){
+  const m=/^(.*?)[\s\-–·]+(?:part\s*)?([IVX]+|\d+)$/i.exec(String(v.topic||"").trim());
+  return m?{ base:m[1].trim().toLowerCase(), n:/^\d+$/.test(m[2])?+m[2]:romanVal(m[2].toUpperCase()) }:null;
+}
+const byPart=(a,b)=>{ const x=partKey(a), y=partKey(b); return x&&y&&x.base===y.base?x.n-y.n:byOrder(a,b); };
+// Recordings renamed to their topic show the topic ("Matrix Theory II") rather than the generic "Linear Algebra · 27 Oct 2026 · Part 2".
+function vidTitle(v){
+  const t=String(v.topic||"").trim(); if(!t) return v.title;
+  const sn=(S[v.sid]&&S[v.sid].name)||"";
+  const short=sn&&t.toLowerCase().startsWith(sn.toLowerCase())?t.slice(sn.length).replace(/^[\s\-–:·]+/,""):t;
+  return short||t;
+}
 function subjDays(sid){
   const map=new Map();
   const get=d=>{ if(!map.has(d)) map.set(d,{ day:d, info:null, videos:[], pdfs:[], notes:[], test:null }); return map.get(d); };
@@ -1644,7 +1659,7 @@ function subjDays(sid){
   });
   (app.tests||[]).filter(t=>t.sid===sid&&+t.day>0&&(t.questions||[]).length).forEach(t=>{ get(+t.day).test=t; });
   const days=[...map.values()].sort((a,b)=>a.day-b.day);
-  days.forEach(D=>{ D.videos.sort(byOrder); D.pdfs.sort(byOrder); D.notes.sort(byOrder); });
+  days.forEach(D=>{ D.videos.sort(byPart); D.pdfs.sort(byOrder); D.notes.sort(byOrder); });
   const loose=(app.content||[]).filter(c=>c.sid===sid&&!(+c.day>0)&&(c.kind==="video"||c.kind==="note")).sort(byOrder);
   return { days, loose };
 }
@@ -1694,7 +1709,7 @@ function dayCard(D,s){
   const o=opened(), r=dres(), info=D.info||{};
   const steps=[], tid=D.test?D.test.id:null;
   let total=0, done=0; const tick=x=>{ total++; if(x) done++; return x; };
-  D.videos.forEach(v=>{ const w=tick(watched.has(v.id)); steps.push(stepHTML("Video",{ bg:grad(s), img:v.thumb&&/^[a-f0-9]{32}$/.test(v.thumb)?blobUrl(v.thumb):"", label:"▶" },v.title,[(v.parts||[]).length>1?v.parts.length+" parts":"",v.link&&!(v.parts||[]).length?"Google Drive":"",v.duration||""].filter(Boolean).join(" · "),w,`<button class="btn ${w?"ghost":"primary"} sm" data-play="${esc(v.id)}">${w?"Watch again":"Watch"}</button>`)); });
+  D.videos.forEach(v=>{ const w=tick(watched.has(v.id)); steps.push(stepHTML("Video",{ bg:grad(s), img:v.thumb&&/^[a-f0-9]{32}$/.test(v.thumb)?blobUrl(v.thumb):"", label:"▶" },vidTitle(v),[(v.parts||[]).length>1?v.parts.length+" parts":"",v.link&&!(v.parts||[]).length?"Google Drive":"",v.duration||""].filter(Boolean).join(" · "),w,`<button class="btn ${w?"ghost":"primary"} sm" data-play="${esc(v.id)}" aria-label="Watch ${esc(vidTitle(v))}">${w?"Watch again":"Watch"}</button>`)); });
   D.pdfs.forEach(p=>{ const d=tick(o.has(p.id)), img=docThumb(p,D.day); steps.push(stepHTML("PDF · "+esc(p.type||"Material"),{ bg:TYPE_COLOR[p.type]||"#1d3a8f", img, label:img?"":TYPE_ABBR[p.type]||"PDF" },p.title,p.pages?p.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" data-pdf="${esc(p.id)}">Read</button>`)); });
   D.notes.forEach(n=>{ const d=tick(o.has(n.id)), img=docThumb(n,D.day); steps.push(stepHTML(n.builtin?"Notes · Short material":"Notes",{ bg:"#0f6b62", img, label:img?"":"NOTES" },n.title,n.kind==="pdf"&&n.pages?n.pages+" pages":"",d,`<button class="btn ${d?"ghost":"primary"} sm" ${n.kind==="note"?`data-note="${esc(n.id)}"`:`data-pdf="${esc(n.id)}"`}>Read</button>`)); });
   if(D.test){ const res=r[tid], d=tick(!!res), timg=testThumb(D.test); steps.push(stepHTML("Daily test",{ bg:"#b8740a", img:timg, label:timg?"":"TEST" },"Day "+D.day+" daily test",D.test.questions.length+" questions"+(D.test.minutes?" · "+D.test.minutes+" min":"")+(res?` · Your score ${fmtM(res.score)} / ${res.max}`:""),d,`<button class="btn ${d?"ghost":"primary"} sm" data-dtest="${esc(tid)}">${d?"Review":"Start test"}</button>`)); }
@@ -1731,7 +1746,7 @@ function vVideos(){
   </section>
   ${days.length?days.map(D=>dayCard(D,s)).join(""):`<div class="empty"><b>No ${esc(s.name)} lessons yet</b>Day-wise lessons for this subject will appear here once Ramanujan Class posts them.</div>`}
   ${loose.length?`<section class="day"><div class="day-head"><span class="daynum" style="background:var(--surface-2);color:var(--ink)">Extra</span><div><h4>Not yet assigned to a day</h4></div></div><ol class="steps">${loose.map(c=>c.kind==="video"
-      ?stepHTML("Video",{ bg:grad(s), img:c.thumb?blobUrl(c.thumb):"", label:"▶" },c.title,"",watched.has(c.id),`<button class="btn primary sm" data-play="${esc(c.id)}">Watch</button>`)
+      ?stepHTML("Video",{ bg:grad(s), img:c.thumb?blobUrl(c.thumb):"", label:"▶" },vidTitle(c),"",watched.has(c.id),`<button class="btn primary sm" data-play="${esc(c.id)}">Watch</button>`)
       :stepHTML("Notes",{ bg:"#0f6b62", label:"NOTES" },c.title,"",o.has(c.id),`<button class="btn primary sm" data-note="${esc(c.id)}">Read</button>`)).join("")}</ol></section>`:""}
   <p class="lock-note">${LOCK}Uploaded lectures and PDFs open inside the app with downloading turned off. Class recordings from Google Drive also play inside the app.</p>`;
 }
@@ -2484,7 +2499,7 @@ function openVideo(id){
   const parts=v.parts||[];
   if(!parts.length&&v.link){
     const fid=(/\/d\/([\w-]{10,})/.exec(v.link)||/[?&]id=([\w-]{10,})/.exec(v.link)||[])[1];
-    openModal(s.name+" · Lecture "+(idx+1), v.title, `
+    openModal(s.name+" · Lecture "+(idx+1), vidTitle(v), `
       ${fid?`<div class="vwrap protected poster"><div class="vcrop"><iframe data-src="https://drive.google.com/file/d/${esc(fid)}/preview" allow="autoplay; fullscreen" allowfullscreen title="${esc(v.title)}"></iframe></div><button class="vctl" type="button" data-seek>Show seek bar</button><button class="vposter" type="button" aria-label="Play ${esc(v.title)}">${thumb(v,idx+1)}</button>${watermark()}</div>`
         :`<div class="player" style="position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden">${thumb(v,idx+1)}</div>`}
       <div class="dl"><span>Subject <b>${s.name}</b></span><span>Source <b>Google Drive class recording</b></span>${v.duration?`<span>Duration <b>${esc(v.duration)}</b></span>`:""}</div>
@@ -2503,7 +2518,7 @@ function openVideo(id){
     bindFullscreen();
     return;
   }
-  openModal(s.name+" · Lecture "+(idx+1), v.title, `
+  openModal(s.name+" · Lecture "+(idx+1), vidTitle(v), `
     <div class="vwrap protected">
       <video id="vid" controls controlslist="nodownload noremoteplayback noplaybackrate" disablepictureinpicture disableremoteplayback playsinline preload="metadata"${v.thumb&&/^[a-f0-9]{32}$/.test(v.thumb)?` poster="${blobUrl(v.thumb)}"`:""}></video>
       ${watermark()}
