@@ -1622,7 +1622,7 @@ function paperFolder(){
   const P=(window.PAPERS||[]).slice().reverse(); if(!P.length) return "";
   return `<details class="pfolder">
     <summary><span class="pf-ico">${FOLDER_ICON}</span><span><b>Previous Year Question Papers</b><small>CSIR NET Mathematical Sciences · ${P.length} papers · ${P.filter(p=>p.key).length} answer keys</small></span><span class="pf-chev">›</span></summary>
-    <div class="pf-list">${P.map(p=>`<div class="pf-row"><span class="pf-name"><b>${esc(p.exam)} ${esc(p.session)}</b><small>Question paper${p.key?" + answer key":""} · ${p.mb} MB</small></span>
+    <div class="pf-list">${P.map(p=>`<div class="pf-row"><span class="pf-name"><b>${esc(p.exam)} ${esc(p.session)}</b><small>Question paper${p.key?" + answer key":""} · ${p.mb} MB${p.note?` · ${esc(p.note)}`:""}</small></span>
       <span class="pf-act"><a class="btn primary sm" href="${esc(p.url)}" target="_blank" rel="noopener">Paper</a>${p.key?`<a class="btn ghost sm" href="${esc(p.key)}" target="_blank" rel="noopener">Key</a>`:""}</span></div>`).join("")}</div>
   </details>`;
 }

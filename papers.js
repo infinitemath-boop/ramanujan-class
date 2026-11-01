@@ -15,5 +15,5 @@ window.PAPERS = [
   { exam:"CSIR NET", session:"Dec 2017", url:"papers/csir-net/2017-dec.pdf", key:"papers/csir-net/2017-dec-key.pdf", mb:1.7 },
   { exam:"CSIR NET", session:"June 2018", url:"papers/csir-net/2018-june.pdf", key:"papers/csir-net/2018-june-key.pdf", mb:2.9 },
   { exam:"CSIR NET", session:"Dec 2018", url:"papers/csir-net/2018-dec.pdf", key:"papers/csir-net/2018-dec-key.pdf", mb:3.9 },
-  { exam:"CSIR NET", session:"June 2019", url:"papers/csir-net/2019-june.pdf", key:"papers/csir-net/2019-june-key.pdf", mb:1.8 }
+  { exam:"CSIR NET", session:"June 2019", url:"papers/csir-net/2019-june.pdf", key:"papers/csir-net/2019-june-key.pdf", mb:1.8, note:"Paper is booklet B, key is Set A: question numbers differ" }
 ];
