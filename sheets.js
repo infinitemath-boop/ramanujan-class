@@ -1,5 +1,11 @@
 // Problem sheets (sheets/<id>.pdf), listed under Problem Sheets in the Study Hub.
+// Session sheets ps-<sid>-dN are posted 1 h after the class video; their answer keys (ps-<sid>-dN-key) are added 24 h after the sheet.
 // title is the full name; topic is the short name drawn on the thumbnail. To add a sheet, put the PDF in sheets/ and append here.
 window.BUILTIN_SHEETS = [
-  { id:"ps-lin-rank-1", sid:"lin", title:"Rank of a Matrix: Problem Sheet 1 (CSIR NET Previous Year Questions)", topic:"Rank of a Matrix · Sheet 1", info:"30 questions · 60 min", pages:4, sizeBytes:168421, url:"sheets/lin-rank-1.pdf", order:950, createdAt:"2026-10-26T00:00:00.000Z" }
+  { id:"ps-lin-rank-1", sid:"lin", title:"Rank of a Matrix: Problem Sheet 1 (CSIR NET Previous Year Questions)", topic:"Rank of a Matrix · Sheet 1", info:"30 questions · 60 min", pages:4, sizeBytes:168421, url:"sheets/lin-rank-1.pdf", order:950, createdAt:"2026-10-26T00:00:00.000Z" },
+  { id:"ps-lin-d1", sid:"lin", day:1, title:"Day 1 Problem Sheet: Matrix Theory I: Matrices, Trace and Determinants", topic:"Day 1 · Matrix Theory I", info:"10 problems · 30 min · answers after 24 h", pages:2, sizeBytes:162114, url:"sheets/lin-d1.pdf", order:940, createdAt:"2026-11-01T18:55:01.000Z" },
+  { id:"ps-lin-d2", sid:"lin", day:2, title:"Day 2 Problem Sheet: Matrix Theory II–III: Rank and Systems of Linear Equations", topic:"Day 2 · Matrix Theory II–III", info:"10 problems · 30 min · answers after 24 h", pages:2, sizeBytes:228433, url:"sheets/lin-d2.pdf", order:940, createdAt:"2026-11-01T18:55:02.000Z" },
+  { id:"ps-lin-d3", sid:"lin", day:3, title:"Day 3 Problem Sheet: Vector Spaces I–II: Subspaces, Span, Independence, Basis and Dimension", topic:"Day 3 · Vector Spaces I–II", info:"10 problems · 30 min · answers after 24 h", pages:2, sizeBytes:180065, url:"sheets/lin-d3.pdf", order:940, createdAt:"2026-11-01T18:55:03.000Z" },
+  { id:"ps-lin-d4", sid:"lin", day:4, title:"Day 4 Problem Sheet: Vector Spaces III: Sums, Intersections and Direct Sums", topic:"Day 4 · Vector Spaces III", info:"10 problems · 30 min · answers after 24 h", pages:2, sizeBytes:239897, url:"sheets/lin-d4.pdf", order:940, createdAt:"2026-11-01T18:55:04.000Z" },
+  { id:"ps-lin-d5", sid:"lin", day:5, title:"Day 5 Problem Sheet: Vector Spaces IV: Quotient Spaces and Counting over Finite Fields", topic:"Day 5 · Vector Spaces IV", info:"10 problems · 30 min · answers after 24 h", pages:1, sizeBytes:119911, url:"sheets/lin-d5.pdf", order:940, createdAt:"2026-11-01T18:55:05.000Z" }
 ];
