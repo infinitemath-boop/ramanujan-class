@@ -1619,12 +1619,15 @@ $("#view").addEventListener("click",e=>{
 
 // "Previous Year Question Papers" folder at the top of the Book Library (papers.js), newest session first.
 function paperFolder(){
-  const P=(window.PAPERS||[]).slice().reverse(); if(!P.length) return "";
-  return `<details class="pfolder">
-    <summary><span class="pf-ico">${FOLDER_ICON}</span><span><b>Previous Year Question Papers</b><small>CSIR NET Mathematical Sciences · ${P.length} papers · ${P.filter(p=>p.key).length} answer keys</small></span><span class="pf-chev">›</span></summary>
+  const ALL=window.PAPERS||[]; if(!ALL.length) return "";
+  const NAMES={"CSIR NET":"CSIR NET Mathematical Sciences","GATE MA":"GATE Mathematics (MA)"};
+  return [...new Set(ALL.map(p=>p.exam))].map(ex=>{
+    const P=ALL.filter(p=>p.exam===ex).reverse(), k=P.filter(p=>p.key).length;
+    return `<details class="pfolder">
+    <summary><span class="pf-ico">${FOLDER_ICON}</span><span><b>Previous Year Question Papers</b><small>${esc(NAMES[ex]||ex)} · ${P.length} papers${k?` · ${k} answer keys`:""}</small></span><span class="pf-chev">›</span></summary>
     <div class="pf-list">${P.map(p=>`<div class="pf-row"><span class="pf-name"><b>${esc(p.exam)} ${esc(p.session)}</b><small>Question paper${p.key?" + answer key":""} · ${p.mb} MB${p.note?` · ${esc(p.note)}`:""}</small></span>
       <span class="pf-act"><a class="btn primary sm" href="${esc(p.url)}" target="_blank" rel="noopener">Paper</a>${p.key?`<a class="btn ghost sm" href="${esc(p.key)}" target="_blank" rel="noopener">Key</a>`:""}</span></div>`).join("")}</div>
-  </details>`;
+  </details>`;}).join("");
 }
 const FOLDER_ICON=`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4.6l2 2.2h8.4A1.5 1.5 0 0 1 21 8.7v9.8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 18.5z"/></svg>`;
 function vBooks(){
