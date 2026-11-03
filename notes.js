@@ -19,5 +19,6 @@ window.BUILTIN_NOTES = [
   { id:"bn-lin-d2", sid:"lin", day:2, title:"Matrix Theory II–III: Rank and Systems of Linear Equations", topic:"Matrix Theory II–III", pages:5, sizeBytes:771047, url:"notes/lin-d2.pdf", order:900, createdAt:"2026-10-29T00:00:00.000Z" },
   { id:"bn-lin-d3", sid:"lin", day:3, title:"Vector Spaces I–II: Subspaces, Span, Independence, Basis and Dimension", topic:"Vector Spaces I–II", pages:5, sizeBytes:662689, url:"notes/lin-d3.pdf", order:900, createdAt:"2026-10-29T00:00:00.000Z" },
   { id:"bn-lin-d4", sid:"lin", day:4, title:"Vector Spaces III: Sums, Intersections and Direct Sums", topic:"Vector Spaces III", pages:4, sizeBytes:770386, url:"notes/lin-d4.pdf", order:900, createdAt:"2026-11-01T00:00:00.000Z" },
-  { id:"bn-lin-d5", sid:"lin", day:5, title:"Vector Spaces IV: Quotient Spaces and Counting over Finite Fields", topic:"Vector Spaces IV", pages:4, sizeBytes:650860, url:"notes/lin-d5.pdf", order:900, createdAt:"2026-11-01T00:00:00.000Z" }
+  { id:"bn-lin-d5", sid:"lin", day:5, title:"Vector Spaces IV: Quotient Spaces and Counting over Finite Fields", topic:"Vector Spaces IV", pages:4, sizeBytes:650860, url:"notes/lin-d5.pdf", order:900, createdAt:"2026-11-01T00:00:00.000Z" },
+  { id:"bn-lin-d6", sid:"lin", day:6, title:"Vector Spaces V: Bases, Dimension and Polynomial Spaces", topic:"Vector Spaces V", pages:4, sizeBytes:497221, url:"notes/lin-d6.pdf", order:900, createdAt:"2026-11-03T00:00:00.000Z" }
 ];
