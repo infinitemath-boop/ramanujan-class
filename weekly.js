@@ -370,6 +370,72 @@ const Q5 = [
     s:R`(A) True: \(\det A=\det(-A^T)=(-1)^n\det A\). (B) True: \(\det A^*=\overline{\det A}\). (C) False: \((AB)^T=BA\), which differs from \(AB\) in general. (D) True: the eigenvalues are \(0\) and \(1\), and \(A\) is diagonalizable.` }
 ];
 
+/* ---------- Weekly Test 6 · Linear Algebra (7 Nov 2026) ---------- */
+const Q6 = [
+  /* ---------- Section A: MCQ ---------- */
+  { t:"mcq", q:R`[CSIR NET Dec 2012] Let \(n\) be a positive integer and let \(M_n(\R)\) denote the space of all \(n\times n\) real matrices. If \(T:M_n(\R)\to M_n(\R)\) is a linear transformation such that \(T(A)=0\) whenever \(A\in M_n(\R)\) is symmetric or skew-symmetric, then the rank of \(T\) is`,
+    o:[R`\(\frac{n(n+1)}{2}\)`,R`\(\frac{n(n-1)}{2}\)`,R`\(n\)`,R`\(0\)`], a:3,
+    s:R`\(M_n(\R)=\mathrm{Sym}\oplus\mathrm{Skew}\), since \(A=\frac{A+A^T}2+\frac{A-A^T}2\). \(T\) vanishes on both summands, hence on their sum, so \(T=0\) and its rank is \(0\).` },
+  { t:"mcq", q:R`Let \(W_1\) be the space of real \(3\times3\) upper triangular matrices and \(W_2\) the space of real \(3\times3\) symmetric matrices. Then \(\dim(W_1+W_2)\) is`,
+    o:[R`\(6\)`,R`\(9\)`,R`\(8\)`,R`\(12\)`], a:1,
+    s:R`\(\dim W_1=\dim W_2=6\) and \(W_1\cap W_2\) is the space of diagonal matrices, of dimension \(3\). So \(\dim(W_1+W_2)=6+6-3=9\): in fact \(W_1+W_2=M_3(\R)\).` },
+  { t:"mcq", q:R`[GATE 2009] The dimension of the vector space \(V=\{A=(a_{ij})_{n\times n}: a_{ij}\in\C,\ a_{ij}=-\bar a_{ji}\}\) over the field \(\R\) is`,
+    o:[R`\(n^2\)`,R`\(n^2-1\)`,R`\(n^2-n\)`,R`\(\frac{n^2}{2}\)`], a:0,
+    s:R`\(V\) is the space of skew-Hermitian matrices. Each diagonal entry is purely imaginary (\(n\) real parameters); each of the \(\frac{n(n-1)}2\) entries above the diagonal is a free complex number (2 real parameters each) and fixes the entry below. Total \(n+n(n-1)=n^2\).` },
+  { t:"mcq", q:R`Let \(W=\operatorname{span}\{(1,1,0,0,0),\ (0,1,1,0,0),\ (1,2,1,0,0),\ (0,0,0,1,1)\}\subseteq\R^5\). Then \(\dim(\R^5/W)\) is`,
+    o:[R`\(1\)`,R`\(2\)`,R`\(3\)`,R`\(4\)`], a:1,
+    s:R`The third vector is the sum of the first two, and the other three are independent, so \(\dim W=3\). Hence \(\dim(\R^5/W)=5-3=2\).` },
+  { t:"mcq", q:R`The number of \(2\)-dimensional subspaces of \(\F_3^4\) is`,
+    o:[R`\(130\)`,R`\(120\)`,R`\(260\)`,R`\(40\)`], a:0,
+    s:R`Ordered pairs of independent vectors: \((3^4-1)(3^4-3)=80\cdot78\). Each plane has \((3^2-1)(3^2-3)=48\) such ordered bases. So the count is \(\frac{80\cdot78}{48}=130\).` },
+  { t:"mcq", q:R`Let \(A\) be a real \(3\times3\) matrix with \(A^3=A\), \(\operatorname{tr}A=1\) and \(\operatorname{rank}A=3\). Then \(\det A\) is`,
+    o:[R`\(1\)`,R`\(-1\)`,R`\(0\)`,R`not determined by the given data`], a:1,
+    s:R`The minimal polynomial divides \(x^3-x=x(x-1)(x+1)\), so \(A\) is diagonalizable with eigenvalues in \(\{0,1,-1\}\). Rank \(3\) excludes \(0\). Three values \(\pm1\) with sum \(1\) must be \(1,1,-1\), so \(\det A=-1\).` },
+  { t:"mcq", q:R`[CSIR NET June 2017] Let \(A\) be an \(n\times n\) self-adjoint matrix with eigenvalues \(\lambda_1,\dots,\lambda_n\). Let \(\|X\|_2=\sqrt{|x_1|^2+\dots+|x_n|^2}\) for \(X=(x_1,\dots,x_n)\in\C^n\). If \(p(A)=a_0I+a_1A+\dots+a_nA^n\), then \(\sup_{\|X\|_2=1}\|p(A)X\|_2\) is equal to`,
+    o:[R`\(\max\{a_0+a_1\lambda_j+\dots+a_n\lambda_j^n:1\le j\le n\}\)`,R`\(\max\{|a_0+a_1\lambda_j+\dots+a_n\lambda_j^n|:1\le j\le n\}\)`,R`\(\min\{a_0+a_1\lambda_j+\dots+a_n\lambda_j^n:1\le j\le n\}\)`,R`\(\min\{|a_0+a_1\lambda_j+\dots+a_n\lambda_j^n|:1\le j\le n\}\)`], a:1,
+    s:R`\(A=UDU^*\) with \(U\) unitary and \(D\) real diagonal, so \(p(A)=U\,p(D)\,U^*\) and \(\|p(A)X\|_2=\|p(D)U^*X\|_2\). As \(X\) runs over unit vectors so does \(U^*X\), and the sup of \(\|p(D)Y\|_2\) is \(\max_j|p(\lambda_j)|\) (take \(Y=e_j\)). The values \(p(\lambda_j)\) may be negative, so the modulus is needed.` },
+  { t:"mcq", q:R`[CSIR NET Dec 2016] Let \(A\) be a \(n\times n\) non-singular matrix with real entries. Let \(B=A^T\) denote the transpose of \(A\). Which of the following matrices are positive definite?`,
+    o:[R`\(A+B\)`,R`\(A^{-1}+B^{-1}\)`,R`\(AB\)`,R`\(ABA\)`], a:2,
+    s:R`\(x^TAA^Tx=\|A^Tx\|^2\gt0\) for \(x\ne0\) since \(A^T\) is non-singular, and \(AA^T\) is symmetric. For the rotation \(A=\begin{pmatrix}0&1\\-1&0\end{pmatrix}\), \(A+A^T=0\) and \(A^{-1}+(A^T)^{-1}=0\). \(ABA=AA^TA\) need not even be symmetric.` },
+  { t:"mcq", q:R`[GATE 2012] Let \(H\) be a Hilbert space and \(S^\perp\) denote the orthogonal complement of a set \(S\subseteq H\). Which of the following is INCORRECT?`,
+    o:[R`For \(S_1,S_2\subseteq H\): \(S_1\subseteq S_2\Rightarrow S_1^\perp\subseteq S_2^\perp\)`,R`\(S\subseteq(S^\perp)^\perp\)`,R`\(\{0\}^\perp=H\)`,R`\(S^\perp\) is always closed`], a:0,
+    s:R`Inclusion reverses: \(S_1\subseteq S_2\Rightarrow S_2^\perp\subseteq S_1^\perp\). In \(\R^2\), \(S_1=\{e_1\}\subseteq S_2=\{e_1,e_2\}\) but \(S_1^\perp=\operatorname{span}\{e_2\}\not\subseteq S_2^\perp=\{0\}\). (B), (C) are immediate and (D) holds since \(S^\perp=\bigcap_{s\in S}\ker\langle\cdot,s\rangle\) is an intersection of closed sets.` },
+  { t:"mcq", q:R`[CSIR NET June 2016] Let \(A=\begin{bmatrix}1&0\\0&-1\end{bmatrix}\). Let \(f:\R^2\times\R^2\to\R\) be defined by \(f(v,w)=w^TAv\). Pick the correct statement from below:`,
+    o:[R`There exists an eigenvector \(v\) of \(A\) such that \(Av\) is perpendicular to \(v\)`,R`The set \(\{v\in\R^2\mid f(v,v)=0\}\) is a nonzero subspace of \(\R^2\)`,R`If \(v,w\in\R^2\) are nonzero vectors such that \(f(v,v)=0=f(w,w)\), then \(v\) is a scalar multiple of \(w\)`,R`For every \(v\in\R^2\), there exists a nonzero \(w\in\R^2\) such that \(f(v,w)=0\)`], a:3,
+    s:R`(D): \(f(v,w)=0\) is one linear equation in the two unknowns of \(w\), so it has a nonzero solution. (A): eigenvectors satisfy \(Av=\pm v\), never perpendicular to \(v\ne0\). (B): \(f(v,v)=x^2-y^2=0\) is the pair of lines \(y=\pm x\), not a subspace. (C): \(v=(1,1)\), \(w=(1,-1)\).` },
+  /* ---------- Section B: MSQ ---------- */
+  { t:"msq", q:R`Let \(W_1,W_2\) be subspaces of \(\R^7\) with \(\dim W_1=4\) and \(\dim W_2=5\). Which of the following are always true?`,
+    o:[R`\(W_1\cap W_2\ne\{0\}\)`,R`\(W_1+W_2=\R^7\)`,R`\(\dim(W_1\cap W_2)\ge2\)`,R`\(\R^7=W_1\oplus W_2\) is possible`], a:[0,2],
+    s:R`\(\dim(W_1\cap W_2)=4+5-\dim(W_1+W_2)\ge9-7=2\), giving (A) and (C). (B) fails if \(W_1\subseteq W_2\). (D) is impossible: a direct sum would have dimension \(9\gt7\).` },
+  { t:"msq", q:R`Let \(V\) be a finite-dimensional real vector space and \(W\) a subspace. Which of the following are true?`,
+    o:[R`\(\dim(V/W)=\dim V-\dim W\)`,R`If \(T:V\to U\) is linear and \(W\subseteq\ker T\), then \(\bar T(v+W)=T(v)\) is a well-defined linear map \(V/W\to U\)`,R`\(V/W\) is isomorphic to every complement \(W'\) of \(W\) (i.e. every \(W'\) with \(V=W\oplus W'\))`,R`\(V/W\) is a subspace of \(V\)`], a:[0,1,2],
+    s:R`(A) The quotient map \(V\to V/W\) is onto with kernel \(W\). (B) If \(v-v'\in W\subseteq\ker T\) then \(Tv=Tv'\). (C) \(W'\to V/W,\ w'\mapsto w'+W\) is injective (\(W\cap W'=0\)) and onto (\(V=W+W'\)). (D) False: elements of \(V/W\) are cosets, not vectors of \(V\).` },
+  { t:"msq", q:R`[CSIR NET Dec 2012] Let \(n\) be an integer, \(n\ge3\), and let \(u_1,u_2,\dots,u_n\) be \(n\) linearly independent elements in a vector space over \(\R\). Set \(u_0=0\) and \(u_{n+1}=u_1\). Define \(v_i=u_i+u_{i+1}\) and \(w_i=u_{i-1}+u_i\) for \(i=1,2,\dots,n\). Then`,
+    o:[R`\(v_1,v_2,\dots,v_n\) are linearly independent, if \(n=2010\)`,R`\(v_1,v_2,\dots,v_n\) are linearly independent, if \(n=2011\)`,R`\(w_1,w_2,\dots,w_n\) are linearly independent, if \(n=2010\)`,R`\(w_1,w_2,\dots,w_n\) are linearly independent, if \(n=2011\)`], a:[1,2,3],
+    s:R`The coordinate matrix of the \(v_i\) is \(I+P\) with \(P\) the cyclic shift, and \(\det(I+P)=1-(-1)^n\): \(0\) for even \(n\) (indeed \(v_1-v_2+v_3-\dots-v_n=0\)) and \(2\) for odd \(n\). Since \(u_0=0\), \(w_1=u_1\), \(w_i=u_{i-1}+u_i\): a triangular system, independent for every \(n\).` },
+  { t:"msq", q:R`[CSIR NET June 2019] Let \(L(\R^n)\) be the space of \(\R\)-linear maps from \(\R^n\) to \(\R^n\). If \(\operatorname{Ker}(T)\) denotes the kernel (null space) of \(T\) then which of the following are true?`,
+    o:[R`There exists \(T\in L(\R^5)\setminus\{0\}\) such that \(\operatorname{Range}(T)=\operatorname{Ker}(T)\)`,R`There does not exist \(T\in L(\R^5)\setminus\{0\}\) such that \(\operatorname{Range}(T)=\operatorname{Ker}(T)\)`,R`There exists \(T\in L(\R^6)\setminus\{0\}\) such that \(\operatorname{Range}(T)=\operatorname{Ker}(T)\)`,R`There does not exist \(T\in L(\R^6)\setminus\{0\}\) such that \(\operatorname{Range}(T)=\operatorname{Ker}(T)\)`], a:[1,2],
+    s:R`If \(\operatorname{Range}T=\operatorname{Ker}T\) has dimension \(r\), rank–nullity gives \(n=2r\), so \(n=5\) is impossible. For \(n=6\), \(T=\begin{pmatrix}0&I_3\\0&0\end{pmatrix}\) has range \(=\) kernel \(=\operatorname{span}\{e_1,e_2,e_3\}\).` },
+  { t:"msq", q:R`Let \(A\in M_4(\R)\) have minimal polynomial \(x^2(x-1)\). Which of the following are true?`,
+    o:[R`\(A\) is diagonalizable`,R`\(\operatorname{rank}A\ge2\)`,R`\(A^3=A^2\)`,R`\(\operatorname{tr}A\in\{1,2\}\)`], a:[1,2,3],
+    s:R`(A) False: the factor \(x^2\) is repeated. The Jordan form has a \(J_2(0)\) block, at least one block for \(1\), and \(1\times1\) blocks otherwise: \(J_2(0)\oplus[1]\oplus[0]\) or \(J_2(0)\oplus[1]\oplus[1]\). So rank \(\in\{2,3\}\) and trace \(\in\{1,2\}\). (C) The minimal polynomial divides \(x^3-x^2\).` },
+  { t:"msq", q:R`[CSIR NET Dec 2016] Let \(A=\begin{pmatrix}1&1\\1&0\end{pmatrix}\) and let \(\alpha_n\) and \(\beta_n\) denote the two eigenvalues of \(A^n\) such that \(|\alpha_n|\ge|\beta_n|\). Then`,
+    o:[R`\(\alpha_n\to\infty\) as \(n\to\infty\)`,R`\(\beta_n\to0\) as \(n\to\infty\)`,R`\(\beta_n\) is positive if \(n\) is even`,R`\(\beta_n\) is negative if \(n\) is odd`], a:[0,1,2,3],
+    s:R`The eigenvalues of \(A\) are \(\varphi=\frac{1+\sqrt5}2\gt1\) and \(\psi=\frac{1-\sqrt5}2\in(-1,0)\). Those of \(A^n\) are \(\alpha_n=\varphi^n\to\infty\) and \(\beta_n=\psi^n\to0\), with the sign of \(\beta_n\) equal to \((-1)^n\).` },
+  { t:"msq", q:R`[CSIR NET June 2018] Let \(A\) be a \((6\times6)\) matrix over \(\R\) with characteristic polynomial \(=(x-3)^2(x-2)^4\) and minimal polynomial \(=(x-3)(x-2)^2\). Then Jordan canonical form of \(A\) can be`,
+    o:[R`\(\begin{pmatrix}3&0&0&0&0&0\\0&3&0&0&0&0\\0&0&2&1&0&0\\0&0&0&2&1&0\\0&0&0&0&2&1\\0&0&0&0&0&2\end{pmatrix}\)`,R`\(\begin{pmatrix}3&0&0&0&0&0\\0&3&0&0&0&0\\0&0&2&1&0&0\\0&0&0&2&0&0\\0&0&0&0&2&0\\0&0&0&0&0&2\end{pmatrix}\)`,R`\(\begin{pmatrix}3&0&0&0&0&0\\0&3&0&0&0&0\\0&0&2&1&0&0\\0&0&0&2&0&0\\0&0&0&0&2&1\\0&0&0&0&0&2\end{pmatrix}\)`,R`\(\begin{pmatrix}3&1&0&0&0&0\\0&3&0&0&0&0\\0&0&2&1&0&0\\0&0&0&2&0&0\\0&0&0&0&2&1\\0&0&0&0&0&2\end{pmatrix}\)`], a:[1,2],
+    s:R`The exponent of \(x-3\) in the minimal polynomial is the size of the largest 3-block: \(1\), so two \(1\times1\) blocks for \(3\) (kills D). The largest 2-block has size \(2\), and the 2-blocks fill \(4\): \(2+1+1\) (B) or \(2+2\) (C). (A) has a \(4\times4\) block, giving \((x-2)^4\).` },
+  { t:"msq", q:R`[CSIR NET June 2017] Let \(A=\begin{bmatrix}3&1&2\\1&2&3\\2&3&1\end{bmatrix}\) and \(Q(X)=X^tAX\) for \(X\in\R^3\). Then`,
+    o:[R`\(A\) has exactly two positive eigenvalues`,R`all the eigenvalues of \(A\) are positive`,R`\(Q(X)\ge0\) for all \(X\in\R^3\)`,R`\(Q(X)\lt0\) for some \(X\in\R^3\)`], a:[0,3],
+    s:R`Each row sums to \(6\), so \(6\) is an eigenvalue with eigenvector \((1,1,1)\). The other two have sum \(\operatorname{tr}A-6=0\) and product \(\det A/6=-18/6=-3\): they are \(\pm\sqrt3\). One negative eigenvalue gives a vector with \(Q\lt0\), e.g. \(Q(1,1,-2)=-9\).` },
+  { t:"msq", q:R`[CSIR NET June 2019] Let \(\langle\,,\rangle:\R^n\times\R^n\to\R\) denote the standard inner product on \(\R^n\). For a non zero \(w\in\R^n\), define \(T_w:\R^n\to\R^n\) by \(T_w(v)=v-\frac{2\langle v,w\rangle}{\langle w,w\rangle}w\), for \(v\in\R^n\). Which of the following are true?`,
+    o:[R`\(\det(T_w)=1\)`,R`\(\langle T_w(v_1),T_w(v_2)\rangle=\langle v_1,v_2\rangle\ \forall v_1,v_2\in\R^n\)`,R`\(T_w=T_w^{-1}\)`,R`\(T_{2w}=2T_w\)`], a:[1,2],
+    s:R`\(T_w\) is the reflection in the hyperplane \(w^\perp\): \(T_ww=-w\) and \(T_w\) fixes \(w^\perp\). So it is orthogonal (B), \(T_w^2=I\) (C), and \(\det T_w=-1\) (A false). The formula is unchanged when \(w\) is scaled, so \(T_{2w}=T_w\ne2T_w\).` },
+  { t:"msq", q:R`Let \(P\in M_n(\R)\), \(n\ge2\), satisfy \(P^2=P=P^T\) (an orthogonal projection) with \(P\ne0\) and \(P\ne I\). Which of the following are true?`,
+    o:[R`\(\|Px\|\le\|x\|\) for all \(x\in\R^n\)`,R`\(I-P\) is also an orthogonal projection`,R`Every eigenvalue of \(P\) is \(0\) or \(1\)`,R`\(P\) is invertible`], a:[0,1,2],
+    s:R`(A) \(x=Px+(I-P)x\) with \(\langle Px,(I-P)x\rangle=x^TP^T(I-P)x=x^T(P-P^2)x=0\), so \(\|x\|^2=\|Px\|^2+\|(I-P)x\|^2\). (B) \((I-P)^2=I-P=(I-P)^T\). (C) \(\lambda^2=\lambda\). (D) False: an invertible idempotent is \(I\).` }
+];
+
 const WEEKLY = [{
   id:"wt1-algebra", title:"Weekly Test 1 · Abstract Algebra", sid:"alg", date:"10 Oct 2026",
   syllabus:"Sets, Relations & Functions · Groups · Subgroups · Normal Subgroups · Cyclic Groups",
@@ -400,6 +466,12 @@ const WEEKLY = [{
   minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
   note:R`Questions are framed on CSIR NET and GATE previous-year patterns. \(\F_q\): field with \(q\) elements; \(P_n\): real polynomials of degree \(\le n\); \(E_{ij}\): matrix unit; \(\operatorname{adj}A\): adjoint (adjugate) of \(A\).`,
   qs:Q5
+},{
+  id:"wt6-linear-algebra", title:"Weekly Test 6 · Linear Algebra", sid:"lin", date:"7 Nov 2026",
+  syllabus:"Classes of 29 Oct – 5 Nov: Vector Spaces III–V (sums, direct sums, quotient spaces, counting over finite fields, bases and dimension) · Diagonalization and the Minimal Polynomial · Inner Product Spaces I–II",
+  minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
+  note:R`12 of the 20 questions are actual CSIR NET / GATE previous-year questions (source in brackets). \(\F_q\): field with \(q\) elements; \(V/W\): quotient space; \(S^\perp\): orthogonal complement; \(J_k(\lambda)\): Jordan block.`,
+  qs:Q6
 }];
 const KEYS=["A","B","C","D"];
 const base=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
