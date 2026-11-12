@@ -22,5 +22,8 @@ window.BUILTIN_NOTES = [
   { id:"bn-lin-d5", sid:"lin", day:5, title:"Vector Spaces IV: Quotient Spaces and Counting over Finite Fields", topic:"Vector Spaces IV", pages:4, sizeBytes:650860, url:"notes/lin-d5.pdf", order:900, createdAt:"2026-11-01T00:00:00.000Z" },
   { id:"bn-lin-d6", sid:"lin", day:6, title:"Vector Spaces V: Bases, Dimension and Polynomial Spaces", topic:"Vector Spaces V", pages:4, sizeBytes:497221, url:"notes/lin-d6.pdf", order:900, createdAt:"2026-11-03T00:00:00.000Z" },
   { id:"bn-lin-d7", sid:"lin", day:7, title:"Diagonalization and the Minimal Polynomial", topic:"Diagonalization", pages:3, sizeBytes:505819, url:"notes/lin-d7.pdf", order:900, createdAt:"2026-11-04T00:00:00.000Z" },
-  { id:"bn-lin-d8", sid:"lin", day:8, title:"Inner Product Spaces I–II", topic:"Inner Product Spaces", pages:3, sizeBytes:521649, url:"notes/lin-d8.pdf", order:900, createdAt:"2026-11-05T00:00:00.000Z" }
+  { id:"bn-lin-d8", sid:"lin", day:8, title:"Inner Product Spaces I–II", topic:"Inner Product Spaces", pages:3, sizeBytes:521649, url:"notes/lin-d8.pdf", order:900, createdAt:"2026-11-05T00:00:00.000Z" },
+  { id:"bn-lin-d9", sid:"lin", day:9, title:"Orthogonal Matrices, Adjoints and the Spectral Theorem", topic:"Orthogonal Matrices", pages:4, sizeBytes:449607, url:"notes/lin-d9.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" },
+  { id:"bn-lin-d10", sid:"lin", day:10, title:"Bilinear and Quadratic Forms", topic:"Quadratic Forms", pages:3, sizeBytes:435331, url:"notes/lin-d10.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" },
+  { id:"bn-lin-d11", sid:"lin", day:11, title:"Invariant Subspaces and the Jordan Canonical Form", topic:"Jordan Form", pages:4, sizeBytes:463636, url:"notes/lin-d11.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" }
 ];
