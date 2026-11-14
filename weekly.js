@@ -436,6 +436,71 @@ const Q6 = [
     s:R`(A) \(x=Px+(I-P)x\) with \(\langle Px,(I-P)x\rangle=x^TP^T(I-P)x=x^T(P-P^2)x=0\), so \(\|x\|^2=\|Px\|^2+\|(I-P)x\|^2\). (B) \((I-P)^2=I-P=(I-P)^T\). (C) \(\lambda^2=\lambda\). (D) False: an invertible idempotent is \(I\).` }
 ];
 
+const Q7 = [
+  /* ---------- Section A: MCQ ---------- */
+  { t:"mcq", q:R`[GATE 2007] Let \(A=\begin{bmatrix}3&0&0\\0&6&2\\0&2&6\end{bmatrix}\) and let \(\lambda_1\ge\lambda_2\ge\lambda_3\) be the eigenvalues of \(A\). The triple \((\lambda_1,\lambda_2,\lambda_3)\) equals`,
+    o:[R`\((9,4,2)\)`,R`\((8,4,3)\)`,R`\((9,3,3)\)`,R`\((7,5,3)\)`], a:1,
+    s:R`\(A=[3]\oplus\begin{pmatrix}6&2\\2&6\end{pmatrix}\). The \(2\times2\) block has eigenvalues \(6\pm2\), i.e. \(8\) and \(4\), with eigenvectors \((0,1,1)\) and \((0,1,-1)\); the remaining eigenvalue is \(3\) (eigenvector \(e_1\)). So \((\lambda_1,\lambda_2,\lambda_3)=(8,4,3)\).` },
+  { t:"mcq", q:R`[GATE 2007] For \(A=\begin{bmatrix}3&0&0\\0&6&2\\0&2&6\end{bmatrix}\) with eigenvalues \(\lambda_1\ge\lambda_2\ge\lambda_3\) (as in Question 1), the matrix \(P\) such that \(P^tAP=\begin{bmatrix}\lambda_1&0&0\\0&\lambda_2&0\\0&0&\lambda_3\end{bmatrix}\) is`,
+    o:[R`\(\begin{bmatrix}\frac1{\sqrt3}&0&\frac{-2}{\sqrt6}\\\frac1{\sqrt3}&\frac1{\sqrt2}&\frac1{\sqrt6}\\\frac1{\sqrt3}&-\frac1{\sqrt2}&\frac1{\sqrt6}\end{bmatrix}\)`,R`\(\begin{bmatrix}\frac1{\sqrt3}&\frac{-2}{\sqrt6}&0\\\frac1{\sqrt3}&\frac1{\sqrt6}&\frac1{\sqrt2}\\\frac1{\sqrt3}&\frac1{\sqrt6}&-\frac1{\sqrt2}\end{bmatrix}\)`,R`\(\begin{bmatrix}0&0&1\\\frac1{\sqrt2}&\frac1{\sqrt2}&0\\\frac1{\sqrt2}&-\frac1{\sqrt2}&0\end{bmatrix}\)`,R`\(\begin{bmatrix}0&1&0\\\frac1{\sqrt2}&0&\frac1{\sqrt2}\\\frac1{\sqrt2}&0&\frac1{\sqrt2}\end{bmatrix}\)`], a:2,
+    s:R`The columns of \(P\) must be orthonormal eigenvectors for \(8,4,3\) in that order: \(\frac1{\sqrt2}(0,1,1)\), \(\frac1{\sqrt2}(0,1,-1)\), \(e_1\). That is option (C). Option (D) has two equal columns, so it is not orthogonal, and (A), (B) use \((1,1,1)\), which is not an eigenvector.` },
+  { t:"mcq", q:R`[CSIR NET June 2013] A linear transformation \(T\) rotates each vector in \(\R^2\) clockwise through \(90^\circ\). The matrix \(T\) relative to the standard ordered basis \(\left(\begin{bmatrix}1\\0\end{bmatrix},\begin{bmatrix}0\\1\end{bmatrix}\right)\) is`,
+    o:[R`\(\begin{bmatrix}0&-1\\-1&0\end{bmatrix}\)`,R`\(\begin{bmatrix}0&1\\-1&0\end{bmatrix}\)`,R`\(\begin{bmatrix}0&1\\1&0\end{bmatrix}\)`,R`\(\begin{bmatrix}0&-1\\1&0\end{bmatrix}\)`], a:1,
+    s:R`Clockwise by \(90^\circ\): \(e_1\mapsto(0,-1)\), \(e_2\mapsto(1,0)\). These are the columns, giving (B). (D) is the anticlockwise rotation; (A) and (C) have determinant \(-1\), so they are reflections, not rotations.` },
+  { t:"mcq", q:R`[CSIR NET Dec 2012] Let \(a,b,c\) be positive real numbers such that \(b^2+c^2\lt a\lt 1\). Consider the \(3\times3\) matrix \(A=\begin{bmatrix}1&b&c\\b&a&0\\c&0&1\end{bmatrix}\).`,
+    o:[R`All the eigenvalues of \(A\) are negative real numbers.`,R`All the eigenvalues of \(A\) are positive real numbers.`,R`\(A\) can have a positive as well as a negative eigenvalue.`,R`Eigenvalues of \(A\) can be non-real complex numbers.`], a:1,
+    s:R`\(A\) is real symmetric, so its eigenvalues are real (kills D). Leading principal minors: \(1\gt0\), \(a-b^2\gt0\), \(\det A=a-b^2-ac^2\gt a-b^2-c^2\gt0\) (using \(a\lt1\)). By Sylvester's criterion \(A\) is positive definite, so all eigenvalues are positive.` },
+  { t:"mcq", q:R`[GATE 2015] Let \(T:\R^4\to\R^4\) be a linear map such that the null space of \(T\) is \(\{(x,y,z,w)\in\R^4: x+y+z+w=0\}\) and the rank of \((T-4I_4)\) is 3. If the minimal polynomial of \(T\) is \(x(x-4)^\alpha\), then \(\alpha\) is equal to`,
+    o:[R`\(1\)`,R`\(2\)`,R`\(3\)`,R`\(4\)`], a:0,
+    s:R`(Asked as a numerical-answer question in GATE.) \(\dim\ker T=3\), so \(0\) has three Jordan blocks, using at least 3 of the 4 dimensions. \(\operatorname{rank}(T-4I)=3\) makes \(4\) an eigenvalue, which needs the last dimension. Hence the Jordan form is \(\operatorname{diag}(0,0,0,4)\), \(T\) is diagonalizable and \(m_T=x(x-4)\): \(\alpha=1\).` },
+  { t:"mcq", q:R`In \(\R^4\) with the standard inner product, let \(W=\operatorname{span}\{(1,1,0,0),(0,1,1,0)\}\). The distance from \(v=(1,2,3,4)\) to \(W\) is`,
+    o:[R`\(\sqrt{10}\)`,R`\(4\)`,R`\(\sqrt{52/3}\)`,R`\(\sqrt{50/3}\)`], a:2,
+    s:R`Gram–Schmidt: \(w_1=\frac1{\sqrt2}(1,1,0,0)\); \((0,1,1,0)-\frac12(1,1,0,0)=\frac12(-1,1,2,0)\), so \(w_2=\frac1{\sqrt6}(-1,1,2,0)\). \(\langle v,w_1\rangle^2=\frac92\), \(\langle v,w_2\rangle^2=\frac{49}6\). Distance\(^2=\|v\|^2-\frac92-\frac{49}6=30-\frac{76}6=\frac{52}3\). (Projection \(=\frac13(1,8,7,0)\).)` },
+  { t:"mcq", q:R`On \(M_n(\R)\) take the inner product \(\langle A,B\rangle=\operatorname{tr}(A^TB)\). The dimension of the orthogonal complement of the subspace of upper triangular matrices is`,
+    o:[R`\(\frac{n(n-1)}2\)`,R`\(\frac{n(n+1)}2\)`,R`\(n\)`,R`\(n^2-n\)`], a:0,
+    s:R`\(\langle A,B\rangle=\sum_{i,j}a_{ij}b_{ij}\), so the matrix units \(E_{ij}\) are orthonormal. Upper triangular matrices are spanned by \(E_{ij}\), \(i\le j\); the complement is spanned by the remaining \(E_{ij}\), \(i\gt j\): the strictly lower triangular matrices, of dimension \(n^2-\frac{n(n+1)}2=\frac{n(n-1)}2\).` },
+  { t:"mcq", q:R`The real quadratic form \(q(x,y,z)=x^2+4y^2+z^2+2axy+2yz\) is positive definite if and only if`,
+    o:[R`\(|a|\lt2\)`,R`\(0\lt a\lt\sqrt3\)`,R`\(|a|\lt\sqrt3\)`,R`\(|a|\lt1\)`], a:2,
+    s:R`Matrix \(\begin{pmatrix}1&a&0\\a&4&1\\0&1&1\end{pmatrix}\). Leading minors: \(1\), \(4-a^2\), and \(\det=1(4-1)-a(a-0)=3-a^2\). All positive iff \(a^2\lt3\) (which already gives \(a^2\lt4\)). So \(|a|\lt\sqrt3\); (A) fails at \(a=1.8\), (B) misses negative \(a\), (D) misses \(a=1.5\).` },
+  { t:"mcq", q:R`Let \(N\) be a \(7\times7\) complex matrix with \(N^3=0\) and \(\operatorname{rank}N=4\). The number of possible Jordan canonical forms of \(N\) (up to the order of blocks) is`,
+    o:[R`\(1\)`,R`\(3\)`,R`\(4\)`,R`\(2\)`], a:3,
+    s:R`\(N\) is nilpotent; the number of Jordan blocks is \(\dim\ker N=7-4=3\), each of size \(\le3\) since \(N^3=0\). Partitions of \(7\) into exactly \(3\) parts, each \(\le3\): \(3+3+1\) and \(3+2+2\). So there are \(2\) forms (they differ in \(\operatorname{rank}N^2\): \(2\) and \(1\)).` },
+  { t:"mcq", q:R`Let \(A\in M_3(\C)\) have Jordan form \(J_3(2)\) (a single \(3\times3\) Jordan block with eigenvalue \(2\)). The minimal polynomial of \(A^2\) is`,
+    o:[R`\(x-4\)`,R`\((x-4)^2\)`,R`\((x-4)^2(x-2)\)`,R`\((x-4)^3\)`], a:3,
+    s:R`Write \(A=2I+N\), \(N^2\ne0=N^3\). Then \(A^2-4I=4N+N^2=N(4I+N)\), and \(4I+N\) is invertible and commutes with \(N\). So \((A^2-4I)^k=N^k(4I+N)^k\) is \(0\) exactly for \(k\ge3\): the minimal polynomial is \((x-4)^3\) (\(A^2\) is again a single Jordan block).` },
+  /* ---------- Section B: MSQ ---------- */
+  { t:"msq", q:R`[CSIR NET Dec 2014] Let \(A=\begin{pmatrix}x&y\\-y&x\end{pmatrix}\), where \(x,y\in\R\) such that \(x^2+y^2=1\). Then we must have:`,
+    o:[R`For any \(n\ge1\), \(A^n=\begin{pmatrix}\cos\theta&\sin\theta\\-\sin\theta&\cos\theta\end{pmatrix}\) where \(x=\cos(\theta/n)\), \(y=\sin(\theta/n)\)`,R`\(\operatorname{tr}(A)\ne0\)`,R`\(A^t=A^{-1}\)`,R`\(A\) is similar to a diagonal matrix over \(\C\)`], a:[0,2,3],
+    s:R`Put \(x=\cos\varphi\), \(y=\sin\varphi\): \(A\) is a rotation matrix and \(A^n\) is the rotation by \(n\varphi\); with \(\theta=n\varphi\) this is (A). (C) \(A^tA=(x^2+y^2)I=I\). (D) \(A\) is orthogonal, hence normal, so unitarily diagonalizable (eigenvalues \(x\pm iy\)). (B) fails for \(x=0\), \(y=1\).` },
+  { t:"msq", q:R`[CSIR NET Dec 2012] Let \(A=(a_{ij})\) be an \(n\times n\) complex matrix and let \(A^*\) denote the conjugate transpose of \(A\). Which of the following statements are necessarily true?`,
+    o:[R`If \(A\) is invertible, then \(\operatorname{tr}(A^*A)\ne0\), i.e., the trace of \(A^*A\) is nonzero.`,R`If \(\operatorname{tr}(A^*A)\ne0\), then \(A\) is invertible.`,R`If \(|\operatorname{tr}(A^*A)|\lt n^2\), then \(|a_{ij}|\lt1\) for some \(i,j\).`,R`If \(\operatorname{tr}(A^*A)=0\), then \(A\) is the zero matrix.`], a:[0,2,3],
+    s:R`\(\operatorname{tr}(A^*A)=\sum_{i,j}|a_{ij}|^2\) (the squared Frobenius norm). It is \(0\) only for \(A=0\), giving (D) and (A). If every \(|a_{ij}|\ge1\), the sum is \(\ge n^2\), giving (C). \(A=E_{11}\) has trace \(1\) but is singular, killing (B).` },
+  { t:"msq", q:R`[CSIR NET Dec 2012] Let \(n\) be an integer \(\ge2\) and let \(M_n(\R)\) denote the vector space of \(n\times n\) real matrices. Let \(B\in M_n(\R)\) be an orthogonal matrix and let \(B^t\) denote the transpose of \(B\). Consider \(W_B=\{B^tAB: A\in M_n(\R)\}\). Which of the following are necessarily true?`,
+    o:[R`\(W_B\) is a subspace of \(M_n(\R)\) and \(\dim W_B\le\operatorname{rank}(B)\).`,R`\(W_B\) is a subspace of \(M_n(\R)\) and \(\dim W_B=\operatorname{rank}(B)\operatorname{rank}(B^t)\).`,R`\(W_B=M_n(\R)\).`,R`\(W_B\) is not a subspace of \(M_n(\R)\).`], a:[1,2],
+    s:R`\(A\mapsto B^tAB\) is linear with inverse \(X\mapsto BXB^t\) (as \(B^t=B^{-1}\)). So \(W_B\) is the image of a bijection: \(W_B=M_n(\R)\), of dimension \(n^2=\operatorname{rank}B\cdot\operatorname{rank}B^t\), which exceeds \(\operatorname{rank}B=n\).` },
+  { t:"msq", q:R`[CSIR NET Dec 2013] For an \(n\times n\) real matrix \(A\), \(\lambda\in\R\) and a nonzero vector \(v\in\R^n\) suppose that \((A-\lambda I)^kv=0\) for some positive integer \(k\). Let \(I\) be the \(n\times n\) identity matrix. Then which of the following is/are always true?`,
+    o:[R`\((A-\lambda I)^{k+r}v=0\) for all positive integers \(r\).`,R`\((A-\lambda I)^{k-1}v=0\).`,R`\((A-\lambda I)\) is not injective.`,R`\(\lambda\) is an eigenvalue of \(A\).`], a:[0,2,3],
+    s:R`(A) is clear. Let \(j\ge1\) be least with \((A-\lambda I)^jv=0\); then \(w=(A-\lambda I)^{j-1}v\ne0\) and \((A-\lambda I)w=0\), so \(w\) is an eigenvector for \(\lambda\): (C), (D). (B) fails for \(A=J_2(0)\), \(\lambda=0\), \(v=e_2\), \(k=2\): \(Av=e_1\ne0\).` },
+  { t:"msq", q:R`[CSIR NET June 2013] Let \(A\) be a complex \(3\times3\) matrix with \(A^3=-I\). Which of the following statements are correct?`,
+    o:[R`\(A\) has three distinct eigenvalues`,R`\(A\) is diagonalizable over \(\C\)`,R`\(A\) is triangularizable over \(\C\)`,R`\(A\) is non-singular`], a:[1,2,3],
+    s:R`\(m_A\) divides \(x^3+1=(x+1)(x^2-x+1)\), which has three distinct roots, so \(A\) is diagonalizable (B), hence triangularizable (C) (every complex matrix is, anyway). \((\det A)^3=-1\ne0\) gives (D). \(A=-I\) kills (A).` },
+  { t:"msq", q:R`[CSIR NET June 2015] Let \(A=\begin{pmatrix}a&b&c\\0&a&d\\0&0&a\end{pmatrix}\) be a \(3\times3\) matrix where \(a,b,c,d\) are integers. Then, we must have:`,
+    o:[R`If \(a\ne0\), there is a polynomial \(p\in\mathbb Q[x]\) such that \(p(A)\) is the inverse of \(A\).`,R`For each polynomial \(q\in\mathbb Z[x]\), the matrix \(q(A)=\begin{pmatrix}q(a)&q(b)&q(c)\\0&q(a)&q(d)\\0&0&q(a)\end{pmatrix}\).`,R`If \(A^n=0\) for some positive integer \(n\), then \(A^3=0\).`,R`\(A\) commutes with every matrix of the form \(\begin{pmatrix}a'&0&c'\\0&a'&0\\0&0&a'\end{pmatrix}\).`], a:[0,2,3],
+    s:R`(A) Cayley–Hamilton: \((A-aI)^3=0\) expands to \(A\,g(A)=a^3I\) with \(g\in\mathbb Z[x]\), so \(A^{-1}=a^{-3}g(A)\). (C) A nilpotent \(3\times3\) matrix has index \(\le3\). (D) The matrix is \(a'I+c'E_{13}\), and \(AE_{13}=E_{13}A=aE_{13}\). (B) fails for \(q=x^2\), \(a=b=d=1\), \(c=0\): the \((1,3)\) entry of \(A^2\) is \(2ac+bd=1\), not \(q(0)=0\).` },
+  { t:"msq", q:R`Let \(u_1,\dots,u_n\) be a basis of a real inner product space and let \(v_1,\dots,v_n\) be the orthonormal basis produced from it by the Gram–Schmidt process. Which of the following are true?`,
+    o:[R`\(\operatorname{span}\{v_1,\dots,v_k\}=\operatorname{span}\{u_1,\dots,u_k\}\) for every \(k\)`,R`\(\langle u_k,v_k\rangle\gt0\) for every \(k\)`,R`If the \(u_i\) are already pairwise orthogonal, then \(v_k=u_k/\|u_k\|\) for every \(k\)`,R`\(v_n\) depends only on \(u_n\)`], a:[0,1,2],
+    s:R`\(w_k=u_k-\sum_{i\lt k}\langle u_k,v_i\rangle v_i\), \(v_k=w_k/\|w_k\|\). (A) by induction. (B) \(\langle u_k,v_k\rangle=\langle w_k,v_k\rangle=\|w_k\|\gt0\). (C) all the subtracted terms vanish. (D) fails: in \(\R^2\), \(u_1=(1,1)\), \(u_2=(1,0)\) give \(v_2=\frac1{\sqrt2}(1,-1)\ne u_2\); \(v_n\) is the unit normal to \(\operatorname{span}\{u_1,\dots,u_{n-1}\}\) and depends on all the \(u_i\).` },
+  { t:"msq", q:R`Consider the real quadratic form \(q(x,y,z,w)=xy+zw\) on \(\R^4\). Which of the following are true?`,
+    o:[R`\(q\) has rank \(4\)`,R`\(q\) is indefinite`,R`\(q\) is equivalent over \(\R\) to \(x^2+y^2-z^2-w^2\)`,R`There is a \(3\)-dimensional subspace of \(\R^4\) on which \(q\) vanishes identically`], a:[0,1,2],
+    s:R`\(xy=\frac14[(x+y)^2-(x-y)^2]\), similarly for \(zw\): the matrix has eigenvalues \(\pm\frac12\), each twice. So rank \(4\), signature \((2,2)\), indefinite, and by Sylvester's law equivalent to \(x^2+y^2-z^2-w^2\). (D) fails: \(q\) is positive definite on a \(2\)-dimensional subspace \(P\); a \(3\)-dimensional \(U\) meets \(P\) in a nonzero vector, where \(q\gt0\). (The maximal isotropic dimension is \(\min(2,2)=2\).)` },
+  { t:"msq", q:R`Let \(A\in M_5(\C)\) have characteristic polynomial \(x^2(x-1)^3\), with \(\operatorname{rank}A=4\) and \(\operatorname{rank}(A-I)=3\). Which of the following are true?`,
+    o:[R`\(A\) is diagonalizable`,R`The minimal polynomial of \(A\) is \(x^2(x-1)^2\)`,R`\(\operatorname{rank}(A-I)^2=2\)`,R`\(\dim\ker A^2=2\)`], a:[1,2,3],
+    s:R`\(\dim\ker A=1\): one block \(J_2(0)\). \(\dim\ker(A-I)=2\): two blocks for \(1\) of total size \(3\), so \(J_2(1)\oplus J_1(1)\). Hence \(A\sim J_2(0)\oplus J_2(1)\oplus J_1(1)\): not diagonalizable; \(m_A=x^2(x-1)^2\); \(\dim\ker(A-I)^2=3\) so \(\operatorname{rank}(A-I)^2=2\); \(\dim\ker A^2=2\).` },
+  { t:"msq", q:R`Let \(A\in M_n(\R)\) be invertible and write \(A=QR\) with \(Q\) orthogonal and \(R\) upper triangular with positive diagonal entries (the QR factorization given by Gram–Schmidt on the columns of \(A\)). Which of the following are true?`,
+    o:[R`\(Q\) and \(R\) are uniquely determined by \(A\)`,R`\(|\det A|=r_{11}r_{22}\cdots r_{nn}\)`,R`\(A^TA=R^TR\)`,R`If \(A\) is symmetric, then \(R\) is diagonal`], a:[0,1,2],
+    s:R`(A) If \(Q_1R_1=Q_2R_2\), then \(Q_2^TQ_1=R_2R_1^{-1}\) is orthogonal and upper triangular with positive diagonal, hence \(I\). (B) \(\det A=\det Q\det R=\pm\prod r_{ii}\). (C) \(A^TA=R^TQ^TQR=R^TR\). (D) fails: \(A=\begin{pmatrix}2&1\\1&2\end{pmatrix}\) gives \(r_{12}=\frac4{\sqrt5}\ne0\).` }
+];
+
 const WEEKLY = [{
   id:"wt1-algebra", title:"Weekly Test 1 · Abstract Algebra", sid:"alg", date:"10 Oct 2026",
   syllabus:"Sets, Relations & Functions · Groups · Subgroups · Normal Subgroups · Cyclic Groups",
@@ -472,6 +537,12 @@ const WEEKLY = [{
   minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
   note:R`12 of the 20 questions are actual CSIR NET / GATE previous-year questions (source in brackets). \(\F_q\): field with \(q\) elements; \(V/W\): quotient space; \(S^\perp\): orthogonal complement; \(J_k(\lambda)\): Jordan block.`,
   qs:Q6
+},{
+  id:"wt7-linear-algebra", title:"Weekly Test 7 · Linear Algebra", sid:"lin", date:"14 Nov 2026",
+  syllabus:"Classes of 6–11 Nov: Orthogonality and Gram–Schmidt (orthonormal bases, orthogonal complements and projections, orthogonal matrices, QR) · Bilinear and Quadratic Forms (definiteness, signature, congruence) · Jordan Canonical Form",
+  minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
+  note:R`11 of the 20 questions are actual CSIR NET / GATE previous-year questions (source in brackets). \(J_k(\lambda)\): Jordan block; \(E_{ij}\): matrix unit; \(\langle A,B\rangle=\operatorname{tr}(A^TB)\): trace inner product.`,
+  qs:Q7
 }];
 const KEYS=["A","B","C","D"];
 const base=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
