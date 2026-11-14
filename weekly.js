@@ -501,6 +501,116 @@ const Q7 = [
     s:R`(A) If \(Q_1R_1=Q_2R_2\), then \(Q_2^TQ_1=R_2R_1^{-1}\) is orthogonal and upper triangular with positive diagonal, hence \(I\). (B) \(\det A=\det Q\det R=\pm\prod r_{ii}\). (C) \(A^TA=R^TQ^TQR=R^TR\). (D) fails: \(A=\begin{pmatrix}2&1\\1&2\end{pmatrix}\) gives \(r_{12}=\frac4{\sqrt5}\ne0\).` }
 ];
 
+const Q8 = [
+  /* ---------- Section A: MCQ ---------- */
+  { t:"mcq", q:R`[CSIR NET Dec 2016] Let \(D_1=\det\begin{pmatrix}a&b&c\\x&y&z\\p&q&r\end{pmatrix}\) and \(D_2=\det\begin{pmatrix}-x&a&-p\\y&-b&q\\z&-c&r\end{pmatrix}\). Then`,
+    o:[R`\(D_1=D_2\)`,R`\(D_1=2D_2\)`,R`\(D_1=-D_2\)`,R`\(2D_1=D_2\)`], a:2,
+    s:R`Transpose \(D_2\), take \(-1\) out of the first column and the second row, then swap two rows: one sign change survives. (Checked by direct expansion: \(D_1+D_2=0\).)` },
+  { t:"mcq", q:R`[CSIR NET Dec 2015] Let \(A\ne I_n\) be an \(n\times n\) matrix such that \(A^2=A\), where \(I_n\) is the identity matrix of order \(n\). Which of the following statements is FALSE?`,
+    o:[R`\((I_n-A)^2=I_n-A\)`,R`\(\operatorname{Trace}(A)=\operatorname{Rank}(A)\)`,R`\(\operatorname{Rank}(A)+\operatorname{Rank}(I_n-A)=n\)`,R`The eigenvalues of \(A\) are each equal to 1`], a:3,
+    s:R`An idempotent has eigenvalues 0 and 1; since \(A\ne I\), 0 occurs. (A), (B), (C) are standard facts for idempotents.` },
+  { t:"mcq", q:R`Let \(A\in M_5(\R)\) have rank \(4\). Then \(\operatorname{rank}(\operatorname{adj}A)\) is`,
+    o:[R`\(0\)`,R`\(1\)`,R`\(4\)`,R`\(5\)`], a:1,
+    s:R`\(A\,\operatorname{adj}A=(\det A)I=0\), so the column space of \(\operatorname{adj}A\) lies in \(\ker A\), which has dimension \(1\): rank \(\le1\). Some \(4\times4\) minor of \(A\) is nonzero, so \(\operatorname{adj}A\ne0\). Hence rank \(1\).` },
+  { t:"mcq", q:R`[CSIR NET Dec 2015] Let \(A\) be a real \(3\times4\) matrix of rank 2. Then the rank of \(A^tA\), where \(A^t\) denotes the transpose of \(A\), is`,
+    o:[R`exactly 2`,R`exactly 3`,R`exactly 4`,R`at most 2 but not necessarily 2`], a:0,
+    s:R`\(A^tAx=0\Rightarrow\|Ax\|^2=0\), so \(\ker A^tA=\ker A\) and \(\operatorname{rank}A^tA=\operatorname{rank}A\).` },
+  { t:"mcq", q:R`For which value of \(\lambda\) does the system \(x+y+z=0\), \(x+2y+\lambda z=0\), \(x+4y+\lambda^2z=0\) have a non-trivial solution with \(\lambda\ne1\)?`,
+    o:[R`\(\lambda=3\)`,R`\(\lambda=4\)`,R`\(\lambda=0\)`,R`\(\lambda=2\)`], a:3,
+    s:R`A non-trivial solution exists iff \(\det\begin{pmatrix}1&1&1\\1&2&\lambda\\1&4&\lambda^2\end{pmatrix}=0\). Its transpose is the Vandermonde matrix in \(1,2,\lambda\), so the determinant is \((2-1)(\lambda-1)(\lambda-2)\). With \(\lambda\ne1\): \(\lambda=2\).` },
+  { t:"mcq", q:R`[GATE 2016] Let \(\{x,y,z\}\) be a basis of \(\R^3\). Consider the statements P: \(\{x+y,\ y+z,\ x-z\}\) is a basis of \(\R^3\); Q: \(\{x+y+z,\ x+2y-z,\ x-3z\}\) is a basis of \(\R^3\). Which of the following holds?`,
+    o:[R`both P and Q`,R`only P`,R`only Q`,R`neither P nor Q`], a:2,
+    s:R`\((x+y)-(y+z)=x-z\), so P fails. For Q the coefficient matrix has determinant \(-6\ne0\).` },
+  { t:"mcq", q:R`The dimension of the span of \(t^2+t+2,\ t^2+2t+5,\ 5t^2+3t+4,\ 2t^2+2t+4\) in \(P_2\) is`,
+    o:[R`\(4\)`,R`\(3\)`,R`\(2\)`,R`\(1\)`], a:2,
+    s:R`Coordinates in \(\{t^2,t,1\}\): \((1,1,2),(1,2,5),(5,3,4),(2,2,4)\). The fourth is twice the first; \((1,2,5)-(1,1,2)=(0,1,3)\) and \((5,3,4)-5(1,1,2)=(0,-2,-6)=-2(0,1,3)\). So the rank is \(2\).` },
+  { t:"mcq", q:R`[CSIR NET Dec 2018] Let \(W_1=\{(u,v,w,x)\in\R^4: u+v+w=0,\ 2v+x=0,\ 2u+2w-x=0\}\) and \(W_2=\{(u,v,w,x)\in\R^4: u+w+x=0,\ u+w-2x=0,\ v-x=0\}\). Then which among the following is true?`,
+    o:[R`\(\dim(W_1)=1\)`,R`\(\dim(W_2)=2\)`,R`\(\dim(W_1\cap W_2)=1\)`,R`\(\dim(W_1+W_2)=3\)`], a:2,
+    s:R`\(W_1\): the third equation is \(2\times\)first \(-\) second, so \(\dim W_1=2\). \(W_2\): \(x=0=v\), \(w=-u\), so \(\dim W_2=1\), and \(W_2=\operatorname{span}\{(1,0,-1,0)\}\subset W_1\). Hence \(\dim(W_1\cap W_2)=1\), \(\dim(W_1+W_2)=2\).` },
+  { t:"mcq", q:R`[CSIR NET Dec 2016] What is the number of non-singular \(3\times3\) matrices over \(\F_2\), the finite field with two elements?`,
+    o:[R`168`,R`384`,R`\(2^3\)`,R`\(3^2\)`], a:0,
+    s:R`\((8-1)(8-2)(8-4)=7\cdot6\cdot4=168\): choose independent columns one at a time.` },
+  { t:"mcq", q:R`[GATE 2012] Let \(V=\C^2\) be the vector space over the field of complex numbers and \(B=\{(1,i),(i,1)\}\) be a given ordered basis of \(V\). Then for which of the following, \(B^*=\{f_1,f_2\}\) is a dual basis of \(B\) over \(\C\)?`,
+    o:[R`\(f_1(z_1,z_2)=\tfrac12(z_1-iz_2),\ f_2(z_1,z_2)=\tfrac12(z_1+iz_2)\)`,R`\(f_1(z_1,z_2)=\tfrac12(z_1+iz_2),\ f_2(z_1,z_2)=\tfrac12(iz_1+z_2)\)`,R`\(f_1(z_1,z_2)=\tfrac12(z_1-iz_2),\ f_2(z_1,z_2)=\tfrac12(-iz_1+z_2)\)`,R`\(f_1(z_1,z_2)=\tfrac12(z_1+iz_2),\ f_2(z_1,z_2)=\tfrac12(-iz_1-z_2)\)`], a:2,
+    s:R`Need \(f_i(v_j)=\delta_{ij}\) with \(v_1=(1,i),v_2=(i,1)\). For (C): \(f_1(v_1)=\tfrac12(1+1)=1\), \(f_1(v_2)=\tfrac12(i-i)=0\), \(f_2(v_1)=\tfrac12(-i+i)=0\), \(f_2(v_2)=\tfrac12(1+1)=1\). In (A), \(f_2(v_2)=i\).` },
+  { t:"mcq", q:R`Let \(V,W,X\) be finite-dimensional vector spaces with \(\dim V=\dim X\), and let \(S:V\to W\), \(T:W\to X\) be linear with \(T\circ S\) injective. Then`,
+    o:[R`\(S\) and \(T\) are surjective`,R`\(S\) is surjective and \(T\) is injective`,R`\(S\) and \(T\) are injective`,R`\(S\) is injective and \(T\) is surjective`], a:3,
+    s:R`\(Sv=0\Rightarrow TSv=0\Rightarrow v=0\): \(S\) is injective. \(T\circ S:V\to X\) is injective between spaces of equal dimension, hence surjective, so \(T\) is surjective. Neither of the other properties is forced (take \(W\) larger than \(V\)).` },
+  { t:"mcq", q:R`[CSIR NET June 2016] Given a \(n\times n\) matrix \(B\) define \(e^B\) by \(e^B=\sum_{j=0}^{\infty}\frac{B^j}{j!}\). Let \(p\) be the characteristic polynomial of \(B\). Then the matrix \(e^{p(B)}\) is`,
+    o:[R`\(I_{n\times n}\)`,R`\(0_{n\times n}\)`,R`\(eI_{n\times n}\)`,R`\(\pi I_{n\times n}\)`], a:0,
+    s:R`Cayley–Hamilton: \(p(B)=0\), so \(e^{p(B)}=e^{0}=I\).` },
+  { t:"mcq", q:R`Let \(A\) be a \(3\times3\) real matrix with eigenvalues \(1,2,3\). The eigenvalues of \(\operatorname{adj}A\) are`,
+    o:[R`\(1,2,3\)`,R`\(1,\frac12,\frac13\)`,R`\(6,3,2\)`,R`\(6,12,18\)`], a:2,
+    s:R`\(\det A=6\ne0\) and \(\operatorname{adj}A=(\det A)A^{-1}\), whose eigenvalues are \(6/\lambda\): \(6,3,2\).` },
+  { t:"mcq", q:R`Let \(A\) be a \(6\times6\) nilpotent matrix with \(\operatorname{rank}A=3\), \(\operatorname{rank}A^2=1\) and \(A^3=0\). The sizes of the Jordan blocks of \(A\) are`,
+    o:[R`\(3,3\)`,R`\(3,2,1\)`,R`\(2,2,2\)`,R`\(4,1,1\)`], a:1,
+    s:R`Number of blocks \(=6-\operatorname{rank}A=3\); blocks of size \(\ge2\): \(\operatorname{rank}A-\operatorname{rank}A^2=2\); size \(\ge3\): \(\operatorname{rank}A^2-\operatorname{rank}A^3=1\). So the sizes are \(3,2,1\).` },
+  { t:"mcq", q:R`[GATE 2015] Let \(M\) be an invertible Hermitian matrix and let \(x,y\in\R\) be such that \(x^2\lt 4y\). Then`,
+    o:[R`both \(M^2+xM+yI\) and \(M^2-xM+yI\) are singular`,R`\(M^2+xM+yI\) is singular but \(M^2-xM+yI\) is non-singular`,R`\(M^2+xM+yI\) is non-singular but \(M^2-xM+yI\) is singular`,R`both \(M^2+xM+yI\) and \(M^2-xM+yI\) are non-singular`], a:3,
+    s:R`Eigenvalues \(\lambda\) of \(M\) are real, and \(\lambda^2\pm x\lambda+y\) has discriminant \(x^2-4y\lt0\), so it never vanishes.` },
+  { t:"mcq", q:R`[GATE 2011] The application of Gram-Schmidt process of orthonormalization to \(u_1=(1,1,0),\ u_2=(1,0,0),\ u_3=(1,1,1)\) yields`,
+    o:[R`\(\tfrac1{\sqrt2}(1,1,0),\ (1,0,0),\ (0,0,1)\)`,R`\(\tfrac1{\sqrt2}(1,1,0),\ \tfrac1{\sqrt2}(1,-1,0),\ \tfrac1{\sqrt2}(1,1,1)\)`,R`\((0,1,0),\ (1,0,0),\ (0,0,1)\)`,R`\(\tfrac1{\sqrt2}(1,1,0),\ \tfrac1{\sqrt2}(1,-1,0),\ (0,0,1)\)`], a:3,
+    s:R`\(v_1=\tfrac1{\sqrt2}(1,1,0)\). \(u_2-\langle u_2,v_1\rangle v_1=(\tfrac12,-\tfrac12,0)\), normalised \(\tfrac1{\sqrt2}(1,-1,0)\). \(u_3-\sqrt2\,v_1-0\cdot v_2=(0,0,1)\).` },
+  { t:"mcq", q:R`The possible set of eigenvalues of a \(4\times4\) real skew-symmetric orthogonal matrix is`,
+    o:[R`\(\{\pm i\}\)`,R`\(\{\pm i,\pm1\}\)`,R`\(\{\pm1\}\)`,R`\(\{0,\pm i\}\)`], a:0,
+    s:R`Skew-symmetric: eigenvalues are purely imaginary (or \(0\)). Orthogonal: they have modulus \(1\) (and \(0\) is impossible). So each eigenvalue is \(\pm i\); e.g. \(\begin{pmatrix}0&-1\\1&0\end{pmatrix}\oplus\begin{pmatrix}0&-1\\1&0\end{pmatrix}\).` },
+  { t:"mcq", q:R`[CSIR NET Dec 2015] Consider the quadratic form \(Q(v)=v^tAv\), where \(A=\begin{pmatrix}1&0&0&0\\0&1&0&0\\0&0&0&1\\0&0&1&0\end{pmatrix}\), \(v=(x,y,z,w)\). Then`,
+    o:[R`\(Q\) has rank 3`,R`\(xy+z^2=Q(Pv)\) for some invertible \(4\times4\) real matrix \(P\)`,R`\(xy+y^2+z^2=Q(Pv)\) for some invertible \(4\times4\) real matrix \(P\)`,R`\(x^2+y^2-zw=Q(Pv)\) for some invertible \(4\times4\) real matrix \(P\)`], a:3,
+    s:R`\(Q=x^2+y^2+2zw\) has eigenvalues \(1,1,1,-1\): rank 4, signature \((3,1)\). Forms equal to \(Q(Pv)\) are exactly those of rank 4 and signature \((3,1)\). \(xy+z^2\) and \(xy+y^2+z^2\) omit \(w\) (rank \(\le3\)); \(x^2+y^2-zw\) has signature \((3,1)\).` },
+  { t:"mcq", q:R`The quadratic form \(x^2+2y^2+3z^2+2xy\) is`,
+    o:[R`indefinite`,R`negative definite`,R`positive definite`,R`positive semi-definite but singular`], a:2,
+    s:R`\(x^2+2xy+2y^2+3z^2=(x+y)^2+y^2+3z^2\), which is \(\gt0\) unless \(x+y=y=z=0\), i.e. \(x=y=z=0\). Leading minors \(1,1,3\) are positive.` },
+  { t:"mcq", q:R`[GATE 2008] Let \(T:\R^4\to\R^4\) be the linear map satisfying \(T(e_1)=e_2,\ T(e_2)=e_3,\ T(e_3)=0,\ T(e_4)=e_2\), where \(\{e_1,e_2,e_3,e_4\}\) is the standard basis of \(\R^4\). Then`,
+    o:[R`\(T\) is idempotent`,R`\(T\) is invertible`,R`\(\operatorname{Rank}T=3\)`,R`\(T\) is nilpotent`], a:3,
+    s:R`\(T^3\) kills every basis vector (\(e_1\to e_2\to e_3\to0\), \(e_4\to e_2\to e_3\to0\)), so \(T\) is nilpotent. The image is \(\operatorname{span}\{e_2,e_3\}\): rank 2, so not invertible; \(T^2e_1=e_3\ne Te_1\).` },
+  /* ---------- Section B: MSQ ---------- */
+  { t:"msq", q:R`[CSIR NET Dec 2016] If \(P\) and \(Q\) are invertible matrices such that \(PQ=-QP\), then we can conclude that`,
+    o:[R`\(\operatorname{Tr}(P)=\operatorname{Tr}(Q)=0\)`,R`\(\operatorname{Tr}(P)=\operatorname{Tr}(Q)=1\)`,R`\(\operatorname{Tr}(P)=-\operatorname{Tr}(Q)\)`,R`\(\operatorname{Tr}(P)\ne\operatorname{Tr}(Q)\)`], a:[0, 2],
+    s:R`\(P=-QPQ^{-1}\) gives \(\operatorname{tr}P=-\operatorname{tr}P\), so \(\operatorname{tr}P=0\); likewise \(\operatorname{tr}Q=0\).` },
+  { t:"msq", q:R`Let \(A=uv^T\) where \(u,v\in\R^n\) are non-zero, \(n\ge2\). Which of the following are true?`,
+    o:[R`\(\operatorname{rank}A=1\)`,R`\(A^2=(\operatorname{tr}A)A\)`,R`If \(v^Tu=0\) then \(A\) is nilpotent`,R`\(\det A\ne0\)`], a:[0, 1, 2],
+    s:R`Every column of \(A\) is a multiple of \(u\) and \(A\ne0\): rank \(1\). \(A^2=u(v^Tu)v^T=(\operatorname{tr}A)A\) since \(\operatorname{tr}(uv^T)=v^Tu\). If \(v^Tu=0\) then \(A^2=0\). Rank \(1\lt n\) gives \(\det A=0\).` },
+  { t:"msq", q:R`[CSIR NET Dec 2017] Let \(A\) be an \(m\times n\) matrix with rank \(r\). If the linear system \(AX=b\) has a solution for each \(b\in\R^m\), then`,
+    o:[R`\(m=r\)`,R`the column space of \(A\) is a proper subspace of \(\R^m\)`,R`the null space of \(A\) is a non-trivial subspace of \(\R^n\) whenever \(m=n\)`,R`\(m\ge n\) implies \(m=n\)`], a:[0, 3],
+    s:R`Solvable for every \(b\) means the column space is \(\R^m\), so \(r=m\le n\). If also \(m\ge n\), then \(m=n\) and \(A\) is invertible (so (C) fails).` },
+  { t:"msq", q:R`Let \(A\in M_{3\times5}(\R)\) have rank \(3\). Which of the following are true?`,
+    o:[R`\(Ax=b\) is solvable for every \(b\in\R^3\)`,R`The null space of \(A\) has dimension \(2\)`,R`\(A^Ty=c\) is solvable for every \(c\in\R^5\)`,R`\(A^Ty=0\) has only the solution \(y=0\)`], a:[0, 1, 3],
+    s:R`Column space has dimension \(3\), so it is \(\R^3\) (A). Nullity \(=5-3=2\) (B). \(A^T:\R^3\to\R^5\) has rank \(3\lt5\), so it is not onto (C fails) but it is injective (D).` },
+  { t:"msq", q:R`[CSIR NET Dec 2016] Let \(M_n\) denote the vector space of all \(n\times n\) real matrices. Among the following subsets of \(M_n\), decide which are linear subspaces.`,
+    o:[R`\(V_1=\{A\in M_n: A\text{ is nonsingular}\}\)`,R`\(V_2=\{A\in M_n:\det(A)=0\}\)`,R`\(V_3=\{A\in M_n:\operatorname{trace}(A)=0\}\)`,R`\(V_4=\{BA: A\in M_n\}\), where \(B\) is some fixed matrix in \(M_n\)`], a:[2, 3],
+    s:R`\(V_1\) misses 0; in \(V_2\), \(E_{11}+(I-E_{11})=I\). Trace is linear; \(V_4\) is the image of the linear map \(A\mapsto BA\).` },
+  { t:"msq", q:R`Let \(V\) be the space of \(n\times n\) real matrices \(A\) with \(a_{ij}=-a_{ji}\) for all \(i,j\). Then`,
+    o:[R`\(\dim V=n^2-n\)`,R`every \(A\in V\) has \(a_{ii}=0\)`,R`\(V\) consists of diagonal matrices`,R`\(\dim V=\frac{n^2-n}2\)`], a:[1, 3],
+    s:R`\(a_{ii}=-a_{ii}\) forces \(a_{ii}=0\). A skew-symmetric matrix is fixed by its entries above the diagonal, which are free: \(\dim V=\frac{n(n-1)}2\). For \(n\ge2\), \(E_{12}-E_{21}\in V\) is not diagonal.` },
+  { t:"msq", q:R`[CSIR NET Dec 2017] Let \(V\) be the vector space over \(\C\) of all polynomials in a variable \(X\) of degree at most 3. Let \(D:V\to V\) be the linear operator given by differentiation with respect to \(X\). Let \(A\) be the matrix of \(D\) with respect to some basis for \(V\). Which of the following are true?`,
+    o:[R`\(A\) is a nilpotent matrix`,R`\(A\) is a diagonalizable matrix`,R`the rank of \(A\) is 2`,R`the Jordan canonical form of \(A\) is \(\begin{pmatrix}0&1&0&0\\0&0&1&0\\0&0&0&1\\0&0&0&0\end{pmatrix}\)`], a:[0, 3],
+    s:R`\(D^4=0\) but \(D^3x^3=6\ne0\): nilpotent of index 4 = \(\dim V\), so a single \(4\times4\) Jordan block. Rank \(=\dim D(V)=\dim P_2=3\); a non-zero nilpotent is not diagonalizable.` },
+  { t:"msq", q:R`[CSIR NET June 2017] For any \(n\times n\) matrix \(B\), let \(N(B)=\{X\in\R^n:BX=0\}\) be the null space of \(B\). Let \(A\) be a \(4\times4\) matrix with \(\dim(N(A-2I))=2\), \(\dim(N(A-4I))=1\) and \(\operatorname{rank}(A)=3\). Then`,
+    o:[R`0, 2 and 4 are eigenvalues of \(A\)`,R`determinant\((A)=0\)`,R`\(A\) is not diagonalizable`,R`trace\((A)=8\)`], a:[0, 1, 3],
+    s:R`Nullity of \(A\) is 1, so 0 is an eigenvalue. Geometric multiplicities \(1+2+1=4\), so \(A\sim\operatorname{diag}(0,2,2,4)\): \(\det A=0\), \(\operatorname{tr}A=8\), and \(A\) is diagonalizable.` },
+  { t:"msq", q:R`Let \(A\) be \(3\times5\) and \(B\) be \(5\times3\) real matrices. Which of the following are true?`,
+    o:[R`\(AB\) and \(BA\) have the same non-zero eigenvalues`,R`\(0\) is an eigenvalue of \(BA\)`,R`\(\operatorname{tr}(AB)=\operatorname{tr}(BA)\)`,R`\(\det(AB)=\det(BA)\)`], a:[0, 1, 2],
+    s:R`\(\chi_{BA}(x)=x^2\chi_{AB}(x)\), giving (A) and (B) (also \(\operatorname{rank}BA\le3\lt5\)). (C) holds for any product. (D) fails: \(\det(BA)=0\) always, while \(A=[I_3\ 0]\), \(B=A^T\) give \(\det(AB)=1\).` },
+  { t:"msq", q:R`Let \(A,B\in M_n(\C)\) be diagonalizable with \(AB=BA\). Which of the following are true?`,
+    o:[R`\(A+B\) is diagonalizable`,R`\(AB\) is diagonalizable`,R`\(A\) and \(B\) have a common eigenvector`,R`\(A=B\)`], a:[0, 1, 2],
+    s:R`Commuting diagonalizable matrices are simultaneously diagonalizable: \(P^{-1}AP\), \(P^{-1}BP\) are both diagonal. Then \(A+B\) and \(AB\) are diagonalized by the same \(P\), and every column of \(P\) is a common eigenvector. \(A=I\), \(B=2I\) kills (D).` },
+  { t:"msq", q:R`[CSIR NET Dec 2017] For every \(4\times4\) real symmetric non-singular matrix \(A\), there exists a positive integer \(p\) such that`,
+    o:[R`\(pI+A\) is positive definite`,R`\(A^p\) is positive definite`,R`\(A^{-p}\) is positive definite`,R`\(\exp(pA)-I\) is positive definite`], a:[0, 1, 2],
+    s:R`Eigenvalues are real and non-zero. Take \(p\) large for (A) and \(p\) even for (B),(C). For (D), a negative eigenvalue \(\lambda\) gives \(e^{p\lambda}-1\lt0\), e.g. \(A=-I\).` },
+  { t:"msq", q:R`[CSIR NET June 2015] Let \(u\) be a real \(n\times1\) vector satisfying \(u'u=1\), where \(u'\) is the transpose of \(u\). Define \(A=I-2uu'\) where \(I\) is the \(n^{th}\) order identity matrix. Which of the following statements are true?`,
+    o:[R`\(A\) is singular`,R`\(A^2=A\)`,R`\(\operatorname{Trace}(A)=n-2\)`,R`\(A^2=I\)`], a:[2, 3],
+    s:R`\(A\) is the Householder reflection in \(u^\perp\): \(A^2=I-4uu'+4u(u'u)u'=I\), so \(A\) is invertible and \(A^2=A\) fails. \(\operatorname{tr}A=n-2\,u'u=n-2\).` },
+  { t:"msq", q:R`[CSIR NET June 2019] Consider a matrix \(A=(a_{ij})_{5\times5}\), \(1\le i,j\le5\) such that \(a_{ij}=\frac1{n_i+n_j+1}\), where \(n_i,n_j\in\mathbb N\). Then in which of the following cases \(A\) is a positive definite matrix?`,
+    o:[R`\(n_i=i\) for all \(i=1,2,3,4,5\)`,R`\(n_1\lt n_2\lt\dots\lt n_5\)`,R`\(n_1=n_2=\dots=n_5\)`,R`\(n_1\gt n_2\gt\dots\gt n_5\)`], a:[0, 1, 3],
+    s:R`\(a_{ij}=\int_0^1x^{n_i}x^{n_j}\,dx\), so \(v^tAv=\int_0^1\big(\sum v_ix^{n_i}\big)^2dx\ge0\), with equality only for \(v=0\) exactly when the \(n_i\) are distinct. Equal \(n_i\) give a rank-1 matrix.` },
+  { t:"msq", q:R`Let \(A,B\) be \(n\times n\) positive definite matrices. Which of the following are positive definite?`,
+    o:[R`\(A+B\)`,R`\(ABA^*\)`,R`\(A^2+I\)`,R`\(AB\)`], a:[0, 1, 2],
+    s:R`\(x^*(A+B)x\gt0\). \(x^*ABA^*x=(A^*x)^*B(A^*x)\gt0\) since \(A^*x\ne0\). \(A^2+I\) is Hermitian with eigenvalues \(\lambda^2+1\gt0\). \(AB\) need not be Hermitian: \(A=\operatorname{diag}(1,2)\), \(B=\begin{pmatrix}2&1\\1&1\end{pmatrix}\) give a non-symmetric \(AB\).` },
+  { t:"msq", q:R`[CSIR NET Dec 2015] Consider the matrices \(A=\begin{pmatrix}2&2&1\\0&2&-1\\0&0&3\end{pmatrix}\) and \(B=\begin{pmatrix}2&1&0\\0&2&0\\0&0&3\end{pmatrix}\). Then`,
+    o:[R`\(A\) and \(B\) are similar over the field of rational numbers \(\mathbb Q\)`,R`\(A\) is diagonalizable over the field of rational numbers \(\mathbb Q\)`,R`\(B\) is the Jordan canonical form of \(A\)`,R`The minimal polynomial and the characteristic polynomial of \(A\) are the same`], a:[0, 2, 3],
+    s:R`\(\chi_A=(x-2)^2(x-3)\) and \(\operatorname{rank}(A-2I)=2\), so the eigenvalue 2 has one block: \(J_A=J_2(2)\oplus(3)=B\). The eigenvalues are rational, so the similarity can be taken over \(\mathbb Q\). The minimal polynomial is \((x-2)^2(x-3)=\chi_A\), and \(A\) is not diagonalizable.` }
+];
+
 const WEEKLY = [{
   id:"wt1-algebra", title:"Weekly Test 1 · Abstract Algebra", sid:"alg", date:"10 Oct 2026",
   syllabus:"Sets, Relations & Functions · Groups · Subgroups · Normal Subgroups · Cyclic Groups",
@@ -543,6 +653,12 @@ const WEEKLY = [{
   minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
   note:R`11 of the 20 questions are actual CSIR NET / GATE previous-year questions (source in brackets). \(J_k(\lambda)\): Jordan block; \(E_{ij}\): matrix unit; \(\langle A,B\rangle=\operatorname{tr}(A^TB)\): trace inner product.`,
   qs:Q7
+},{
+  id:"ft1-linear-algebra", title:"Full Test 1 · Linear Algebra", sid:"lin", date:"14 Nov 2026",
+  syllabus:"Whole Linear Algebra course (Days 1–11): matrices, determinants and rank · systems of linear equations · vector spaces, sums, quotients and bases · linear maps · eigenvalues and the minimal polynomial · diagonalization · inner products and orthogonality · bilinear and quadratic forms · Jordan canonical form",
+  minutes:105, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
+  note:R`21 of the 35 questions (60%) are actual CSIR NET / GATE previous-year questions (source in brackets); the other 14 (40%) are standard questions from the Ramanujan Class Linear Algebra book. \(\F_q\): field with \(q\) elements; \(P_n\): real polynomials of degree \(\le n\); \(\operatorname{adj}A\): adjugate; \(J_k(\lambda)\): Jordan block.`,
+  qs:Q8
 }];
 const KEYS=["A","B","C","D"];
 const base=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
@@ -586,7 +702,7 @@ function body(){
   const tabs=`<div class="wk-tabs" role="tablist">
     <button role="tab" data-wtab="test" aria-selected="${W.tab==="test"}">Test</button>
     <button role="tab" data-wtab="rank" aria-selected="${W.tab==="rank"}">Rank list</button></div>`;
-  const pick=WEEKLY.length>1&&W.phase!=="test"?`<div class="parts" style="margin-top:10px">${WEEKLY.map((x,i)=>`<button class="btn ${x.id===t.id?"primary":"ghost"} sm" data-wtest="${x.id}">Weekly Test ${i+1}</button>`).join("")}</div>`:"";
+  const pick=WEEKLY.length>1&&W.phase!=="test"?`<div class="parts" style="margin-top:10px">${WEEKLY.map((x,i)=>`<button class="btn ${x.id===t.id?"primary":"ghost"} sm" data-wtest="${x.id}">${esc(x.title.split(" · ")[0])}</button>`).join("")}</div>`:"";
   const head=`<div class="wk-head"><div><p class="eyebrow" style="color:var(--gold-ink)">Ramanujan Class, Namakkal · ${esc(t.date)}</p><h2 style="font-family:var(--f-display);font-weight:400;margin:4px 0 0">${esc(t.title)}</h2>${pick}</div>${W.phase==="test"?"":tabs}</div>`;
   if(W.tab==="rank"&&W.phase!=="test") return head+rankHTML();
   return head+(W.phase==="start"?startHTML():W.phase==="test"?testHTML():resultHTML());
@@ -720,7 +836,7 @@ function bind(el){
 }
 window.vWeekly=vWeekly;
 window.bindWeekly=()=>{ const el=$("#wk"); if(el){ bind(el); typeset(el); } };
-window.weeklyTests=()=>WEEKLY.map(t=>({ id:t.id, sid:t.sid, max:maxOf(t), title:t.title }));
+window.weeklyTests=()=>WEEKLY.map(t=>({ id:t.id, sid:t.sid, max:maxOf(t), title:t.title, short:t.title.split(" · ")[0].replace(/^Weekly Test /,"WT").replace(/^Full Test /,"FT") }));
 window.weeklyTitle=()=>WEEKLY[WEEKLY.length-1].title;
 window.weeklyFacts=()=>{ const t=WEEKLY[WEEKLY.length-1]; return `${t.qs.length} questions · ${t.minutes} minutes · ${maxOf(t)} marks · MCQ + MSQ · batch rank list`; };
 })();

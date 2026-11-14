@@ -832,7 +832,8 @@ const PYQ = [["CSIR NET","old-question-papers-2"],["GATE","old-question-papers-3
 
 // Built-in items. Uploaded PDFs come from the database.
 const BUILTIN = [
-  { t:"Weekly Test 7 · Linear Algebra", sid:"lin", type:"Test", info:"20 questions · 60 min · 40 marks · 11 previous-year", date:"14 Nov 2026", goto:"weekly" },
+  { t:"Full Test 1 · Linear Algebra", sid:"lin", type:"Test", info:"35 questions · 105 min · 70 marks · 21 previous-year", date:"14 Nov 2026", goto:"weekly" },
+    { t:"Weekly Test 7 · Linear Algebra", sid:"lin", type:"Test", info:"20 questions · 60 min · 40 marks · 11 previous-year", date:"14 Nov 2026", goto:"weekly" },
     { t:"Weekly Test 6 · Linear Algebra", sid:"lin", type:"Test", info:"20 questions · 60 min · 40 marks · 12 previous-year", date:"7 Nov 2026", goto:"weekly" },
   { t:"Weekly Test 5 · Linear Algebra", sid:"lin", type:"Test", info:"20 questions · 60 min · 40 marks", date:"1 Nov 2026", goto:"weekly" },
   { t:"Weekly Test 4 · Rings and Field Theory", sid:"alg", type:"Test", info:"20 questions · 60 min · 40 marks", date:"24 Oct 2026", goto:"weekly" },
@@ -2008,7 +2009,7 @@ function repTests(){
     return { id:t.id, kind:"daily", sid:t.sid, day:+t.day||0, max, short:"D"+(t.day||"?")+" "+(({alg:"Alg",ana:"Ana",lin:"Lin",cpx:"Cpx",de:"DE",prob:"Prob",num:"NT"})[t.sid]||t.sid||""),
       title:(S[t.sid]?.name||"")+" · Day "+(t.day||"?")+(t.topic?" · "+t.topic:"") };
   }).sort((a,b)=>String(a.sid).localeCompare(String(b.sid))||a.day-b.day);
-  const weekly=(window.weeklyTests?window.weeklyTests():[]).map((t,i)=>({ ...t, kind:"weekly", short:"WT"+(i+1) }));
+  const weekly=(window.weeklyTests?window.weeklyTests():[]).map((t,i)=>({ ...t, kind:"weekly", short:t.short||"WT"+(i+1) }));
   return [...daily,...weekly];
 }
 function repWatch(){
