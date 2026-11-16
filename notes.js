@@ -25,5 +25,8 @@ window.BUILTIN_NOTES = [
   { id:"bn-lin-d8", sid:"lin", day:8, title:"Inner Product Spaces I–II", topic:"Inner Product Spaces", pages:3, sizeBytes:521649, url:"notes/lin-d8.pdf", order:900, createdAt:"2026-11-05T00:00:00.000Z" },
   { id:"bn-lin-d9", sid:"lin", day:9, title:"Orthogonal Matrices, Adjoints and the Spectral Theorem", topic:"Orthogonal Matrices", pages:4, sizeBytes:449607, url:"notes/lin-d9.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" },
   { id:"bn-lin-d10", sid:"lin", day:10, title:"Bilinear and Quadratic Forms", topic:"Quadratic Forms", pages:3, sizeBytes:435331, url:"notes/lin-d10.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" },
-  { id:"bn-lin-d11", sid:"lin", day:11, title:"Invariant Subspaces and the Jordan Canonical Form", topic:"Jordan Form", pages:4, sizeBytes:463636, url:"notes/lin-d11.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" }
+  { id:"bn-lin-d11", sid:"lin", day:11, title:"Invariant Subspaces and the Jordan Canonical Form", topic:"Jordan Form", pages:4, sizeBytes:463636, url:"notes/lin-d11.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" },
+  { id:"bn-ana-d1", sid:"ana", day:1, title:"Set Theory: Sets, Functions and Relations", topic:"Set Theory", pages:3, sizeBytes:438341, url:"notes/ana-d1.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
+  { id:"bn-ana-d2", sid:"ana", day:2, title:"Countable and Uncountable Sets", topic:"Countability", pages:3, sizeBytes:356931, url:"notes/ana-d2.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
+  { id:"bn-ana-d3", sid:"ana", day:3, title:"Sequences of Real Numbers", topic:"Sequences", pages:3, sizeBytes:410673, url:"notes/ana-d3.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" }
 ];
