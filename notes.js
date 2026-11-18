@@ -28,5 +28,7 @@ window.BUILTIN_NOTES = [
   { id:"bn-lin-d11", sid:"lin", day:11, title:"Invariant Subspaces and the Jordan Canonical Form", topic:"Jordan Form", pages:4, sizeBytes:463636, url:"notes/lin-d11.pdf", order:900, createdAt:"2026-11-12T11:34:36.000Z" },
   { id:"bn-ana-d1", sid:"ana", day:1, title:"Set Theory: Sets, Functions and Relations", topic:"Set Theory", pages:3, sizeBytes:438341, url:"notes/ana-d1.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
   { id:"bn-ana-d2", sid:"ana", day:2, title:"Countable and Uncountable Sets", topic:"Countability", pages:3, sizeBytes:356931, url:"notes/ana-d2.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
-  { id:"bn-ana-d3", sid:"ana", day:3, title:"Sequences of Real Numbers", topic:"Sequences", pages:3, sizeBytes:410673, url:"notes/ana-d3.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" }
+  { id:"bn-ana-d3", sid:"ana", day:3, title:"Sequences of Real Numbers", topic:"Sequences", pages:3, sizeBytes:410673, url:"notes/ana-d3.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
+  { id:"bn-ana-d4", sid:"ana", day:4, title:"Problems on Sequences", topic:"Sequence Problems", pages:3, sizeBytes:425096, url:"notes/ana-d4.pdf", order:900, createdAt:"2026-11-18T19:30:00.000Z" },
+  { id:"bn-ana-d5", sid:"ana", day:5, title:"Series of Real Numbers", topic:"Series", pages:3, sizeBytes:358661, url:"notes/ana-d5.pdf", order:900, createdAt:"2026-11-18T19:30:00.000Z" }
 ];
