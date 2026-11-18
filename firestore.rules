@@ -44,6 +44,44 @@ service cloud.firestore {
       allow write: if isStudent() && request.auth.uid == uid;
     }
 
+    // Doubt Corner: doubts and feedback with replies. A post with vis "teacher" is seen only by its author and the teacher.
+    function boardOpen(d) {
+      return isAdmin() || (isStudent() && (d.vis == 'class' || d.uid == request.auth.uid));
+    }
+    function goodText(t, max) { return t is string && t.size() <= max; }
+    match /board/{id} {
+      allow read: if boardOpen(resource.data);
+      allow create: if (isAdmin() || isStudent())
+        && request.resource.data.keys().hasOnly(['kind','sid','title','body','vis','uid','name','teacher','createdAt','lastAt','replies','teacherReplied','solved','pinned'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.teacher == isAdmin()
+        && request.resource.data.kind in ['doubt','feedback']
+        && request.resource.data.vis in ['class','teacher']
+        && goodText(request.resource.data.title, 150) && request.resource.data.title.size() > 0
+        && goodText(request.resource.data.body, 3000)
+        && goodText(request.resource.data.name, 120)
+        && request.resource.data.replies == 0
+        && request.resource.data.teacherReplied == false
+        && request.resource.data.pinned == false;
+      allow update: if isAdmin()
+        || (isStudent() && resource.data.uid == request.auth.uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['solved','replies','lastAt']))
+        || (isStudent() && resource.data.vis == 'class'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['replies','lastAt']));
+      allow delete: if isAdmin() || (isStudent() && resource.data.uid == request.auth.uid && resource.data.replies == 0);
+
+      match /replies/{r} {
+        allow read: if boardOpen(get(/databases/$(database)/documents/board/$(id)).data);
+        allow create: if boardOpen(get(/databases/$(database)/documents/board/$(id)).data)
+          && request.resource.data.keys().hasOnly(['body','uid','name','teacher','createdAt'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.teacher == isAdmin()
+          && goodText(request.resource.data.body, 3000) && request.resource.data.body.size() > 0
+          && goodText(request.resource.data.name, 120);
+        allow delete: if isAdmin() || (isStudent() && resource.data.uid == request.auth.uid);
+      }
+    }
+
     // Uploaded PDFs, videos and thumbnails, stored as chunks.
     match /files/{id} {
       allow read: if canRead();

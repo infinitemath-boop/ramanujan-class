@@ -19,7 +19,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebas
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { initializeFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc, onSnapshot,
-  query, orderBy, limit, Bytes, connectFirestoreEmulator } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  query, orderBy, limit, where, increment, Bytes, connectFirestoreEmulator } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import config, { ADMINS } from "./firebase-config.js";
 
 try{
@@ -42,10 +42,12 @@ try{
   const wrapQuery = q => ({
     orderBy:(f,d)=>wrapQuery(query(q,orderBy(f,d))),
     limit:n=>wrapQuery(query(q,limit(n))),
+    where:(f,op,v)=>wrapQuery(query(q,where(f,op,v))),
     onSnapshot:(ok,bad)=>onSnapshot(q,s=>ok({ docs:s.docs.map(snapDoc) }),bad),
     add:data=>addDoc(q,data)
   });
   const db = {
+    inc:n=>increment(n),
     collection:p=>wrapQuery(collection(fs,p)),
     doc:p=>{ const r=doc(fs,p); return {
       get:async()=>snapDoc(await getDoc(r)),
@@ -898,6 +900,7 @@ const VIEWS = [
   { id:"materials",     label:"Study Hub",      short:"Study",    icon:"M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6" },
   { id:"weekly",        label:"Weekly Test",    short:"Tests",    icon:"M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 9v4l2.5 2.5M9.5 2.5h5M12 2.5V5" },
   { id:"practice",      label:"Test Yourself",  short:"Practice", icon:"M9 11l2 2 4-4M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" },
+  { id:"doubts",        label:"Doubt Corner",   short:"Doubts",   icon:"M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12zM10 9.5a2 2 0 1 1 2.8 1.8c-.5.3-.8.7-.8 1.2v.5M12 15.5h.01" },
   { id:"announcements", label:"Announcements",  short:"Notices",  icon:"M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" },
   { id:"books",         label:"Book Library",   short:"Library",  icon:"M4 19.5V5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19.5A2 2 0 0 0 6 22h13v-4" },
   { id:"about",         label:"About Us",       short:"About",    icon:"M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01" }
@@ -1148,7 +1151,7 @@ $("#adminTop").addEventListener("click",()=>go("admin"));
 /* ================= NAV ================= */
 function buildNav(){
   const isA=app.session&&app.session.admin;
-  $("#nav").innerHTML=VIEWS.map(v=>`<button class="nav-btn" data-view="${v.id}">${svg(v.icon)}<span>${v.label}</span>${v.id==="announcements"?`<span class="count" id="annCount" hidden></span>`:""}</button>`).join("")
+  $("#nav").innerHTML=VIEWS.map(v=>`<button class="nav-btn" data-view="${v.id}">${svg(v.icon)}<span>${v.label}</span>${v.id==="announcements"?`<span class="count" id="annCount" hidden></span>`:v.id==="doubts"?`<span class="count" id="dbtCount" hidden></span>`:""}</button>`).join("")
     + (isA?`<div class="nav-sep"></div><button class="nav-btn" data-view="admin">${svg(ADMIN_VIEW.icon)}<span>${ADMIN_VIEW.label}</span></button>`:"");
   // Phones get 4 main tabs plus "More", so each button is large enough to tap and read.
   $("#tabbar").innerHTML=TABS.map(id=>{ const v=VIEWS.find(x=>x.id===id); return `<button class="tab-btn" data-view="${v.id}">${svg(v.icon)}<span>${v.short}</span></button>`; }).join("")
@@ -1160,10 +1163,10 @@ function buildNav(){
 // Ordered by how often students use them: daily lessons and notes first, then tests, then occasional pages.
 const TABS=["overview","videos","materials","weekly","practice"];
 function openMore(){
-  const isA=app.session&&app.session.admin, n=+($("#annCount")&&!$("#annCount").hidden?$("#annCount").textContent:0);
+  const isA=app.session&&app.session.admin, n=+($("#annCount")&&!$("#annCount").hidden?$("#annCount").textContent:0), nd=window.doubtsCount?window.doubtsCount():0;
   const item=(v,extra)=>`<button data-more="${v.id}" ${ui.view===v.id?'aria-current="page"':""}>${svg(v.icon)}<span>${v.id==="announcements"?"Notices":v.label}</span>${extra||""}</button>`;
   openModal("Ramanujan Class","More",`<div class="more-list">
-    ${VIEWS.filter(v=>!TABS.includes(v.id)).map(v=>item(v,v.id==="announcements"&&n?`<span class="count">${n}</span>`:"")).join("")}
+    ${VIEWS.filter(v=>!TABS.includes(v.id)).map(v=>item(v,v.id==="announcements"&&n?`<span class="count">${n}</span>`:v.id==="doubts"&&nd?`<span class="count">${nd}</span>`:"")).join("")}
     ${isA?item(ADMIN_VIEW):""}
     ${isA?"":`<button data-more="pw">${svg("M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z")}<span>Change password</span></button>`}
     <button data-more="out">${svg("M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10")}<span>Sign out</span></button>
@@ -1174,10 +1177,12 @@ function openMore(){
   }));
 }
 function updateCount(){
-  const el=$("#annCount"); if(!el||!app.announcements) return;
-  const n=app.announcements.filter(a=>a.date===todayStr()).length;
-  el.textContent=n; el.hidden=!n;
-  const m=$("#moreCount"); if(m){ m.textContent=n; m.hidden=!n; }
+  const nd=window.doubtsCount?window.doubtsCount():0, dc=$("#dbtCount");
+  if(dc){ dc.textContent=nd; dc.hidden=!nd; }
+  const el=$("#annCount");
+  const n=el&&app.announcements?app.announcements.filter(a=>a.date===todayStr()).length:0;
+  if(el){ el.textContent=n; el.hidden=!n; }
+  const m=$("#moreCount"); if(m){ m.textContent=n+nd; m.hidden=!(n+nd); }
 }
 function go(id,fromHistory){
   if(!app.session) return;
@@ -1211,11 +1216,12 @@ function netNotice(){
 window.addEventListener("online",netNotice); window.addEventListener("offline",netNotice); netNotice();
 function render(){
   if(!app.session) return;
-  const fn={ overview:vOverview, announcements:vAnnouncements, about:vAbout, materials:vMaterials, practice:vPractice, books:vBooks, videos:vVideos, admin:vAdmin, weekly:()=>window.vWeekly() }[ui.view];
+  const fn={ overview:vOverview, announcements:vAnnouncements, about:vAbout, materials:vMaterials, practice:vPractice, books:vBooks, videos:vVideos, admin:vAdmin, weekly:()=>window.vWeekly(), doubts:()=>window.vDoubts() }[ui.view];
   $("#view").innerHTML=fn();
   bindView();
   if(ui.view==="weekly") window.bindWeekly();
   if(ui.view==="admin") bindAdmin();
+  if(ui.view==="doubts") window.bindDoubts();
   if(ui.view==="practice") typeset($("#view"));
   requestAnimationFrame(paintAll);
 }
@@ -1309,6 +1315,7 @@ function vOverview(){
             <p style="margin-top:6px"><b>${esc(a.title)}</b>${a.time?` · ${esc(fmtTime(a.time))}`:""}</p><p class="hint" style="margin-top:2px">${esc(String(a.body||"").slice(0,160))}${String(a.body||"").length>160?"…":""}</p></div></li>`).join("")}</ul>`
           :`<p class="hint">No announcements yet. Daily instructions and class timings from your teacher will appear here.</p>`}
       </section>
+      ${window.doubtsHome?window.doubtsHome():""}
       <section class="panel">
         <div class="panel-head"><h3>Continue where you left off</h3><button class="btn ghost sm" data-goto="videos">All lectures</button></div>
         ${subs.length?`<div class="prog-list">${subs.map(s=>{ const p=subjProgress(s.id); return `
@@ -2897,6 +2904,7 @@ function startListening(){
   on(app.db.collection("content").orderBy("createdAt","desc").limit(500),s=>{
     app.content=[...s.docs.map(d=>({ id:d.id, ...d.data() })).filter(c=>!c.removed), ...BUILTIN_NOTES, ...BUILTIN_SHEETS]; refresh(); autoThumbs();
   },()=>{ app.content=app.content||[...BUILTIN_NOTES, ...BUILTIN_SHEETS]; refresh(); });
+  window.doubtsListen(on);
   if(app.isAdmin){
     on(app.db.collection("roster").limit(1000),s=>{
       app.roster=Object.fromEntries(s.docs.map(d=>[d.id,d.data()])); refresh();
@@ -2908,7 +2916,7 @@ function startListening(){
 }
 function stopListening(){
   unsubs.forEach(u=>{ try{ u(); }catch(e){} }); unsubs=[];
-  app.announcements=null; app.content=null; app.days=null; app.tests=null; app.live=null; app.roster=null; app.accounts=null; app.bookFiles=null; repStop();
+  app.announcements=null; app.content=null; app.days=null; app.tests=null; app.live=null; app.roster=null; app.accounts=null; app.bookFiles=null; repStop(); if(window.doubtsStop) window.doubtsStop();
 }
 
 (async()=>{
@@ -2922,3 +2930,4 @@ function stopListening(){
 })();
 </script>
 <script src="weekly.js"></script>
+<script src="doubts.js"></script>
