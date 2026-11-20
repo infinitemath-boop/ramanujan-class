@@ -611,6 +611,69 @@ const Q8 = [
     s:R`\(\chi_A=(x-2)^2(x-3)\) and \(\operatorname{rank}(A-2I)=2\), so the eigenvalue 2 has one block: \(J_A=J_2(2)\oplus(3)=B\). The eigenvalues are rational, so the similarity can be taken over \(\mathbb Q\). The minimal polynomial is \((x-2)^2(x-3)=\chi_A\), and \(A\) is not diagonalizable.` }
 ];
 
+const Q9 = [
+  { t:"mcq", q:R`Let \(a_n=\left(\frac{(2n)!}{n!\,n^n}\right)^{1/n}\). Then \(\lim_{n\to\infty}a_n\) equals`,
+    o:[R`\(\frac4e\)`,R`\(\frac2e\)`,R`\(4\)`,R`\(\frac e4\)`], a:0,
+    s:R`With \(b_n=\frac{(2n)!}{n!\,n^n}\), \(\frac{b_{n+1}}{b_n}=\frac{(2n+2)(2n+1)}{n+1}\cdot\frac{n^n}{(n+1)^{n+1}}=\frac{2(2n+1)}{n+1}\left(\frac n{n+1}\right)^n\to\frac4e\). If the ratio of consecutive terms has a limit, \(b_n^{1/n}\) has the same limit.` },
+  { t:"mcq", q:R`Let \(x_n=\left(1+\frac{(-1)^n}n\right)^n\), \(n\ge2\). The set of all subsequential limits of \(\{x_n\}\) is`,
+    o:[R`\(\{1\}\)`,R`\(\{e\}\)`,R`\(\{e,\ \frac1e\}\)`,R`\(\{\frac1e,\ 1\}\)`], a:2,
+    s:R`Along even \(n\), \(x_n=(1+\frac1n)^n\to e\); along odd \(n\), \(x_n=(1-\frac1n)^n\to\frac1e\). Every subsequence has infinitely many even or infinitely many odd terms, so these are the only subsequential limits.` },
+  { t:"mcq", q:R`The series \(\sum_{n=2}^\infty\frac{(-1)^n}{\sqrt n+(-1)^n}\)`,
+    o:[R`converges absolutely`,R`converges conditionally`,R`diverges`,R`has terms that do not tend to \(0\)`], a:2,
+    s:R`\(\frac{(-1)^n}{\sqrt n+(-1)^n}=\frac{(-1)^n\sqrt n}{n-1}-\frac1{n-1}\). The first series converges by the Leibniz test (\(\frac{\sqrt n}{n-1}\downarrow0\)); the second is harmonic and diverges. So the sum diverges (to \(-\infty\)), although the terms tend to \(0\). The Leibniz test does not apply because the absolute values are not monotone.` },
+  { t:"mcq", q:R`The series \(\sum_{n=3}^\infty\frac1{(\log n)^{\log n}}\)`,
+    o:[R`converges`,R`diverges, since \((\log n)^{\log n}\lt n^2\) for all \(n\ge3\)`,R`diverges, since its terms do not tend to \(0\)`,R`diverges by comparison with \(\sum\frac1{n\log n}\)`], a:0,
+    s:R`\((\log n)^{\log n}=e^{\log n\cdot\log\log n}=n^{\log\log n}\). For \(n\gt e^{e^2}\), \(\log\log n\gt2\), so the term is below \(\frac1{n^2}\) and the series converges by comparison.` },
+  { t:"mcq", q:R`Define \(d(x,y)=|\tan^{-1}x-\tan^{-1}y|\) for \(x,y\in\R\). Then`,
+    o:[R`\(d\) is not a metric on \(\R\)`,R`\(d\) is a metric and \((\R,d)\) is complete`,R`\(d\) is a metric, \((\R,d)\) is not complete, and \(x_n=n\) is a Cauchy sequence in it`,R`\(d\) is a metric whose open sets differ from the usual open sets of \(\R\)`], a:2,
+    s:R`\(\tan^{-1}\) is one-one, so \(d\) is a metric (the pull-back of the usual metric). \(d(n,m)=|\tan^{-1}n-\tan^{-1}m|\to0\), so \(\{n\}\) is Cauchy, but it has no limit in \(\R\). Since \(\tan^{-1}\) is a homeomorphism onto \((-\frac\pi2,\frac\pi2)\), the open sets are the usual ones: completeness is not a topological property.` },
+  { t:"mcq", q:R`[GATE 2015] Let \(S=\{(x,\sin\frac1x):0\lt x\le1\}\) and \(T=S\cup\{(0,0)\}\). Under the usual metric on \(\R^2\),`,
+    o:[R`\(S\) is closed but \(T\) is NOT closed`,R`\(T\) is closed but \(S\) is NOT closed`,R`both \(S\) and \(T\) are closed`,R`neither \(S\) nor \(T\) is closed`], a:3,
+    s:R`For \(y\in[-1,1]\), \(x_k=\frac1{2k\pi+\sin^{-1}y}\to0\) and \(\sin\frac1{x_k}=y\), so every point of \(\{0\}\times[-1,1]\) is a limit point of \(S\). \(T\) still misses, e.g., \((0,\frac12)\).` },
+  { t:"mcq", q:R`[CSIR NET June 2012] Let \(I=[0,1]\subset\R\). For \(x\in\R\), let \(\varphi(x)=\operatorname{dist}(x,I)=\inf\{|x-y|:y\in I\}\). Then`,
+    o:[R`\(\varphi(x)\) is discontinuous somewhere on \(\R\).`,R`\(\varphi(x)\) is continuous on \(\R\) but not continuously differentiable exactly at \(x=0\).`,R`\(\varphi(x)\) is continuous on \(\R\) but not continuously differentiable exactly at \(x=0\) and at \(x=1\).`,R`\(\varphi(x)\) is differentiable on \(\R\).`], a:2,
+    s:R`\(\varphi(x)=-x\) for \(x\lt0\), \(0\) on \([0,1]\), \(x-1\) for \(x\gt1\). It is 1-Lipschitz, and the one-sided derivatives differ at \(0\) (\(-1,0\)) and at \(1\) (\(0,1\)).` },
+  { t:"mcq", q:R`[GATE 2012] Which of the following statements are TRUE?<br>P: The set \(\{x\in\R:|\cos x|\le\frac12\}\) is compact.<br>Q: The set \(\{x\in\R:\tan x\text{ is not differentiable}\}\) is complete.<br>R: The set \(\left\{x\in\R:\sum_{n=0}^\infty\frac{(-1)^nx^{2n+1}}{(2n+1)!}\text{ is convergent}\right\}\) is bounded.<br>S: The set \(\{x\in\R:f(x)=\cos x\text{ has a local maxima}\}\) is closed.`,
+    o:[R`P and Q`,R`R and S`,R`Q and S`,R`P and S`], a:2,
+    s:R`P is closed but unbounded. Q \(=\{\frac\pi2+k\pi\}\): points are \(\pi\) apart, so Cauchy sequences are eventually constant: complete. R is all of \(\R\). S \(=\{2k\pi\}\) has no limit points, so it is closed.` },
+  { t:"mcq", q:R`[CSIR NET June 2015] Which of the following subsets of \(\R^n\) is compact (with respect to the usual topology of \(\R^n\))?`,
+    o:[R`\(\{(x_1,\dots,x_n):|x_i|\lt1,\ 1\le i\le n\}\)`,R`\(\{(x_1,\dots,x_n):x_1+x_2+\cdots+x_n=0\}\)`,R`\(\{(x_1,\dots,x_n):x_i\ge0,\ 1\le i\le n\}\)`,R`\(\{(x_1,\dots,x_n):1\le x_i\le2^i,\ 1\le i\le n\}\)`], a:3,
+    s:R`Heine–Borel: (D) is a closed bounded box. (A) is bounded but not closed; (B) and (C) are closed but unbounded.` },
+  { t:"mcq", q:R`[GATE 2013] Which of the following subsets of \(\R^2\) is NOT compact?`,
+    o:[R`\(\{(x,y)\in\R^2:-1\le x\le1,\ y=\sin x\}\)`,R`\(\{(x,y)\in\R^2:-1\le y\le1,\ y=x^8-x^3-1\}\)`,R`\(\{(x,y)\in\R^2:y=0,\ \sin(e^{-x})=0\}\)`,R`\(\{(x,y)\in\R^2:x\gt0,\ y=\sin(\frac1x)\}\cap\{(x,y)\in\R^2:x\gt0,\ y=\frac1x\}\)`], a:2,
+    s:R`\(\sin(e^{-x})=0\iff x=-\ln(k\pi)\), \(k\ge1\): closed but unbounded. (A) is a continuous graph over \([-1,1]\); in (B) \(x^8-x^3\in[0,2]\) bounds \(x\); (D) is empty since \(\sin t=t\) has no root \(t\gt0\).` },
+  { t:"msq", q:R`[CSIR NET June 2014] Let \(p_n(x)=a_nx^2+b_nx+c_n\) be a sequence of quadratic polynomials where \(a_n,b_n,c_n\in\R\) for all \(n\ge1\). Let \(\lambda_0,\lambda_1,\lambda_2\) be distinct real numbers such that \(\lim_{n\to\infty}p_n(\lambda_0)=A_0\), \(\lim_{n\to\infty}p_n(\lambda_1)=A_1\) and \(\lim_{n\to\infty}p_n(\lambda_2)=A_2\). Then`,
+    o:[R`\(\lim_{n\to\infty}p_n(x)\) exists for all \(x\in\R\).`,R`\(\lim_{n\to\infty}p'_n(x)\) exists for all \(x\in\R\).`,R`\(\lim_{n\to\infty}p_n\left(\frac{\lambda_0+\lambda_1+\lambda_2}3\right)\) does not exist.`,R`\(\lim_{n\to\infty}p'_n\left(\frac{\lambda_0+\lambda_1+\lambda_2}3\right)\) does not exist.`], a:[0, 1],
+    s:R`The Vandermonde matrix of \(\lambda_0,\lambda_1,\lambda_2\) is invertible, so \(a_n,b_n,c_n\) are fixed linear combinations of the convergent sequences \(p_n(\lambda_i)\) and converge. Hence \(p_n(x)\) and \(p'_n(x)=2a_nx+b_n\) converge for every \(x\).` },
+  { t:"msq", q:R`Let \(a_n\gt0\) and suppose \(\sum_{n=1}^\infty a_n\) converges. Which of the following series must converge?`,
+    o:[R`\(\sum a_n^2\)`,R`\(\sum\frac{\sqrt{a_n}}n\)`,R`\(\sum\sqrt{a_na_{n+1}}\)`,R`\(\sum na_n\)`], a:[0, 1, 2],
+    s:R`\(a_n\to0\), so eventually \(a_n^2\le a_n\). \(\frac{\sqrt{a_n}}n\le\frac12\left(a_n+\frac1{n^2}\right)\) and \(\sqrt{a_na_{n+1}}\le\frac12(a_n+a_{n+1})\) (AM–GM). \(a_n=\frac1{n^2}\) makes \(\sum na_n\) harmonic.` },
+  { t:"msq", q:R`Let \(\{x_n\}\) be a bounded sequence of real numbers with \(x_{n+1}\ge x_n-\frac1{n^2}\) for all \(n\ge1\). Which of the following are true?`,
+    o:[R`\(\{x_n\}\) converges`,R`\(\{x_n\}\) need not converge`,R`\(\{x_n\}\) is a Cauchy sequence`,R`If instead \(x_{n+1}\ge x_n-\frac1n\) for all \(n\), then \(\{x_n\}\) must converge`], a:[0, 2],
+    s:R`\(w_n=x_n+\sum_{k\lt n}\frac1{k^2}\) is increasing and bounded, so it converges, and so does \(x_n=w_n-\sum_{k\lt n}\frac1{k^2}\). A convergent real sequence is Cauchy. For (D), \(x_n=\sin(\log n)\) is bounded, \(|x_{n+1}-x_n|\le\log\frac{n+1}n\lt\frac1n\), yet it oscillates.` },
+  { t:"msq", q:R`Suppose \(\sum_{n=1}^\infty a_n\) converges but \(\sum_{n=1}^\infty|a_n|\) diverges. Write \(a_n^+=\max(a_n,0)\). Which of the following are true?`,
+    o:[R`\(\sum a_n^+\) diverges`,R`some rearrangement of \(\sum a_n\) converges to \(2026\)`,R`\(\sum a_n^2\) converges`,R`\(\sum\frac{a_n}n\) converges`], a:[0, 1, 3],
+    s:R`If \(\sum a_n^+\) converged, so would \(\sum a_n^-=\sum(a_n^+-a_n)\), and then \(\sum|a_n|\). (B) is Riemann's rearrangement theorem. (C) fails for \(a_n=\frac{(-1)^n}{\sqrt n}\). (D): the partial sums of \(\sum a_n\) are bounded and \(\frac1n\downarrow0\), so Abel/Dirichlet gives convergence.` },
+  { t:"msq", q:R`On \(\R\) define \(d(x,y)=\frac{|x-y|}{1+|x-y|}\). Which of the following are true?`,
+    o:[R`\(d\) is a metric on \(\R\)`,R`\((\R,d)\) is a bounded metric space`,R`\((\R,d)\) is complete`,R`the open ball \(\{y:d(0,y)\lt1\}\) is all of \(\R\)`], a:[0, 1, 2, 3],
+    s:R`\(t\mapsto\frac t{1+t}\) is increasing and subadditive, giving the triangle inequality. \(d\lt1\) always, so (B) and (D). For \(d\lt\frac12\), \(|x-y|\le2d(x,y)\), so \(d\)-Cauchy sequences are usual Cauchy sequences, they converge, and \(d\) has the same convergent sequences.` },
+  { t:"msq", q:R`[CSIR NET June 2019] Which of the following open covers of the open interval \((0,1)\) admit a finite subcover?`,
+    o:[R`\(\left\{\left(0,\frac12-\frac1{n+1}\right)\cup\left(\frac1n,1\right):n\in\mathbb N\right\}\)`,R`\(\left\{\left(\frac1n,1-\frac1{n+1}\right):n\in\mathbb N\right\}\)`,R`\(\left\{\left(\sin^2\left(\frac{n\pi}{100}\right),\cos^2\left(\frac{n\pi}{100}\right)\right):n\in\mathbb N\right\}\)`,R`\(\left\{\left(\frac12e^{-n},1-\frac1{(n+1)^2}\right):n\in\mathbb N\right\}\)`], a:[0, 2],
+    s:R`(A): \(n=4\) alone gives \((0,\frac3{10})\cup(\frac14,1)=(0,1)\). (C): \(n=100\) gives \((0,1)\). (B) finitely many sets miss \((0,\frac1N]\); (D) finitely many miss points near \(1\). (Official key, Set B: 1,3.)` },
+  { t:"msq", q:R`[CSIR NET June 2012] For \(x=(x_1,\dots,x_n)\) and \(y=(y_1,\dots,y_n)\) in \(\R^n\) let \(d_p(x,y)=\left(\sum_{i=1}^n|x_i-y_i|^p\right)^{1/p}\) for \(1\le p\lt\infty\), and \(d_\infty(x,y)=\max\{|x_j-y_j|:j=1,2,\dots,n\}\). Let \(B_p=\{x\in\R^n:d_p(x,0)\lt1\}\), \(1\le p\le\infty\). Which of the following are correct?`,
+    o:[R`\(B_1\) is open in the \(d_\infty\)-metric.`,R`\(B_2\) is open in the \(d_\infty\)-metric.`,R`\(B_1\) is not open in the \(d_2\)-metric.`,R`\(B_2\) is not open in the \(d_2\)-metric.`], a:[0, 1],
+    s:R`\(d_\infty\le d_2\le d_1\le n\,d_\infty\): the metrics are equivalent and have the same open sets, and each \(B_p\) is an open \(d_p\)-ball.` },
+  { t:"msq", q:R`[CSIR NET Dec 2014] For a non-empty subset \(S\) and a point \(x\) in a connected metric space \((X,d)\), let \(d(x,S)=\inf\{d(x,y):y\in S\}\). Which of the following statements is/are correct?`,
+    o:[R`If \(S\) is closed and \(d(x,S)\gt0\) then \(x\) is not an accumulation point of \(S\)`,R`If \(S\) is open and \(d(x,S)\gt0\) then \(x\) is not an accumulation point of \(S\)`,R`If \(S\) is closed and \(d(x,S)\gt0\) then \(S\) does not contain \(x\)`,R`If \(S\) is open and \(d(x,S)=0\) then \(x\in S\)`], a:[0, 1, 2],
+    s:R`\(d(x,S)=0\iff x\in\overline S\). So \(d(x,S)\gt0\) rules out \(x\in S\) and \(x\) being an accumulation point, for any \(S\). (D): \(X=\R\), \(S=(0,1)\), \(x=0\).` },
+  { t:"msq", q:R`[CSIR NET June 2014] For two subsets \(X\) and \(Y\) of \(\R\), let \(X+Y=\{x+y:x\in X,y\in Y\}\).`,
+    o:[R`If \(X\) and \(Y\) are open sets then \(X+Y\) is open.`,R`If \(X\) and \(Y\) are closed sets then \(X+Y\) is closed.`,R`If \(X\) and \(Y\) are compact sets then \(X+Y\) is compact.`,R`If \(X\) is closed and \(Y\) is compact then \(X+Y\) is closed.`], a:[0, 2, 3],
+    s:R`\(X+Y=\bigcup_{y}(X+y)\) is open. (C): continuous image of \(X\times Y\). (D): if \(x_n+y_n\to z\), take \(y_{n_k}\to y\in Y\); then \(x_{n_k}\to z-y\in X\). (B) fails for \(\Z+\sqrt2\,\Z\), which is countable and dense.` },
+  { t:"msq", q:R`[CSIR NET Dec 2013] Let \((X,\|\cdot\|)\) be the normed linear space consisting of sequences \(a=\{a(n)\}_{n=1}^\infty\) such that the series \(\sum_{n=1}^\infty a(n)\) is absolutely convergent, with \(\|a\|=\sum_{n=1}^\infty|a(n)|\). Let \(e_k\) denote the sequence in \(X\) whose \(k\)-th term is 1 and other terms are 0's and let \(E=\{e_k\mid k\in\mathbb N\}\). Then`,
+    o:[R`\(X\) is complete in the norm \(\|\cdot\|\).`,R`\(E\) is a bounded subset of \(X\).`,R`\(E\) is a closed subset of \(X\).`,R`\(E\) is a compact subset of \(X\).`], a:[0, 1, 2],
+    s:R`\(\ell^1\) is complete. \(\|e_k\|=1\) and \(\|e_k-e_j\|=2\) for \(k\ne j\): \(E\) is bounded, has no limit points (so it is closed), and \(\{e_k\}\) has no Cauchy subsequence, so \(E\) is not compact.` }
+];
+
 const WEEKLY = [{
   id:"wt1-algebra", title:"Weekly Test 1 · Abstract Algebra", sid:"alg", date:"10 Oct 2026",
   syllabus:"Sets, Relations & Functions · Groups · Subgroups · Normal Subgroups · Cyclic Groups",
@@ -659,6 +722,12 @@ const WEEKLY = [{
   minutes:105, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
   note:R`21 of the 35 questions (60%) are actual CSIR NET / GATE previous-year questions (source in brackets); the other 14 (40%) are standard questions from the Ramanujan Class Linear Algebra book. \(\F_q\): field with \(q\) elements; \(P_n\): real polynomials of degree \(\le n\); \(\operatorname{adj}A\): adjugate; \(J_k(\lambda)\): Jordan block.`,
   qs:Q8
+},{
+  id:"wt8-real-analysis", title:"Weekly Test 8 · Real Analysis", sid:"ana", date:"21 Nov 2026", opens:"2026-11-21T13:00:00Z", opensLabel:"Saturday 21 Nov, 6:30 PM",
+  syllabus:"Classes of 16–20 Nov: Sequences of Real Numbers · Problems on Sequences · Series of Real Numbers · Problems on Series · Metric Spaces",
+  minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
+  note:R`11 of the 20 questions are actual CSIR NET / GATE previous-year questions (source in brackets). \(\R^n\) carries the usual metric unless stated; \(\ell^1\): absolutely summable sequences.`,
+  qs:Q9
 }];
 const KEYS=["A","B","C","D"];
 const base=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
@@ -676,6 +745,7 @@ function answered(k){ const a=W.ans[k]; return T().qs[k].t==="msq"?a.length>0:a!
 function status(k){ const q=T().qs[k], a=W.ans[k]; if(!answered(k)) return "skip"; return (q.t==="msq"?sameSet(a,q.a):a===q.a)?"ok":"bad"; }
 function marks(k){ const t=T(), st=status(k), msq=t.qs[k].t==="msq"; return st==="ok"?(msq?t.msq.plus:t.mcq.plus):st==="bad"?(msq?0:-t.mcq.minus):0; }
 function grade(){ let c=0,w=0,A=0,B=0; T().qs.forEach((q,k)=>{ const st=status(k); if(st==="ok")c++; if(st==="bad")w++; if(q.t==="msq")B+=marks(k); else A+=marks(k); }); return { correct:c, wrong:w, skipped:T().qs.length-c-w, secA:A, secB:B, score:A+B }; }
+const notOpen=t=>!!t.opens&&Date.now()<Date.parse(t.opens)&&!(app.session&&app.session.admin);
 const remaining=()=>T().minutes*60-(Date.now()-W.start)/1000;
 
 function listen(){
@@ -721,7 +791,7 @@ function startHTML(){
       <p style="margin:0">Taking the test as <b>${esc(app.session.name)}</b>.</p>
       <p class="hint" style="margin:0">${app.session.admin?"Teacher preview: your score is not added to the rank list.":mine?`Your best so far: <b>${fs2(mine.score)} / ${maxOf(t)}</b>. Only your best attempt counts.`:"Your score goes on the batch rank list. Only your best attempt counts."}</p>
       <p class="hint" style="margin:0">The timer keeps running if you leave this page, so finish in one sitting.</p>
-      <button class="btn primary" data-wgo="begin">Start test</button>
+      ${notOpen(t)?`<button class="btn primary" disabled>Opens ${esc(t.opensLabel||new Date(t.opens).toLocaleString())}</button><p class="hint" style="margin:0">The test can be started from then on.</p>`:`${t.opens&&app.session.admin&&Date.now()<Date.parse(t.opens)?`<p class="hint" style="margin:0">Students can start it from ${esc(t.opensLabel||t.opens)}.</p>`:""}<button class="btn primary" data-wgo="begin">Start test</button>`}
     </div></div>`;
 }
 function palBtn(k){ return `<button data-wq="${k}" class="${answered(k)?"ans":""} ${W.mk[k]?"mk":""} ${k===W.cur?"cur":""}" aria-label="Question ${k+1}">${k+1}</button>`; }
@@ -822,7 +892,7 @@ function bind(el){
   }));
   el.querySelectorAll("[data-wgo]").forEach(b=>b.addEventListener("click",()=>{
     const a=b.dataset.wgo, i=W.cur, n=T().qs.length;
-    if(a==="begin") return begin();
+    if(a==="begin"){ if(notOpen(T())) return; return begin(); }
     if(a==="submit") return submit();
     if(a==="again"){ W.phase="start"; W.tab="test"; }
     if(a==="clear") W.ans[i]=T().qs[i].t==="msq"?[]:null;
