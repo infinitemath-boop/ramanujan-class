@@ -30,5 +30,6 @@ window.BUILTIN_NOTES = [
   { id:"bn-ana-d2", sid:"ana", day:2, title:"Countable and Uncountable Sets", topic:"Countability", pages:3, sizeBytes:356931, url:"notes/ana-d2.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
   { id:"bn-ana-d3", sid:"ana", day:3, title:"Sequences of Real Numbers", topic:"Sequences", pages:3, sizeBytes:410673, url:"notes/ana-d3.pdf", order:900, createdAt:"2026-11-16T17:00:00.000Z" },
   { id:"bn-ana-d4", sid:"ana", day:4, title:"Problems on Sequences", topic:"Sequence Problems", pages:3, sizeBytes:425096, url:"notes/ana-d4.pdf", order:900, createdAt:"2026-11-18T19:30:00.000Z" },
-  { id:"bn-ana-d5", sid:"ana", day:5, title:"Series of Real Numbers", topic:"Series", pages:3, sizeBytes:358661, url:"notes/ana-d5.pdf", order:900, createdAt:"2026-11-18T19:30:00.000Z" }
+  { id:"bn-ana-d5", sid:"ana", day:5, title:"Series of Real Numbers", topic:"Series", pages:3, sizeBytes:358661, url:"notes/ana-d5.pdf", order:900, createdAt:"2026-11-18T19:30:00.000Z" },
+  { id:"bn-ana-d6", sid:"ana", day:6, title:"Problems on Series and Metric Spaces", topic:"Metric Spaces", pages:3, sizeBytes:432371, url:"notes/ana-d6.pdf", order:900, createdAt:"2026-11-20T10:00:00.000Z" }
 ];
