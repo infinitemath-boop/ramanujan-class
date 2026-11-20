@@ -645,6 +645,14 @@ mjx-container{max-width:100%}
 .dt-timer b.low{color:var(--bad)}
 /* weekly test */
 .wk-head{display:flex; justify-content:space-between; align-items:flex-end; gap:14px; flex-wrap:wrap; border-bottom:2px solid var(--primary); padding-bottom:12px}
+.tb-wrap summary{cursor:pointer; display:flex; flex-wrap:wrap; gap:4px 12px; align-items:baseline}
+.tb-sched{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:8px; margin-top:12px}
+.tb-item{display:flex; align-items:center; gap:10px; text-align:left; border:1px solid var(--line); background:var(--surface); border-radius:12px; padding:8px 10px; cursor:pointer; color:var(--ink); font:inherit}
+.tb-item.cur{border-color:var(--primary); box-shadow:0 0 0 1px var(--primary)}
+.tb-code{font:700 13px var(--f-ui); min-width:34px; color:var(--primary)}
+.tb-t{flex:1; min-width:0; display:flex; flex-direction:column}
+.tb-t small{color:var(--muted)}
+.tb-opts{margin:8px 0 0; padding-left:22px}
 .wk-tabs{display:inline-flex; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:3px}
 .wk-tabs button{border:0; background:transparent; color:var(--muted); padding:7px 16px; border-radius:999px; font:600 14px var(--f-ui); cursor:pointer}
 .wk-tabs button[aria-selected="true"]{background:var(--primary); color:var(--on-primary)}
@@ -897,6 +905,7 @@ const VIEWS = [
   { id:"videos",        label:"Daily Lessons",  short:"Lessons", icon:"M3 6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM10 9l5 3-5 3z" },
   { id:"materials",     label:"Study Hub",      short:"Study",    icon:"M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h6" },
   { id:"weekly",        label:"Weekly Test",    short:"Tests",    icon:"M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 9v4l2.5 2.5M9.5 2.5h5M12 2.5V5" },
+  { id:"tbatch",        label:"CSIR NET Test Batch", short:"Test Batch", icon:"M9 3h6M10 3v5l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3M8 14h8" },
   { id:"practice",      label:"Test Yourself",  short:"Practice", icon:"M9 11l2 2 4-4M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z" },
   { id:"announcements", label:"Announcements",  short:"Notices",  icon:"M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1zM16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" },
   { id:"books",         label:"Book Library",   short:"Library",  icon:"M4 19.5V5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2zM4 19.5A2 2 0 0 0 6 22h13v-4" },
@@ -1211,10 +1220,11 @@ function netNotice(){
 window.addEventListener("online",netNotice); window.addEventListener("offline",netNotice); netNotice();
 function render(){
   if(!app.session) return;
-  const fn={ overview:vOverview, announcements:vAnnouncements, about:vAbout, materials:vMaterials, practice:vPractice, books:vBooks, videos:vVideos, admin:vAdmin, weekly:()=>window.vWeekly() }[ui.view];
+  const fn={ overview:vOverview, announcements:vAnnouncements, about:vAbout, materials:vMaterials, practice:vPractice, books:vBooks, videos:vVideos, admin:vAdmin, weekly:()=>window.vWeekly(), tbatch:()=>window.vTBatch() }[ui.view];
   $("#view").innerHTML=fn();
   bindView();
   if(ui.view==="weekly") window.bindWeekly();
+  if(ui.view==="tbatch") window.bindTBatch();
   if(ui.view==="admin") bindAdmin();
   if(ui.view==="practice") typeset($("#view"));
   requestAnimationFrame(paintAll);
@@ -1224,7 +1234,7 @@ function refresh(){
   updateCount();
   if(!app.session) return;
   if(ui.view==="admin"){ fillAdminList(); return; }
-  if(ui.view==="about"||ui.view==="books"||ui.view==="practice"||ui.view==="weekly") return;
+  if(ui.view==="about"||ui.view==="books"||ui.view==="practice"||ui.view==="weekly"||ui.view==="tbatch") return;
   const searching=document.activeElement&&document.activeElement.id==="matQ";
   render();
   if(searching){ const q=$("#matQ"); if(q){ q.focus(); q.setSelectionRange(q.value.length,q.value.length); } }
@@ -1280,14 +1290,21 @@ function vOverview(){
         <h2>Welcome back, ${esc(String(app.session.name).split(" ")[0])}</h2>
         <p class="lead">${esc(app.session.batch||"Ramanujan Class")}. Check today's notices, then continue with your lectures and study material.</p>
       </div>
-      <div class="test-card">
+      ${(()=>{ const tb=window.tbHome?tbHome():null; return tb?`<div class="test-card">
+        <span><span class="pill gold">${tb.live?"Live now":"Next paper"}</span></span>
+        <b>${esc(tb.title)}</b>
+        <small>${esc(tb.facts)}</small>
+        <div class="row">
+          <button class="btn gold" data-goto="tbatch">${tb.live?"Take the test":"See schedule"}</button>
+        </div>
+      </div>`:`<div class="test-card">
         <span><span class="pill gold">Live now</span></span>
         <b>${esc(window.weeklyTitle?weeklyTitle():"Weekly Test")}</b>
         <small>${window.weeklyFacts?weeklyFacts():""}</small>
         <div class="row">
           <button class="btn gold" data-goto="weekly">Take the test</button>
         </div>
-      </div>
+      </div>`; })()}
     </div>
   </section>
   ${liveCard()}
@@ -2009,7 +2026,7 @@ function repTests(){
     return { id:t.id, kind:"daily", sid:t.sid, day:+t.day||0, max, short:"D"+(t.day||"?")+" "+(({alg:"Alg",ana:"Ana",lin:"Lin",cpx:"Cpx",de:"DE",prob:"Prob",num:"NT"})[t.sid]||t.sid||""),
       title:(S[t.sid]?.name||"")+" · Day "+(t.day||"?")+(t.topic?" · "+t.topic:"") };
   }).sort((a,b)=>String(a.sid).localeCompare(String(b.sid))||a.day-b.day);
-  const weekly=(window.weeklyTests?window.weeklyTests():[]).map((t,i)=>({ ...t, kind:"weekly", short:t.short||"WT"+(i+1) }));
+  const weekly=[...(window.weeklyTests?window.weeklyTests():[]).map((t,i)=>({ ...t, kind:"weekly", short:t.short||"WT"+(i+1) })),...(window.tbTests?window.tbTests():[]).map(t=>({ ...t, kind:"weekly" }))];
   return [...daily,...weekly];
 }
 function repWatch(){
@@ -2922,3 +2939,6 @@ function stopListening(){
 })();
 </script>
 <script src="weekly.js"></script>
+<script src="tbpapers.js"></script>
+<script src="tbkeys.js"></script>
+<script src="testbatch.js"></script>
