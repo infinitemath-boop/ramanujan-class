@@ -674,6 +674,69 @@ const Q9 = [
     s:R`\(\ell^1\) is complete. \(\|e_k\|=1\) and \(\|e_k-e_j\|=2\) for \(k\ne j\): \(E\) is bounded, has no limit points (so it is closed), and \(\{e_k\}\) has no Cauchy subsequence, so \(E\) is not compact.` }
 ];
 
+const Q10 = [
+  { t:"mcq", q:R`The value of \(\displaystyle\lim_{n\to\infty}n\left(e-\left(1+\frac1n\right)^n\right)\) is`,
+    o:[R`\(0\)`,R`\(\frac e2\)`,R`\(e\)`,R`\(\frac12\)`], a:1,
+    s:R`\(n\log(1+\frac1n)=1-\frac1{2n}+O(\frac1{n^2})\), so \((1+\frac1n)^n=e\cdot e^{-\frac1{2n}+O(1/n^2)}=e-\frac e{2n}+O(\frac1{n^2})\). Hence \(n\left(e-(1+\frac1n)^n\right)\to\frac e2\).` },
+  { t:"mcq", q:R`Let \(x_1=1\) and \(x_{n+1}=x_n+\frac1{x_n}\) for \(n\ge1\). Then \(\displaystyle\lim_{n\to\infty}\frac{x_n}{\sqrt n}\)`,
+    o:[R`is \(1\)`,R`is \(\sqrt2\)`,R`is \(2\)`,R`does not exist (the ratio tends to \(\infty\))`], a:1,
+    s:R`\(x_{n+1}^2=x_n^2+2+\frac1{x_n^2}\), so \(x_n^2\ge2n-1\) and \(x_n\to\infty\). Then \(x_n^2=2n-1+\sum_{k\lt n}\frac1{x_k^2}\le2n+O(\log n)\), so \(\frac{x_n^2}n\to2\) and \(\frac{x_n}{\sqrt n}\to\sqrt2\).` },
+  { t:"mcq", q:R`Which of the following series converges?`,
+    o:[R`\(\sum_{n=1}^\infty\left(n^{1/n}-1\right)\)`,R`\(\sum_{n=1}^\infty\left(n^{1/n}-1\right)^2\)`,R`\(\sum_{n=1}^\infty\frac1{n^{1+1/n}}\)`,R`\(\sum_{n=1}^\infty\sin\frac1n\)`], a:1,
+    s:R`\(n^{1/n}-1=e^{\log n/n}-1\ge\frac{\log n}n\), so (A) diverges, while \(n^{1/n}-1\le\frac{2\log n}n\) for large \(n\) gives \((n^{1/n}-1)^2\le\frac{4(\log n)^2}{n^2}\): (B) converges. In (C), \(n^{1/n}\to1\), so the terms are comparable to \(\frac1n\): diverges. In (D), \(\sin\frac1n\sim\frac1n\): diverges.` },
+  { t:"mcq", q:R`The series \(\displaystyle\sum_{n=1}^\infty\left(1-\cos\frac1n\right)^p\) converges if and only if`,
+    o:[R`\(p\gt1\)`,R`\(p\gt\frac12\)`,R`\(p\ge\frac12\)`,R`\(p\gt2\)`], a:1,
+    s:R`\(1-\cos\frac1n=2\sin^2\frac1{2n}\sim\frac1{2n^2}\), so the terms are comparable to \(\frac1{2^pn^{2p}}\) (limit comparison, for every real \(p\)). The \(p\)-series \(\sum\frac1{n^{2p}}\) converges iff \(2p\gt1\).` },
+  { t:"mcq", q:R`Let \(x_1=0\) and \(x_{n+1}=x_n^2+\frac14\) for \(n\ge1\). Then`,
+    o:[R`\(\{x_n\}\) diverges to \(\infty\)`,R`\(\{x_n\}\) converges to \(\frac14\)`,R`\(\{x_n\}\) converges to \(\frac12\)`,R`\(\{x_n\}\) oscillates between two limit points`], a:2,
+    s:R`If \(0\le x_n\le\frac12\) then \(x_{n+1}\le\frac14+\frac14=\frac12\), and \(x_{n+1}-x_n=(x_n-\frac12)^2\ge0\). So the sequence is increasing and bounded by \(\frac12\); its limit \(L\) satisfies \(L=L^2+\frac14\), i.e. \(L=\frac12\). (The convergence is slow: \(\frac12-x_n\) behaves like \(\frac1n\).)` },
+  { t:"mcq", q:R`[CSIR NET Dec 2012] Let \(X\) be a metric space and \(A\subseteq X\) be a connected set with at least two distinct points. Then the number of distinct points in \(A\) is`,
+    o:[R`2.`,R`more than 2, but finite.`,R`countably infinite.`,R`uncountable.`], a:3,
+    s:R`Fix \(a\ne b\) in \(A\). The map \(x\mapsto d(a,x)\) is continuous, so \(\{d(a,x):x\in A\}\) is a connected subset of \(\R\) containing \(0\) and \(d(a,b)\gt0\). It therefore contains \([0,d(a,b)]\), which is uncountable, and \(A\) maps onto it.` },
+  { t:"mcq", q:R`[CSIR NET June 2014] For a continuous function \(f:\R\to\R\), let \(Z(f)=\{x\in\R:f(x)=0\}\). Then \(Z(f)\) is always`,
+    o:[R`compact`,R`open`,R`connected`,R`closed`], a:3,
+    s:R`\(Z(f)=f^{-1}(\{0\})\) is the preimage of a closed set under a continuous map, so it is closed. \(f=\sin\) gives \(Z(f)=\pi\Z\): not compact, not open and not connected.` },
+  { t:"mcq", q:R`[CSIR NET June 2014] Let \(A\subseteq\R^2\) and \(X=\R^2\setminus A\) be subsets with subspace topology inherited from the usual topology on \(\R^2\). Then`,
+    o:[R`\(A\) is countable dense implies that \(X\) is totally disconnected.`,R`\(A\) is unbounded implies that \(X\) is compact.`,R`\(A\) is open implies that \(X\) is compact.`,R`\(A\) is countable implies that \(X\) is path-connected.`], a:3,
+    s:R`Join two points \(p,q\) of \(X\) by two-segment paths bending at the points of a line perpendicular to \(pq\): uncountably many of these paths meet only at \(p\) and \(q\), and countably many points of \(A\) can block only countably many of them. So (D) holds, and (A) fails (e.g. \(A=\Q^2\)). (B) and (C) fail for \(A\) an open half-plane: \(X\) is a closed half-plane, which is unbounded.` },
+  { t:"mcq", q:R`[CSIR NET June 2012] Let \(X=\{x\in[0,1]:x\ne\frac1n,\ n\in\mathbb N\}\) be given the subspace topology. Then`,
+    o:[R`\(X\) is connected but not compact.`,R`\(X\) is neither compact nor connected.`,R`\(X\) is compact and connected.`,R`\(X\) is compact but not connected.`], a:1,
+    s:R`The points \(\frac13+\frac1k\) lie in \(X\) for large \(k\) and converge to \(\frac13\notin X\), so \(X\) is not closed in \(\R\), hence not compact. Since \(\frac12\notin X\), the sets \(X\cap[0,\frac12)\) and \(X\cap(\frac12,1]\) are disjoint, non-empty and open in \(X\): \(X\) is not connected.` },
+  { t:"mcq", q:R`[CSIR NET June 2013] In which of the following cases, there is no continuous function \(f\) from the set \(S\) onto the set \(T\)?`,
+    o:[R`\(S=[0,1]\), \(T=\R\)`,R`\(S=(0,1)\), \(T=\R\)`,R`\(S=(0,1)\), \(T=(0,1]\)`,R`\(S=\R\), \(T=(0,1)\)`], a:0,
+    s:R`A continuous image of the compact set \([0,1]\) is compact, so it cannot be \(\R\). The others have onto maps: \(\tan(\pi x-\frac\pi2)\) for (B), \(\sin(\pi x)\) for (C), \(\frac1{1+e^{-x}}\) for (D).` },
+  { t:"msq", q:R`Let \(\{a_n\}\) be a decreasing sequence of non-negative real numbers. Which of the following are true?`,
+    o:[R`If \(\sum a_n\) converges, then \(na_n\to0\).`,R`If \(na_n\to0\), then \(\sum a_n\) converges.`,R`\(\sum_{n=1}^\infty a_n\) converges if and only if \(\sum_{k=0}^\infty2^ka_{2^k}\) converges.`,R`If \(\sum a_n\) converges, then \(\sum a_n\log n\) converges.`], a:[0, 2],
+    s:R`(A) \(\frac n2a_n\le a_{\lceil n/2\rceil}+\dots+a_n\to0\) (a Cauchy tail). (C) is Cauchy's condensation test. (B) fails for \(a_n=\frac1{n\log n}\) (\(n\ge2\)): \(na_n\to0\) but the series diverges by condensation. (D) fails for \(a_n=\frac1{n(\log n)^2}\): it is summable, but \(a_n\log n=\frac1{n\log n}\) is not.` },
+  { t:"msq", q:R`Which of the following sequences are Cauchy sequences in \(\R\)?`,
+    o:[R`\(x_n=\sum_{k=1}^n\frac1{k!}\)`,R`\(x_n=\sum_{k=1}^n\frac1k\)`,R`\(x_n=\sqrt n\)`,R`\(x_n=\sum_{k=1}^n\frac{(-1)^{k+1}}k\)`], a:[0, 3],
+    s:R`(A) converges to \(e-1\) and (D) converges to \(\log2\) (Leibniz), so both are Cauchy. (B) and (C) are unbounded, so they are not Cauchy, even though \(x_{n+1}-x_n\to0\) in both: consecutive differences tending to \(0\) is not enough.` },
+  { t:"msq", q:R`Consider the series \(\displaystyle\sum_{n=1}^\infty\frac{n!}{n^n}x^n\). For which of the following values of \(x\) does it converge?`,
+    o:[R`\(x=2\)`,R`\(x=-2.7\)`,R`\(x=e\)`,R`\(x=-e\)`], a:[0, 1],
+    s:R`The ratio of consecutive terms is \(\frac{|x|}{(1+\frac1n)^n}\to\frac{|x|}e\), so the series converges absolutely for \(|x|\lt e\), which covers \(2\) and \(-2.7\) (\(e=2.718\ldots\)). For \(|x|=e\), Stirling gives \(\frac{n!\,e^n}{n^n}\sim\sqrt{2\pi n}\to\infty\), so the terms do not tend to \(0\) and the series diverges at both \(x=e\) and \(x=-e\).` },
+  { t:"msq", q:R`Which of the following series converge?`,
+    o:[R`\(\sum_{n=1}^\infty\frac{\sin n}n\)`,R`\(\sum_{n=1}^\infty\frac{|\sin n|}n\)`,R`\(\sum_{n=1}^\infty\frac{\sin n}{\sqrt n}\)`,R`\(\sum_{n=1}^\infty\frac{\sin^2n}n\)`], a:[0, 2],
+    s:R`The partial sums of \(\sin n\) are bounded (by \(\frac1{\sin\frac12}\)), and \(\frac1n,\frac1{\sqrt n}\) decrease to \(0\), so (A) and (C) converge by Dirichlet's test. \(\sin^2n=\frac{1-\cos2n}2\) and \(\sum\frac{\cos2n}n\) converges (Dirichlet again), so \(\sum\frac{\sin^2n}n\) diverges like \(\sum\frac1{2n}\). Since \(|\sin n|\ge\sin^2n\), (B) diverges too.` },
+  { t:"msq", q:R`Let \(0\lt x_1\lt1\) and \(x_{n+1}=x_n(1-x_n)\) for \(n\ge1\). Which of the following are true?`,
+    o:[R`\(x_n\to0\)`,R`\(nx_n\to1\)`,R`\(\sum x_n\) converges`,R`\(\sum x_n^2\) converges`], a:[0, 1, 3],
+    s:R`\(0\lt x_{n+1}\lt x_n\), so \(x_n\) decreases to a limit \(L=L(1-L)\), i.e. \(L=0\). Then \(\frac1{x_{n+1}}-\frac1{x_n}=\frac1{1-x_n}\to1\), so by Cesàro \(\frac1{nx_n}\to1\). Hence \(x_n\sim\frac1n\): \(\sum x_n\) diverges and \(\sum x_n^2\) converges.` },
+  { t:"msq", q:R`[CSIR NET June 2012] The space \(C[0,1]\) of continuous functions on \([0,1]\) is complete with respect to the norm`,
+    o:[R`\(\|f\|_\infty:=\sup\{|f(x)|:x\in[0,1]\}\).`,R`\(\|f\|_1:=\int_0^1|f(x)|\,dx\).`,R`\(\|f\|_\infty^{0,1}:=\|f\|_\infty+|f(1)|+|f(0)|\).`,R`\(\|f\|_2=\sqrt{\int_0^1|f(x)|^2\,dx}\).`], a:[0, 2],
+    s:R`A uniform limit of continuous functions is continuous, so (A) is complete. \(\|f\|_\infty\le\|f\|_\infty^{0,1}\le3\|f\|_\infty\), so (C) is an equivalent norm with the same Cauchy sequences and limits. The ramps \(f_k=\min(1,\max(0,k(x-\frac12)))\) are Cauchy in \(\|\cdot\|_1\) and \(\|\cdot\|_2\) but tend to a step function, so (B) and (D) are not complete.` },
+  { t:"msq", q:R`[CSIR NET Dec 2014] Let \(A\) be a subset of \(\R\). Which of the following properties imply that \(A\) is compact?`,
+    o:[R`Every continuous function \(f\) from \(A\) to \(\R\) is bounded`,R`Every sequence \(\{x_n\}\) in \(A\) has a convergent subsequence converging to a point in \(A\)`,R`There exists a continuous function from \(A\) onto \([0,1]\)`,R`There is no one-one and continuous function from \(A\) onto \((0,1)\)`], a:[0, 1],
+    s:R`(A): if \(A\) is unbounded, \(f(x)=x\) is unbounded on it; if \(A\) misses a limit point \(c\), \(\frac1{x-c}\) is unbounded on it. So \(A\) is closed and bounded. (B) is sequential compactness. \(A=\R\) with \(\frac{1+\sin x}2\) kills (C). \(A=[0,1)\) kills (D): a continuous one-one map on an interval is monotone, so its image is a half-open interval, never \((0,1)\).` },
+  { t:"msq", q:R`[CSIR NET June 2014] Which of the following are compact?`,
+    o:[R`\(\{(x,y)\in\R^2:(x-1)^2+(y-2)^2=9\}\cup\{(x,y)\in\R^2:y=3\}\).`,R`\(\left\{\left(\frac1m,\frac1n\right)\in\R^2:m,n\in\Z\setminus\{0\}\right\}\cup\{(0,0)\}\cup\left\{\left(\frac1m,0\right):m\in\Z\setminus\{0\}\right\}\cup\left\{\left(0,\frac1n\right):n\in\Z\setminus\{0\}\right\}\).`,R`\(\{(x,y,z)\in\R^3:x^2+2y^2-3z^2=1\}\).`,R`\(\{(x,y,z)\in\R^3:|x|+2|y|+3|z|\le1\}\).`], a:[1, 3],
+    s:R`(B) is bounded and contains all its limit points \((\frac1m,0)\), \((0,\frac1n)\), \((0,0)\). (D) is a closed ball of a norm. (A) contains the whole line \(y=3\), and (C) contains \((\sqrt{1+3z^2},0,z)\) for every \(z\): both are unbounded.` },
+  { t:"msq", q:R`[CSIR NET Dec 2016] Let \(A\) be the following subset of \(\R^2\): \(A=\{(x,y):(x+1)^2+y^2\le1\}\cup\{(x,y):y=x\sin\frac1x,\ x\gt0\}\). Then`,
+    o:[R`\(A\) is connected`,R`\(A\) is compact`,R`\(A\) is path connected`,R`\(A\) is bounded`], a:[0, 2],
+    s:R`\(x\sin\frac1x\to0\) as \(x\to0^+\), and \((0,0)\) lies on the closed disc centred at \((-1,0)\). So a path runs along the curve into the disc: \(A\) is path connected, hence connected. The curve continues as \(x\to\infty\) (with \(y\to1\)), so \(A\) is unbounded and not compact.` },
+  { t:"msq", q:R`[CSIR NET Dec 2015] Let \(S\subset\R^2\) be defined by \(S=\left\{\left(m+\frac1{4^{|p|}},\ n+\frac1{4^{|q|}}\right):m,n,p,q\in\Z\right\}\). Then,`,
+    o:[R`\(S\) is discrete in \(\R^2\).`,R`The set of limit points of \(S\) is the set \(\{(m,n):m,n\in\Z\}\).`,R`\(S^c\) is connected but not path connected.`,R`\(S^c\) is path connected.`], a:[3],
+    s:R`\(S\) is countable, so its complement is path connected (uncountably many internally disjoint two-segment paths join any two points, and countably many points block only countably many). With \(p=q=0\), \(\Z^2\subset S\), and \((m+4^{-|p|},n+4^{-|q|})\to(m,n)\), so \(S\) is not discrete. Points like \((m,n+4^{-|q|})\notin\Z^2\) are limit points too (let \(|p|\to\infty\)), so (B) fails. Only (D) is correct.` }
+];
+
 const WEEKLY = [{
   id:"wt1-algebra", title:"Weekly Test 1 · Abstract Algebra", sid:"alg", date:"10 Oct 2026",
   syllabus:"Sets, Relations & Functions · Groups · Subgroups · Normal Subgroups · Cyclic Groups",
@@ -728,6 +791,12 @@ const WEEKLY = [{
   minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
   note:R`11 of the 20 questions are actual CSIR NET / GATE previous-year questions (source in brackets). \(\R^n\) carries the usual metric unless stated; \(\ell^1\): absolutely summable sequences.`,
   qs:Q9
+},{
+  id:"wt9-real-analysis", title:"Weekly Test 9 · Real Analysis", sid:"ana", date:"28 Nov 2026",
+  syllabus:"Classes of 23–27 Nov: Sequences of Real Numbers · Series of Real Numbers · Metric Spaces (completeness, compactness, connectedness)",
+  minutes:60, mcq:{ plus:2, minus:2/3 }, msq:{ plus:2 },
+  note:R`10 of the 20 questions are actual CSIR NET previous-year questions (source in brackets). \(\R^n\) carries the usual metric unless stated; \(C[0,1]\): continuous real functions on \([0,1]\).`,
+  qs:Q10
 }];
 const KEYS=["A","B","C","D"];
 const base=()=>WEEKLY.find(t=>t.id===W.test)||WEEKLY[WEEKLY.length-1];
